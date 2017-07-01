@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deep Learning on Sunil Prakash</title>
+    <link>http://www.sunilprakash.com/tags/deep-learning/</link>
+    <description>Recent content in Deep Learning on Sunil Prakash</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2017 Sunil Prakash</copyright>
+    <lastBuildDate>Tue, 13 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/deep-learning/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Face Recognition</title>
+      <link>http://www.sunilprakash.com/project/face-recognition/</link>
+      <pubDate>Tue, 13 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.sunilprakash.com/project/face-recognition/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/sunilp/iot-self-driving-car&#34;&gt;https://github.com/sunilp/iot-self-driving-car&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
