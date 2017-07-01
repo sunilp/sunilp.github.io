@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Sunil Prakash</title>
-    <link>https://sunilp.github.com/tags/</link>
+    <link>http://sunilprakash.com/tags/</link>
     <description>Recent content in Tags on Sunil Prakash</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,19 +12,19 @@
     
     <item>
       <title>Data Science</title>
-      <link>https://sunilp.github.com/tags/data-science/</link>
+      <link>http://sunilprakash.com/tags/data-science/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://sunilp.github.com/tags/data-science/</guid>
+      <guid>http://sunilprakash.com/tags/data-science/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Deep Learning</title>
-      <link>https://sunilp.github.com/tags/deep-learning/</link>
+      <link>http://sunilprakash.com/tags/deep-learning/</link>
       <pubDate>Tue, 13 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://sunilp.github.com/tags/deep-learning/</guid>
+      <guid>http://sunilprakash.com/tags/deep-learning/</guid>
       <description></description>
     </item>
     
