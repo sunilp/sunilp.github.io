@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.24.1" />
+  <meta name="author" content="Sunil Prakash">
+  <meta name="description" content="Machine Learning Engineer">
+
+  
+  
+  
+    
+  
+  
+    
+    
+    <link rel="stylesheet" href="/css/highlight.min.css">
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.0/css/academicons.min.css" integrity="sha512-GGGNUPDhnG8LEAEDsjqYIQns+Gu8RBs4j5XGlxl7UfRaZBhCCm5jenJkeJL8uPuOXGqgl8/H1gjlWQDRjd3cUQ==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono">
+  <link rel="stylesheet" href="/css/hugo-academic.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-101880515-1', 'auto');
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  <link rel="alternate" href="http://sunilprakash.com/index.xml" type="application/rss+xml" title="Sunil Prakash">
+  <link rel="feed" href="http://sunilprakash.com/index.xml" type="application/rss+xml" title="Sunil Prakash">
+
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
+
+  <link rel="canonical" href="http://sunilprakash.com/post/stockindexforecasting/">
+
+  
+
+  <title>Stock Prediction with R | Sunil Prakash</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Sunil Prakash</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Blog</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Stock Prediction with R</h1>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-07-18 15:20:11 &#43;0530 &#43;0530" itemprop="datePublished">
+      Tue, Jul 18, 2017
+    </time>
+  </span>
+
+  
+
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=http%3a%2f%2fsunilprakash.com%2fpost%2fstockindexforecasting%2f"
+         target="_blank">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Stock%20Prediction%20with%20R&amp;url=http%3a%2f%2fsunilprakash.com%2fpost%2fstockindexforecasting%2f"
+         target="_blank">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2fsunilprakash.com%2fpost%2fstockindexforecasting%2f&amp;title=Stock%20Prediction%20with%20R"
+         target="_blank">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=http%3a%2f%2fsunilprakash.com%2fpost%2fstockindexforecasting%2f&amp;title=Stock%20Prediction%20with%20R"
+         target="_blank">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Stock%20Prediction%20with%20R&amp;body=http%3a%2f%2fsunilprakash.com%2fpost%2fstockindexforecasting%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p>A data file contains daily values of the Straits Times Index (STI) from
+1 Jan’04 to 31 Dec’13 . The fields are: – Date – Opening Price – Closing
+Price – Adjusted Close (similar to above but after minor accounting
+changes) – Highest value during the day – Lowest value during the day –
+Volume (total amount of traded stocks during the day)</p>
+
+<p>Goal: The goal is to predict the short term STI trend with sufficient
+accuracy for profitable use in a (simplified) trading scenario</p>
+
+<pre><code>data &lt;- read.csv(&quot;STI 2004-2013.csv&quot;)
+
+head(data)
+
+##         Date    Open    High     Low   Close    Volume Adj.Close
+## 1 2013-12-31 3166.26 3169.20 3158.15 3167.43 245359800   3167.43
+## 2 2013-12-30 3159.68 3164.86 3150.26 3153.29 107880500   3153.29
+## 3 2013-12-27 3144.87 3154.82 3142.37 3149.76 174566000   3149.76
+## 4 2013-12-26 3131.94 3138.15 3130.23 3134.36  61807500   3134.36
+## 5 2013-12-24 3124.47 3131.80 3115.41 3127.29  78827000   3127.29
+## 6 2013-12-23 3101.92 3116.22 3096.92 3116.22 122500700   3116.22
+</code></pre>
+
+<h3 id="coverting-the-data-into-zoo-time-series">Coverting the data into zoo (time series)</h3>
+
+<pre><code>library(zoo)
+
+## 
+## Attaching package: 'zoo'
+
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+
+dates = data$Date
+data$Date = NULL
+ts = zoo(data, as.Date(dates, &quot;%Y-%m-%d&quot;))
+head(ts)
+
+##               Open    High     Low   Close    Volume Adj.Close
+## 2004-01-02 1768.78 1795.63 1768.77 1791.35 148575200   1791.35
+## 2004-01-05 1797.75 1831.63 1782.97 1828.66 207981200   1828.66
+## 2004-01-06 1838.41 1856.91 1824.78 1828.72 199559800   1828.72
+## 2004-01-07 1821.27 1839.94 1820.34 1835.96 667266000   1835.96
+## 2004-01-08 1838.04 1853.80 1837.04 1841.68 287469400   1841.68
+## 2004-01-09 1859.92 1867.63 1848.86 1852.53 290463000   1852.53
+
+plot(ts)
+</code></pre>
+
+<p><img src="stockIndexForecasting_files/figure-markdown_strict/unnamed-chunk-3-1.png" alt="" /></p>
+
+<h3 id="creating-weekly-trend-variables">creating weekly trend variables</h3>
+
+<pre><code>wkgain = diff(ts, lag=7)
+head(wkgain)
+
+##             Open  High   Low Close     Volume Adj.Close
+## 2004-01-13 80.78 65.93 75.54 70.21  110340000     70.21
+## 2004-01-14 58.75 40.64 70.93 31.87  110594800     31.87
+## 2004-01-15 25.12 10.38  3.30  1.26   97768800      1.26
+## 2004-01-16 13.73  5.96 12.75  0.91 -499221400      0.91
+## 2004-01-19 10.84 -1.65 -3.31  7.53 -178171000      7.53
+## 2004-01-20 -4.74  0.60  0.35 12.91 -160634200     12.91
+</code></pre>
+
+<h3 id="additional-target-variable">additional target variable</h3>
+
+<ul>
+<li>tommorows closing STI</li>
+<li>the percentage increase or decrease in STI from today to tommorow</li>
+<li>the trend: +1(increasing), -1(decreasing), 0(nochange)</li>
+</ul>
+
+<!-- -->
+
+<pre><code>wkgain$tominc = diff(ts$Close, lag=-1)
+wkgain$tomclose = ts$Close + wkgain$tominc
+wkgain$tomtrend = wkgain$tominc/abs(wkgain$tominc)
+wkgain$tominc = (wkgain$tominc *100)/ts$Close
+</code></pre>
+
+<h3 id="adding-wgain-to-original-data">adding wgain to original data</h3>
+
+<pre><code>ts = cbind(ts, wkgain)
+head(ts,20)
+
+##            Open.ts High.ts  Low.ts Close.ts Volume.ts Adj.Close.ts
+## 2004-01-02 1768.78 1795.63 1768.77  1791.35 148575200      1791.35
+## 2004-01-05 1797.75 1831.63 1782.97  1828.66 207981200      1828.66
+## 2004-01-06 1838.41 1856.91 1824.78  1828.72 199559800      1828.72
+## 2004-01-07 1821.27 1839.94 1820.34  1835.96 667266000      1835.96
+## 2004-01-08 1838.04 1853.80 1837.04  1841.68 287469400      1841.68
+## 2004-01-09 1859.92 1867.63 1848.86  1852.53 290463000      1852.53
+## 2004-01-12 1845.84 1852.07 1837.82  1842.49 176869200      1842.49
+## 2004-01-13 1849.56 1861.56 1844.31  1861.56 258915200      1861.56
+## 2004-01-14 1856.50 1872.27 1853.90  1860.53 318576000      1860.53
+## 2004-01-15 1863.53 1867.29 1828.08  1829.98 297328600      1829.98
+## 2004-01-16 1835.00 1845.90 1833.09  1836.87 168044600      1836.87
+## 2004-01-19 1848.88 1852.15 1833.73  1849.21 109298400      1849.21
+## 2004-01-20 1855.18 1868.23 1849.21  1865.44 129828800      1865.44
+## 2004-01-21 1879.54 1893.99 1871.05  1889.56 142273100      1889.56
+## 2004-01-26 1901.30 1905.16 1883.84  1899.98 206612400      1899.98
+## 2004-01-27 1909.00 1912.93 1888.63  1904.55 155241600      1904.55
+## 2004-01-28 1899.89 1899.89 1859.40  1862.84 137608200      1862.84
+## 2004-01-29 1849.52 1849.52 1834.60  1842.32 161401200      1842.32
+## 2004-01-30 1853.38 1859.58 1841.14  1848.36 120572700      1848.36
+## 2004-02-03 1835.12 1847.04 1817.46  1845.13 184695200      1845.13
+##            Open.wkgain High.wkgain Low.wkgain Close.wkgain Volume.wkgain
+## 2004-01-02          NA          NA         NA           NA            NA
+## 2004-01-05          NA          NA         NA           NA            NA
+## 2004-01-06          NA          NA         NA           NA            NA
+## 2004-01-07          NA          NA         NA           NA            NA
+## 2004-01-08          NA          NA         NA           NA            NA
+## 2004-01-09          NA          NA         NA           NA            NA
+## 2004-01-12          NA          NA         NA           NA            NA
+## 2004-01-13       80.78       65.93      75.54        70.21     110340000
+## 2004-01-14       58.75       40.64      70.93        31.87     110594800
+## 2004-01-15       25.12       10.38       3.30         1.26      97768800
+## 2004-01-16       13.73        5.96      12.75         0.91    -499221400
+## 2004-01-19       10.84       -1.65      -3.31         7.53    -178171000
+## 2004-01-20       -4.74        0.60       0.35        12.91    -160634200
+## 2004-01-21       33.70       41.92      33.23        47.07     -34596100
+## 2004-01-26       51.74       43.60      39.53        38.42     -52302800
+## 2004-01-27       52.50       40.66      34.73        44.02    -163334400
+## 2004-01-28       36.36       32.60      31.32        32.86    -159720400
+## 2004-01-29       14.52        3.62       1.51         5.45      -6643400
+## 2004-01-30        4.50        7.43       7.41        -0.85      11274300
+## 2004-02-03      -20.06      -21.19     -31.75       -20.31      54866400
+##            Adj.Close.wkgain       tominc tomclose tomtrend
+## 2004-01-02               NA  2.082786725  1828.66        1
+## 2004-01-05               NA  0.003281091  1828.72        1
+## 2004-01-06               NA  0.395905333  1835.96        1
+## 2004-01-07               NA  0.311553629  1841.68        1
+## 2004-01-08               NA  0.589136006  1852.53        1
+## 2004-01-09               NA -0.541961534  1842.49       -1
+## 2004-01-12               NA  1.035012402  1861.56        1
+## 2004-01-13            70.21 -0.055329938  1860.53       -1
+## 2004-01-14            31.87 -1.642005235  1829.98       -1
+## 2004-01-15             1.26  0.376506847  1836.87        1
+## 2004-01-16             0.91  0.671794956  1849.21        1
+## 2004-01-19             7.53  0.877672087  1865.44        1
+## 2004-01-20            12.91  1.292992538  1889.56        1
+## 2004-01-21            47.07  0.551451131  1899.98        1
+## 2004-01-26            38.42  0.240528848  1904.55        1
+## 2004-01-27            44.02 -2.190018640  1862.84       -1
+## 2004-01-28            32.86 -1.101543879  1842.32       -1
+## 2004-01-29             5.45  0.327847497  1848.36        1
+## 2004-01-30            -0.85 -0.174749508  1845.13       -1
+## 2004-02-03           -20.31 -0.568523627  1834.64       -1
+</code></pre>
+
+<h3 id="remove-some-missing-values">remove some missing values</h3>
+
+<pre><code>ts = na.omit(ts)
+head(ts)
+
+##            Open.ts High.ts  Low.ts Close.ts Volume.ts Adj.Close.ts
+## 2004-01-13 1849.56 1861.56 1844.31  1861.56 258915200      1861.56
+## 2004-01-14 1856.50 1872.27 1853.90  1860.53 318576000      1860.53
+## 2004-01-15 1863.53 1867.29 1828.08  1829.98 297328600      1829.98
+## 2004-01-16 1835.00 1845.90 1833.09  1836.87 168044600      1836.87
+## 2004-01-19 1848.88 1852.15 1833.73  1849.21 109298400      1849.21
+## 2004-01-20 1855.18 1868.23 1849.21  1865.44 129828800      1865.44
+##            Open.wkgain High.wkgain Low.wkgain Close.wkgain Volume.wkgain
+## 2004-01-13       80.78       65.93      75.54        70.21     110340000
+## 2004-01-14       58.75       40.64      70.93        31.87     110594800
+## 2004-01-15       25.12       10.38       3.30         1.26      97768800
+## 2004-01-16       13.73        5.96      12.75         0.91    -499221400
+## 2004-01-19       10.84       -1.65      -3.31         7.53    -178171000
+## 2004-01-20       -4.74        0.60       0.35        12.91    -160634200
+##            Adj.Close.wkgain      tominc tomclose tomtrend
+## 2004-01-13            70.21 -0.05532994  1860.53       -1
+## 2004-01-14            31.87 -1.64200524  1829.98       -1
+## 2004-01-15             1.26  0.37650685  1836.87        1
+## 2004-01-16             0.91  0.67179496  1849.21        1
+## 2004-01-19             7.53  0.87767209  1865.44        1
+## 2004-01-20            12.91  1.29299254  1889.56        1
+</code></pre>
+
+<h3 id="dividing-the-data-into-test-and-train-set">Dividing the data into test and train set</h3>
+
+<pre><code>sta = as.Date(&quot;01-Jan-2000&quot;,&quot;%d-%b-%Y&quot;)
+mid1 = as.Date(&quot;31-Dec-2011&quot;,&quot;%d-%b-%Y&quot;)
+mid2 = as.Date(&quot;01-Jan-2012&quot;,&quot;%d-%b-%Y&quot;)
+last = as.Date(&quot;31-Dec-2020&quot;,&quot;%d-%b-%Y&quot;)
+traindata = window(ts, start=sta, end=mid1)
+testdata = window(ts,start=mid2, end=last)
+traindata = as.data.frame(traindata)
+testdata = as.data.frame(testdata)
+</code></pre>
+
+<h3 id="lets-build-the-model">lets build the model</h3>
+
+<pre><code>require(nnet)
+
+## Loading required package: nnet
+
+drops &lt;- c(&quot;tominc&quot;,&quot;tomtrend&quot;)
+ts1 &lt;- ts[ , !(names(ts) %in% drops)]
+names(ts1)
+
+##  [1] &quot;Open.ts&quot;          &quot;High.ts&quot;          &quot;Low.ts&quot;          
+##  [4] &quot;Close.ts&quot;         &quot;Volume.ts&quot;        &quot;Adj.Close.ts&quot;    
+##  [7] &quot;Open.wkgain&quot;      &quot;High.wkgain&quot;      &quot;Low.wkgain&quot;      
+## [10] &quot;Close.wkgain&quot;     &quot;Volume.wkgain&quot;    &quot;Adj.Close.wkgain&quot;
+## [13] &quot;tomclose&quot;
+
+ts1 &lt;- as.data.frame(ts1)
+fit1 &lt;- nnet(tomclose ~., data=ts1, decay=0.01, maxit = 1000, size = 10,linout=TRUE)
+
+## # weights:  141
+## initial  value 19016184447.115292 
+## iter  10 value 1187351525.482532
+## iter  20 value 667513221.464708
+## iter  30 value 649061699.190153
+## iter  40 value 628835075.427959
+## iter  50 value 619225302.992356
+## iter  60 value 596712834.816838
+## iter  70 value 575723314.136651
+## iter  80 value 524332622.058288
+## iter  90 value 464642145.063168
+## iter 100 value 452729230.725534
+## iter 110 value 452297868.666327
+## iter 120 value 452026856.251722
+## iter 130 value 451903798.419287
+## iter 140 value 451842035.995465
+## iter 150 value 451802410.999621
+## iter 160 value 451788615.860967
+## iter 170 value 451476313.894100
+## iter 180 value 451435669.859691
+## iter 190 value 451416515.200648
+## iter 200 value 451346230.863645
+## iter 210 value 451236680.828900
+## iter 220 value 451027438.303944
+## iter 230 value 450717623.571131
+## iter 240 value 450712204.209646
+## iter 250 value 450701219.144414
+## iter 260 value 450698446.241577
+## iter 270 value 450694746.958901
+## iter 280 value 450693600.075649
+## iter 290 value 450692240.368372
+## iter 300 value 450691808.174171
+## iter 310 value 450690374.722819
+## final  value 450690257.867463 
+## converged
+</code></pre>
+
+<h3 id="lets-do-some-visualization-of-network">lets do some visualization of network</h3>
+
+<p>Installing packages</p>
+
+<pre><code>#import function from Github
+require(RCurl)
+
+## Loading required package: RCurl
+
+## Loading required package: bitops
+
+root.url&lt;-'https://gist.githubusercontent.com/fawda123'
+raw.fun&lt;-paste(
+  root.url,
+  '5086859/raw/cc1544804d5027d82b70e74b83b3941cd2184354/nnet_plot_fun.r',
+  sep='/'
+  )
+script&lt;-getURL(raw.fun, ssl.verifypeer = FALSE)
+eval(parse(text = script))
+rm('script','raw.fun')
+
+par(mar=numeric(4),mfrow=c(1,2),family='serif')
+plot(fit1,nid=F)
+
+## Loading required package: scales
+
+plot(fit1)
+</code></pre>
+
+<p><img src="stockIndexForecasting_files/figure-markdown_strict/unnamed-chunk-11-1.png" alt="" /></p>
+
+<h3 id="lets-predict">Lets Predict</h3>
+
+<pre><code>test2 &lt;- testdata[ , !(names(testdata) %in% drops)]
+preds &lt;- predict(fit1, newdata = test2[1:12])
+predpair = cbind(test2[13],preds)
+plot(predpair)
+</code></pre>
+
+<p><img src="stockIndexForecasting_files/figure-markdown_strict/unnamed-chunk-12-1.png" alt="" /></p>
+
+<pre><code>errors = apply(predpair, 1, function(row) abs(row[1]-row[2]))
+cat(sprintf(&quot;mean abs error=%f\n&quot;, mean(errors)))
+
+## mean abs error=285.548083
+
+predinc = preds - testdata[&quot;Close.ts&quot;]
+predtrend = predinc/abs(predinc)
+table(testdata$tomtrend, predtrend[,1], dnn = c(&quot;Actual&quot;,&quot;Predicted&quot;))
+
+##       Predicted
+## Actual  -1   1
+##     -1 148  78
+##     1  186  84
+</code></pre>
+
+    </div>
+  </div>
+
+</article>
+
+<div class="container">
+  <nav>
+  <ul class="pager">
+    
+    <li class="previous"><a href="http://sunilprakash.com/post/future-is-coming/"><span
+      aria-hidden="true">&larr;</span> Future Is Coming</a></li>
+    
+
+    
+  </ul>
+</nav>
+
+</div>
+
+<div class="article-container">
+  
+<section id="comments">
+  <div id="disqus_thread">
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'sunilp';
+    var disqus_identifier = 'http:\/\/sunilprakash.com\/post\/stockindexforecasting\/';
+    var disqus_title = 'Stock Prediction with R';
+    var disqus_url = 'http:\/\/sunilprakash.com\/post\/stockindexforecasting\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+</section>
+
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2017 Sunil Prakash &middot; 
+
+      Powered by the <a href="https://github.com/gcushen/hugo-academic" target="_blank">Academic
+      theme</a> for <a href="http://gohugo.io" target="_blank">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha512-jGsMH83oKe9asCpkOVkBnUrDDTp8wl+adkB2D+//JtlxO4SrLoJdhbOysIFQJloQFD+C4Fl1rMsQZF76JjV0eQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.2/imagesloaded.pkgd.min.js" integrity="sha512-iHzEu7GbSc705hE2skyH6/AlTpOfBmkx7nUqTLGzPYR+C1tRaItbRlJ7hT/D3YQ9SV0fqLKzp4XY9wKulTBGTw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js" integrity="sha512-Z5heTz36xTemt1TbtbfXtTq5lMfYnOkXM2/eWcTTiLU01+Sw4ku1i7vScDc8fWhrP2abz9GQzgKH5NGBLoYlAw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/plugins/ScrollToPlugin.min.js" integrity="sha512-CDeU7pRtkPX6XJtF/gcFWlEwyaX7mcAp5sO3VIu/ylsdR74wEw4wmBpD5yYTrmMAiAboi9thyBUr1vXRPA7t0Q==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+
