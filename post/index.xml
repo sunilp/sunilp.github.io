@@ -26,22 +26,22 @@
 
 &lt;p&gt;&lt;strong&gt;An open source library for numerical computation using data flow graphs&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Okay, so what is it ?&lt;/p&gt;
+&lt;p&gt;Okay, so what is it?&lt;/p&gt;
 
-&lt;p&gt;Hmm, In short, its a wonderful library provided by google for general purpose Machine Learning problems, specially with deep learning.  Problems could be a Visual Recognition , Machine Translation , Natural Language Processing (NLP) or even simple linear regression.
-By the way, it have made the researchers/ developers life easy by providing tons of pre defined packages or high level utility programs , like tensorboard.&lt;/p&gt;
+&lt;p&gt;Hmm, In short, it’s a wonderful library provided by google for general purpose Machine Learning problems, specially with deep learning.  Problems could be a Visual Recognition, Machine Translation , Natural Language Processing (NLP) or even simple linear regression.
+By the way, it have made the researchers/ developers life easy by providing tons of pre-defined packages or high level utility programs , like tensorboard.&lt;/p&gt;
 
-&lt;p&gt;Alright, let&amp;rsquo;s get to know tensorflow and how is it different from normal NumPy library. &lt;em&gt;(if you already doing too much python, and cannot think any thing other than numpy and pandas)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Alright, let&amp;rsquo;s get to know tensorflow and how is it different from normal NumPy library. &lt;em&gt;(if you already doing too much python, and cannot think anything other than numpy and pandas)&lt;/em&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;concept&#34;&gt;Concept&lt;/h3&gt;
 
 &lt;p&gt;Tensorflow expresses a numeric computation as a &lt;strong&gt;graph&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Like  a network graph, where each graph Nodes are &lt;strong&gt;Operations&lt;/strong&gt; which can have any numbers of inputes and oputputs.&lt;/p&gt;
+&lt;p&gt;Like a network graph, where each graph Nodes are &lt;strong&gt;Operations&lt;/strong&gt; which can have any numbers of inputs and outputs.&lt;/p&gt;
 
 &lt;p&gt;And The edges between the nodes are &lt;strong&gt;tensors&lt;/strong&gt; which flows between nodes.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-is-tensor&#34;&gt;What is Tensor ?&lt;/h4&gt;
+&lt;h4 id=&#34;what-is-tensor&#34;&gt;What is Tensor?&lt;/h4&gt;
 
 &lt;p&gt;Just a quick refresh,&lt;/p&gt;
 
@@ -53,15 +53,15 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 &lt;h4 id=&#34;variables&#34;&gt;Variables&lt;/h4&gt;
 
-&lt;p&gt;Variables in tensorflow are &lt;strong&gt;stateful nodes&lt;/strong&gt; which can hold the current value and can be modified across the mutiple executions of a graph.&lt;/p&gt;
+&lt;p&gt;Variables in tensorflow are &lt;strong&gt;stateful nodes&lt;/strong&gt; which can hold the current value and can be modified across the multiple executions of a graph.&lt;/p&gt;
 
-&lt;p&gt;it can be treated as parameters , whose values could change during execution. For example, while performin any optimization , like with gradient descent , the Weights and biases can be treated as Variables, as their values would be changing in each iterations.&lt;/p&gt;
+&lt;p&gt;it can be treated as parameters, whose values could change during execution. For example, while performing any optimization , like with gradient descent , the Weights and biases can be treated as Variables, as their values would be changing in each iterations.&lt;/p&gt;
 
-&lt;p&gt;Also, the varibles values remains in the graph, so once the model is build, it could be passed around without carring the original dataset.&lt;/p&gt;
+&lt;p&gt;Also, the variables values remains in the graph, so once the model is build, it could be passed around without carrying the original dataset.&lt;/p&gt;
 
 &lt;h4 id=&#34;placeholders&#34;&gt;Placeholders&lt;/h4&gt;
 
-&lt;p&gt;Placeholders in tensorflow whose values are fed at time of execution. Unlike variables, the placeholders values do not change by the algorith.&lt;/p&gt;
+&lt;p&gt;Placeholders in tensorflow whose values are fed at time of execution. Unlike variables, the placeholder’s values do not change by the algorithm.&lt;/p&gt;
 
 &lt;p&gt;For example , All the inputs (Xs) or labels (Yx) in case of classification problem and during optimization, can be considered as Placeholders.&lt;/p&gt;
 
@@ -71,7 +71,7 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 &lt;p&gt;For Example,&lt;/p&gt;
 
-&lt;p&gt;MatMul : Multiply two matrix nodes, (always consider the shape of the matrices, eg: mxn * nxp = mxp, good practice would be to comment the line of expression, as shapes of matices or vectors are being multiplied and expected shape)&lt;/p&gt;
+&lt;p&gt;MatMul : Multiply two matrix nodes, (always consider the shape of the matrices, eg: mxn * nxp = mxp, good practice would be to comment the line of expression, as shapes of matrices or vectors are being multiplied and expected shape)&lt;/p&gt;
 
 &lt;p&gt;ReLU : Activation function , which performs elementwise rectified linear function&lt;/p&gt;
 
@@ -81,7 +81,7 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 &lt;p&gt;where, W is the matices of Weights, x is vector of inputs and b is the vector of biases.&lt;/p&gt;
 
-&lt;p&gt;Lets see it in action.&lt;/p&gt;
+&lt;p&gt;Let’s see it in action.&lt;/p&gt;
 
 &lt;h3 id=&#34;example&#34;&gt;Example&lt;/h3&gt;
 
@@ -105,7 +105,7 @@ W = tf.Variable(np.random.normal(), name=&amp;quot;weight&amp;quot;)
 b = tf.Variable(np.random.randn(), name=&amp;quot;bias&amp;quot;)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;The above lines declares Weights and bias variables as W and b. Note, that the name has been provided to create a named varible, which could be easy to trace the variables in error , or debug logs or even in tensorboard also. so good practice is to have your variables named.&lt;/p&gt;
+&lt;p&gt;The above lines declares Weights and bias variables as W and b. Note, that the name has been provided to create a named variable, which could be easy to trace the variables in error , or debug logs or even in tensorboard also. so good practice is to have your variables named.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;# Linear model
 
@@ -121,7 +121,7 @@ cost = tf.reduce_mean(tf.square(y_pred - y))
 
 &lt;p&gt;Taking the reduced mean, of the residue&lt;/p&gt;
 
-&lt;p&gt;Now we can define the Optimizer, we can use Gradient Descent Optimizer, you can use any optmizer, tensorflow provides several options for prebuild optimizers . A good resorce of optimizers could be found here. (&lt;a href=&#34;http://ruder.io/optimizing-gradient-descent/&#34;&gt;http://ruder.io/optimizing-gradient-descent/&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Now we can define the Optimizer, we can use Gradient Descent Optimizer, you can use any optimizer, tensorflow provides several options for prebuild optimizers . A good resource of optimizers could be found here. (&lt;a href=&#34;http://ruder.io/optimizing-gradient-descent/&#34;&gt;http://ruder.io/optimizing-gradient-descent/&lt;/a&gt;)&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;#randomly generating data
 x_batch = np.linspace(-1, 1, 101)
@@ -132,8 +132,8 @@ optimizer = tf.train.GradientDescentOptimizer(lr).minimize(loss)
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;here, lr is the learning rate, hyper parameter. Generally keeping learning rate small, is beinificial, as it avoids overshoot of minima. (too small would lead to very slow convergence also).
-Gradient here are calculated using backpropagation. (&lt;a href=&#34;http://cs231n.github.io/optimization-2/&#34;&gt;http://cs231n.github.io/optimization-2/&lt;/a&gt;) can be reffered to understand backpropagation easily.&lt;/p&gt;
+&lt;p&gt;here, lr is the learning rate, hyper parameter. Generally keeping learning rate small, is beneficial, as it avoids overshoot of minima. (too small would lead to very slow convergence also).
+Gradient here are calculated using backpropagation. (&lt;a href=&#34;http://cs231n.github.io/optimization-2/&#34;&gt;http://cs231n.github.io/optimization-2/&lt;/a&gt;) can be referred  to understand backpropagation easily.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;
 init = tf.global_variables_initializer()
@@ -149,16 +149,16 @@ with tf.Session() as session:
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Note, the first line of &lt;em&gt;tf.global_variables_initializer()&lt;/em&gt; is used to intitialize all variables, As all variables in tensorflow need to be intialized before execution. this method is easy way to initialize all at once.&lt;/p&gt;
+&lt;p&gt;Note, the first line of &lt;em&gt;tf.global_variables_initializer()&lt;/em&gt; is used to initialize  all variables, As all variables in tensorflow need to be initialized  before execution. this method is easy way to initialize all at once.&lt;/p&gt;
 
-&lt;p&gt;In Tensorflow, the graph is not executed unless the sess.run method is called. the sess.run(fecthes, feeds) methods exepts two paratemeters.&lt;/p&gt;
+&lt;p&gt;In Tensorflow, the graph is not executed unless the sess.run method is called. the sess.run(fetches, feeds) methods expects two parameters.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Fetches&lt;/strong&gt; : List of graph nodes whuch are expected to be retun the output value.
+&lt;p&gt;&lt;strong&gt;Fetches&lt;/strong&gt; : List of graph nodes which  are expected to be return  the output value.
 &lt;strong&gt;Feeds&lt;/strong&gt; : Dictionary mapping for placeholders, which need to be provided at runtime execution.&lt;/p&gt;
 
 &lt;p&gt;The with clause here &lt;code&gt;with tf.session as session&lt;/code&gt; starts the tensorflow scope, in which the current session could be used to execute the tensorflow operation graph.&lt;/p&gt;
 
-&lt;p&gt;Cogratulations!!! you got your tensorflow introduction.&lt;/p&gt;
+&lt;p&gt;Congratulations!!! you got your tensorflow introduction.&lt;/p&gt;
 
 &lt;p&gt;Where to go from here : follow few more examples of tensorflow here (&lt;a href=&#34;https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/learn&#34;&gt;https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/learn&lt;/a&gt;) , these are excellent resources.&lt;/p&gt;
 

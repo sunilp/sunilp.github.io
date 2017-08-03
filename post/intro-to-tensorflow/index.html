@@ -217,22 +217,22 @@
 
 <p><strong>An open source library for numerical computation using data flow graphs</strong></p>
 
-<p>Okay, so what is it ?</p>
+<p>Okay, so what is it?</p>
 
-<p>Hmm, In short, its a wonderful library provided by google for general purpose Machine Learning problems, specially with deep learning.  Problems could be a Visual Recognition , Machine Translation , Natural Language Processing (NLP) or even simple linear regression.
-By the way, it have made the researchers/ developers life easy by providing tons of pre defined packages or high level utility programs , like tensorboard.</p>
+<p>Hmm, In short, it’s a wonderful library provided by google for general purpose Machine Learning problems, specially with deep learning.  Problems could be a Visual Recognition, Machine Translation , Natural Language Processing (NLP) or even simple linear regression.
+By the way, it have made the researchers/ developers life easy by providing tons of pre-defined packages or high level utility programs , like tensorboard.</p>
 
-<p>Alright, let&rsquo;s get to know tensorflow and how is it different from normal NumPy library. <em>(if you already doing too much python, and cannot think any thing other than numpy and pandas)</em></p>
+<p>Alright, let&rsquo;s get to know tensorflow and how is it different from normal NumPy library. <em>(if you already doing too much python, and cannot think anything other than numpy and pandas)</em></p>
 
 <h3 id="concept">Concept</h3>
 
 <p>Tensorflow expresses a numeric computation as a <strong>graph</strong></p>
 
-<p>Like  a network graph, where each graph Nodes are <strong>Operations</strong> which can have any numbers of inputes and oputputs.</p>
+<p>Like a network graph, where each graph Nodes are <strong>Operations</strong> which can have any numbers of inputs and outputs.</p>
 
 <p>And The edges between the nodes are <strong>tensors</strong> which flows between nodes.</p>
 
-<h4 id="what-is-tensor">What is Tensor ?</h4>
+<h4 id="what-is-tensor">What is Tensor?</h4>
 
 <p>Just a quick refresh,</p>
 
@@ -244,15 +244,15 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 <h4 id="variables">Variables</h4>
 
-<p>Variables in tensorflow are <strong>stateful nodes</strong> which can hold the current value and can be modified across the mutiple executions of a graph.</p>
+<p>Variables in tensorflow are <strong>stateful nodes</strong> which can hold the current value and can be modified across the multiple executions of a graph.</p>
 
-<p>it can be treated as parameters , whose values could change during execution. For example, while performin any optimization , like with gradient descent , the Weights and biases can be treated as Variables, as their values would be changing in each iterations.</p>
+<p>it can be treated as parameters, whose values could change during execution. For example, while performing any optimization , like with gradient descent , the Weights and biases can be treated as Variables, as their values would be changing in each iterations.</p>
 
-<p>Also, the varibles values remains in the graph, so once the model is build, it could be passed around without carring the original dataset.</p>
+<p>Also, the variables values remains in the graph, so once the model is build, it could be passed around without carrying the original dataset.</p>
 
 <h4 id="placeholders">Placeholders</h4>
 
-<p>Placeholders in tensorflow whose values are fed at time of execution. Unlike variables, the placeholders values do not change by the algorith.</p>
+<p>Placeholders in tensorflow whose values are fed at time of execution. Unlike variables, the placeholder’s values do not change by the algorithm.</p>
 
 <p>For example , All the inputs (Xs) or labels (Yx) in case of classification problem and during optimization, can be considered as Placeholders.</p>
 
@@ -262,7 +262,7 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 <p>For Example,</p>
 
-<p>MatMul : Multiply two matrix nodes, (always consider the shape of the matrices, eg: mxn * nxp = mxp, good practice would be to comment the line of expression, as shapes of matices or vectors are being multiplied and expected shape)</p>
+<p>MatMul : Multiply two matrix nodes, (always consider the shape of the matrices, eg: mxn * nxp = mxp, good practice would be to comment the line of expression, as shapes of matrices or vectors are being multiplied and expected shape)</p>
 
 <p>ReLU : Activation function , which performs elementwise rectified linear function</p>
 
@@ -272,7 +272,7 @@ By the way, it have made the researchers/ developers life easy by providing tons
 
 <p>where, W is the matices of Weights, x is vector of inputs and b is the vector of biases.</p>
 
-<p>Lets see it in action.</p>
+<p>Let’s see it in action.</p>
 
 <h3 id="example">Example</h3>
 
@@ -296,7 +296,7 @@ W = tf.Variable(np.random.normal(), name=&quot;weight&quot;)
 b = tf.Variable(np.random.randn(), name=&quot;bias&quot;)
 </code></pre>
 
-<p>The above lines declares Weights and bias variables as W and b. Note, that the name has been provided to create a named varible, which could be easy to trace the variables in error , or debug logs or even in tensorboard also. so good practice is to have your variables named.</p>
+<p>The above lines declares Weights and bias variables as W and b. Note, that the name has been provided to create a named variable, which could be easy to trace the variables in error , or debug logs or even in tensorboard also. so good practice is to have your variables named.</p>
 
 <pre><code># Linear model
 
@@ -312,7 +312,7 @@ cost = tf.reduce_mean(tf.square(y_pred - y))
 
 <p>Taking the reduced mean, of the residue</p>
 
-<p>Now we can define the Optimizer, we can use Gradient Descent Optimizer, you can use any optmizer, tensorflow provides several options for prebuild optimizers . A good resorce of optimizers could be found here. (<a href="http://ruder.io/optimizing-gradient-descent/">http://ruder.io/optimizing-gradient-descent/</a>)</p>
+<p>Now we can define the Optimizer, we can use Gradient Descent Optimizer, you can use any optimizer, tensorflow provides several options for prebuild optimizers . A good resource of optimizers could be found here. (<a href="http://ruder.io/optimizing-gradient-descent/">http://ruder.io/optimizing-gradient-descent/</a>)</p>
 
 <pre><code>#randomly generating data
 x_batch = np.linspace(-1, 1, 101)
@@ -323,8 +323,8 @@ optimizer = tf.train.GradientDescentOptimizer(lr).minimize(loss)
 
 </code></pre>
 
-<p>here, lr is the learning rate, hyper parameter. Generally keeping learning rate small, is beinificial, as it avoids overshoot of minima. (too small would lead to very slow convergence also).
-Gradient here are calculated using backpropagation. (<a href="http://cs231n.github.io/optimization-2/">http://cs231n.github.io/optimization-2/</a>) can be reffered to understand backpropagation easily.</p>
+<p>here, lr is the learning rate, hyper parameter. Generally keeping learning rate small, is beneficial, as it avoids overshoot of minima. (too small would lead to very slow convergence also).
+Gradient here are calculated using backpropagation. (<a href="http://cs231n.github.io/optimization-2/">http://cs231n.github.io/optimization-2/</a>) can be referred  to understand backpropagation easily.</p>
 
 <pre><code>
 init = tf.global_variables_initializer()
@@ -340,16 +340,16 @@ with tf.Session() as session:
 
 </code></pre>
 
-<p>Note, the first line of <em>tf.global_variables_initializer()</em> is used to intitialize all variables, As all variables in tensorflow need to be intialized before execution. this method is easy way to initialize all at once.</p>
+<p>Note, the first line of <em>tf.global_variables_initializer()</em> is used to initialize  all variables, As all variables in tensorflow need to be initialized  before execution. this method is easy way to initialize all at once.</p>
 
-<p>In Tensorflow, the graph is not executed unless the sess.run method is called. the sess.run(fecthes, feeds) methods exepts two paratemeters.</p>
+<p>In Tensorflow, the graph is not executed unless the sess.run method is called. the sess.run(fetches, feeds) methods expects two parameters.</p>
 
-<p><strong>Fetches</strong> : List of graph nodes whuch are expected to be retun the output value.
+<p><strong>Fetches</strong> : List of graph nodes which  are expected to be return  the output value.
 <strong>Feeds</strong> : Dictionary mapping for placeholders, which need to be provided at runtime execution.</p>
 
 <p>The with clause here <code>with tf.session as session</code> starts the tensorflow scope, in which the current session could be used to execute the tensorflow operation graph.</p>
 
-<p>Cogratulations!!! you got your tensorflow introduction.</p>
+<p>Congratulations!!! you got your tensorflow introduction.</p>
 
 <p>Where to go from here : follow few more examples of tensorflow here (<a href="https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/learn">https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/learn</a>) , these are excellent resources.</p>
 
