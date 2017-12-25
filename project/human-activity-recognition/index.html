@@ -52,11 +52,11 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
 
-  <link rel="canonical" href="">
+  <link rel="canonical" href="http://sunilprakash.com/project/human-activity-recognition/">
 
   
 
-  <title>404 Page not found | Sunil Prakash</title>
+  <title>Human Activity Recognition | Sunil Prakash</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
@@ -138,34 +138,110 @@
   </div>
 </nav>
 
+
+<article class="article article-project" itemscope itemtype="http://schema.org/Article">
+
+  
+<div class="article-header">
+  <img src="/img/prj-activity-2.png" class="article-banner" itemprop="image">
+  <span class="article-header-caption">Sensors</span>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="pub-title">
+      <h1 itemprop="name">Human Activity Recognition</h1>
+      <span class="pub-authors" itemprop="author">&nbsp;</span>
+      <span class="pull-right">
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=http%3a%2f%2fsunilprakash.com%2fproject%2fhuman-activity-recognition%2f"
+         target="_blank">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Human%20Activity%20Recognition&amp;url=http%3a%2f%2fsunilprakash.com%2fproject%2fhuman-activity-recognition%2f"
+         target="_blank">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2fsunilprakash.com%2fproject%2fhuman-activity-recognition%2f&amp;title=Human%20Activity%20Recognition"
+         target="_blank">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=http%3a%2f%2fsunilprakash.com%2fproject%2fhuman-activity-recognition%2f&amp;title=Human%20Activity%20Recognition"
+         target="_blank">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Human%20Activity%20Recognition&amp;body=http%3a%2f%2fsunilprakash.com%2fproject%2fhuman-activity-recognition%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </span>
+    </div>
+
+    
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<h3 id="problem-description">Problem   Description</h3>
+
+<p>The human activity detection has many applications in several fields like biometrics, surveillance, help monitor aged people in home environments etc . Different types of sensors can be used to address this task. The use of multi modal sensors for human activity recognition is increasing these days. Data from four different temporarily synchronised modalities is available. Using this data of either all the types or any single type the human activities   must   be   classified.</p>
+
+<h3 id="data-set-explanation">Data   Set   Explanation</h3>
+
+<p>The dataset is a freely available dataset named UTD-MHAD, that has four temporarily synchronized data modalities. These modalities include RGB videos, depth videos, skeleton positions, and inertial signals from a Kinect camera and a wearable inertial sensor for a comprehensive set of 27 human actions performed by 8 subjects (4 males, 4 females). Each subject repeated each action 4 times. After removing three corrupted sequences, the dataset   includes   861   data   sequences.</p>
+
+<h3 id="technological-approach">TECHNOLOGICAL   APPROACH</h3>
+
+<p>The approach employed is the Hidden Markov Model (HMM), which works very well with sequential data and is essentially a Markov process with hidden and unobservable states. The actions (or output) are visible to the viewer, but the sequences that lead to the output are hidden. The model was trained on the skeleton, inertial and depth data for the first 3 actions   -   swipe   left,   swipe   right   and   wave.</p>
+
+<h3 id="experimental-results-performance-evaluation">EXPERIMENTAL   RESULTS   &amp;   PERFORMANCE   EVALUATION</h3>
+
+<p>The results of the testing were favourable in general. The skeleton model achieved an accuracy of 67%, inertial achieved 94% and depth, 67%. The inertial model was the most accurate due to the nature of the data since the actions were only recorded in a few
+   3
+seconds and there was insignificant data loss, the model would recognize the actions very well.
+As for the depth model, it depends on visual details and requires some effort to extract features based on edge detection (performed with the Sobel-Feldman algorithm). Initially the features were extracted and convoluted(CNN) before applying the HMM classification.Since the depth sequences may be sensitive to occlusions and the textures of the images are not as good as that of coloured images,the model turned out to be inaccurate. After applying the edge detection algorithm and the corresponding feature extraction,the accuracy improved considerably to 67%.The results could possibly be improved   with   a   larger   dataset   acquired   through   additional   sensors.</p>
+
+    </div>
+
+  </div>
+</article>
+
 <div class="container">
+  <nav>
+  <ul class="pager">
+    
+    <li class="previous"><a href="http://sunilprakash.com/project/sign-language-recognition/"><span
+      aria-hidden="true">&larr;</span> Sign Language Recognition</a></li>
+    
 
-  <h1>Page not found</h1>
-  <p>Maybe you were looking for one of these?</p>
-
-  <h2>Recent Posts</h2>
-  
-  <ul>
-    <li><a href="http://sunilprakash.com/post/intro-to-tensorflow/">Intro To Tensorflow</a></li>
+    
   </ul>
-  
-  <ul>
-    <li><a href="http://sunilprakash.com/post/stockindexforecasting/">Stock Prediction with R</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="http://sunilprakash.com/post/welcome/">Welcome</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="http://sunilprakash.com/post/">Posts</a></li>
-  </ul>
-  
-
-  <h2>Recent Publications</h2>
-  
+</nav>
 
 </div>
+
 <footer class="site-footer">
   <div class="container">
     <p class="powered-by">

@@ -11,6 +11,35 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Human Activity Recognition</title>
+      <link>http://sunilprakash.com/project/human-activity-recognition/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://sunilprakash.com/project/human-activity-recognition/</guid>
+      <description>
+
+&lt;h3 id=&#34;problem-description&#34;&gt;Problem   Description&lt;/h3&gt;
+
+&lt;p&gt;The human activity detection has many applications in several fields like biometrics, surveillance, help monitor aged people in home environments etc . Different types of sensors can be used to address this task. The use of multi modal sensors for human activity recognition is increasing these days. Data from four different temporarily synchronised modalities is available. Using this data of either all the types or any single type the human activities   must   be   classified.&lt;/p&gt;
+
+&lt;h3 id=&#34;data-set-explanation&#34;&gt;Data   Set   Explanation&lt;/h3&gt;
+
+&lt;p&gt;The dataset is a freely available dataset named UTD-MHAD, that has four temporarily synchronized data modalities. These modalities include RGB videos, depth videos, skeleton positions, and inertial signals from a Kinect camera and a wearable inertial sensor for a comprehensive set of 27 human actions performed by 8 subjects (4 males, 4 females). Each subject repeated each action 4 times. After removing three corrupted sequences, the dataset   includes   861   data   sequences.&lt;/p&gt;
+
+&lt;h3 id=&#34;technological-approach&#34;&gt;TECHNOLOGICAL   APPROACH&lt;/h3&gt;
+
+&lt;p&gt;The approach employed is the Hidden Markov Model (HMM), which works very well with sequential data and is essentially a Markov process with hidden and unobservable states. The actions (or output) are visible to the viewer, but the sequences that lead to the output are hidden. The model was trained on the skeleton, inertial and depth data for the first 3 actions   -   swipe   left,   swipe   right   and   wave.&lt;/p&gt;
+
+&lt;h3 id=&#34;experimental-results-performance-evaluation&#34;&gt;EXPERIMENTAL   RESULTS   &amp;amp;   PERFORMANCE   EVALUATION&lt;/h3&gt;
+
+&lt;p&gt;The results of the testing were favourable in general. The skeleton model achieved an accuracy of 67%, inertial achieved 94% and depth, 67%. The inertial model was the most accurate due to the nature of the data since the actions were only recorded in a few
+   3
+seconds and there was insignificant data loss, the model would recognize the actions very well.
+As for the depth model, it depends on visual details and requires some effort to extract features based on edge detection (performed with the Sobel-Feldman algorithm). Initially the features were extracted and convoluted(CNN) before applying the HMM classification.Since the depth sequences may be sensitive to occlusions and the textures of the images are not as good as that of coloured images,the model turned out to be inaccurate. After applying the edge detection algorithm and the corresponding feature extraction,the accuracy improved considerably to 67%.The results could possibly be improved   with   a   larger   dataset   acquired   through   additional   sensors.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Intro To Tensorflow</title>
       <link>http://sunilprakash.com/post/intro-to-tensorflow/</link>
       <pubDate>Thu, 03 Aug 2017 21:59:35 +0800</pubDate>
@@ -480,15 +509,6 @@ table(testdata$tomtrend, predtrend[,1], dnn = c(&amp;quot;Actual&amp;quot;,&amp;
     </item>
     
     <item>
-      <title>Future Is Coming</title>
-      <link>http://sunilprakash.com/post/future-is-coming/</link>
-      <pubDate>Sat, 01 Jul 2017 18:06:23 +0530</pubDate>
-      
-      <guid>http://sunilprakash.com/post/future-is-coming/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Welcome</title>
       <link>http://sunilprakash.com/post/welcome/</link>
       <pubDate>Sat, 01 Jul 2017 15:20:22 +0530</pubDate>
@@ -499,30 +519,22 @@ table(testdata$tomtrend, predtrend[,1], dnn = c(&amp;quot;Actual&amp;quot;,&amp;
     </item>
     
     <item>
-      <title>Face Recognition</title>
-      <link>http://sunilprakash.com/project/face-recognition/</link>
+      <title>Sign Language Recognition</title>
+      <link>http://sunilprakash.com/project/sign-language-recognition/</link>
       <pubDate>Tue, 13 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://sunilprakash.com/project/face-recognition/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/sunilp/iot-self-driving-car&#34;&gt;https://github.com/sunilp/iot-self-driving-car&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Customer Segmentation</title>
-      <link>http://sunilprakash.com/project/crm-customer-segmentation/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://sunilprakash.com/project/crm-customer-segmentation/</guid>
-      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
+      <guid>http://sunilprakash.com/project/sign-language-recognition/</guid>
+      <description>
 
-&lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
+&lt;h3 id=&#34;introduction&#34;&gt;Introduction&lt;/h3&gt;
 
-&lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
+&lt;p&gt;As part of Udacity AIND, it was required to build a system that can recognize words communicated using the American Sign Language (ASL). the preprocessed dataset of tracked hand and nose positions extracted from video was provided.  Goal is be to train a set of Hidden Markov Models (HMMs) using part of this dataset to try and identify individual words from test sequences.&lt;/p&gt;
 
-&lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
+&lt;p&gt;Also incorporating Statistical Language Models (SLMs) that capture the conditional probability of particular sequences of words occurring. This improves the recognition accuracy of the system.&lt;/p&gt;
 
-&lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+&lt;h3 id=&#34;implementation&#34;&gt;Implementation&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/sunilp/sign-language-recognizer/blob/master/asl_recognizer.ipynb&#34;&gt;https://github.com/sunilp/sign-language-recognizer/blob/master/asl_recognizer.ipynb&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

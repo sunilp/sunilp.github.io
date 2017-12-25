@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects on Sunil Prakash</title>
-    <link>http://sunilprakash.com/project/</link>
-    <description>Recent content in Projects on Sunil Prakash</description>
+    <title>Machine Learning on Sunil Prakash</title>
+    <link>http://sunilprakash.com/tags/machine-learning/</link>
+    <description>Recent content in Machine Learning on Sunil Prakash</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Sunil Prakash</copyright>
     <lastBuildDate>Wed, 27 Sep 2017 00:00:00 +0000</lastBuildDate>
-    <atom:link href="/project/" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/machine-learning/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Human Activity Recognition</title>

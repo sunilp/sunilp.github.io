@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>http://sunilprakash.com/project/human-activity-recognition/</loc>
+      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>http://sunilprakash.com/post/intro-to-tensorflow/</loc>
       <lastmod>2017-08-03T21:59:35+08:00</lastmod>
     </url>
@@ -23,15 +32,6 @@
     
     <url>
     
-      <loc>http://sunilprakash.com/post/future-is-coming/</loc>
-      <lastmod>2017-07-01T18:06:23+05:30</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>http://sunilprakash.com/post/welcome/</loc>
       <lastmod>2017-07-01T15:20:22+05:30</lastmod>
     </url>
@@ -41,17 +41,8 @@
     
     <url>
     
-      <loc>http://sunilprakash.com/project/face-recognition/</loc>
+      <loc>http://sunilprakash.com/project/sign-language-recognition/</loc>
       <lastmod>2017-06-13T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/project/crm-customer-segmentation/</loc>
-      <lastmod>2016-04-27T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -68,18 +59,8 @@
     
     <url>
     
-      <loc>http://sunilprakash.com/tags/data-science/</loc>
-      <lastmod>2016-04-27T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/tags/deep-learning/</loc>
-      <lastmod>2017-06-13T00:00:00+00:00</lastmod>
+      <loc>http://sunilprakash.com/tags/machine-learning/</loc>
+      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -99,7 +80,7 @@
     <url>
     
       <loc>http://sunilprakash.com/project/</loc>
-      <lastmod>2017-06-13T00:00:00+00:00</lastmod>
+      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -128,7 +109,7 @@
     <url>
     
       <loc>http://sunilprakash.com/tags/</loc>
-      <lastmod>2016-04-27T00:00:00+00:00</lastmod>
+      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
