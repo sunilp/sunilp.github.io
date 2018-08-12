@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Classifying products into 7,000 HS codes from short text descriptions — comparing LSTM, BiLSTM, GRU, CNN, and hybrid architectures on a real-world multi-class classification problem." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Classifying 7,000 Product Codes from Four Words of Text" />
+  <meta property="og:description" content="Deep learning experiments for HS code classification — LSTM, GRU, CNN, and hybrid models on short, noisy product descriptions." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/hs-code-classification/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/hs-code-classification/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Classifying 7,000 Product Codes from Four Words of Text — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Classifying 7,000 Product Codes from Four Words of Text",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2018-08-12",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Classifying 7,000 Product Codes from Four Words of Text</h1>
+      <div class="article-meta">August 2018</div>
+
+      <p>Every product that crosses an international border gets an HS code — a Harmonized System code that classifies it for customs. There are roughly 7,000 distinct codes at the 8-digit level. A "lithium-ion battery for mobile phones" gets one code. A "lithium-ion battery for electric vehicles" gets a different one. Getting the code wrong means delays, fines, or seized shipments.</p>
+
+      <p>The catch: the product descriptions that accompany these shipments are short, noisy, and often cryptic. The average description in our dataset is four words. Some are a single word. Many are abbreviated, misspelled, or in domain shorthand that no standard NLP model has ever seen.</p>
+
+      <p>As part of my M.Tech coursework and independent study, I spent several months experimenting with deep learning approaches to this problem — LSTM, BiLSTM, GRU, CNN, and hybrid architectures. These are my notes on what I tried, what worked, what did not, and what I learned about classifying text when the text barely exists.</p>
+
+      <h2>The Data</h2>
+
+      <p>The dataset consists of customs records spanning several years. Each record contains a product description and its corresponding 8-digit HS code. The data was anonymized for this work — exact volumes and date ranges are omitted.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">DATASET CHARACTERISTICS</text>
+
+          <!-- Stats boxes -->
+          <rect x="20" y="34" width="120" height="68" rx="4" fill="#1a1a1a"/>
+          <text x="80" y="56" font-family="IBM Plex Mono, monospace" font-size="20" fill="#fff" text-anchor="middle">100K+</text>
+          <text x="80" y="74" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">records/month</text>
+          <text x="80" y="90" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#6b6b6b" text-anchor="middle">(after dedup)</text>
+
+          <rect x="156" y="34" width="120" height="68" rx="4" fill="#1a1a1a"/>
+          <text x="216" y="56" font-family="IBM Plex Mono, monospace" font-size="20" fill="#fff" text-anchor="middle">~7,000</text>
+          <text x="216" y="74" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">HS code classes</text>
+          <text x="216" y="90" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#6b6b6b" text-anchor="middle">(8-digit level)</text>
+
+          <rect x="292" y="34" width="120" height="68" rx="4" fill="#1a1a1a"/>
+          <text x="352" y="56" font-family="IBM Plex Mono, monospace" font-size="20" fill="#fff" text-anchor="middle">3-4</text>
+          <text x="352" y="74" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">avg words/desc</text>
+          <text x="352" y="90" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#6b6b6b" text-anchor="middle">(max ~100)</text>
+
+          <rect x="428" y="34" width="120" height="68" rx="4" fill="#1a1a1a"/>
+          <text x="488" y="56" font-family="IBM Plex Mono, monospace" font-size="20" fill="#fff" text-anchor="middle">~10%</text>
+          <text x="488" y="74" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">multi-label</text>
+          <text x="488" y="90" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#6b6b6b" text-anchor="middle">(1 desc → n codes)</text>
+
+          <!-- Example descriptions (anonymised) -->
+          <text x="20" y="128" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">EXAMPLE DESCRIPTIONS (ILLUSTRATIVE)</text>
+          <rect x="20" y="138" width="520" height="110" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+
+          <text x="36" y="158" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a">ITEM_DESC</text>
+          <text x="340" y="158" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a">HS_CODE</text>
+
+          <line x1="36" y1="164" x2="524" y2="164" stroke="#e8e8e8"/>
+
+          <text x="36" y="180" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">"[product] [material] [type]"</text>
+          <text x="340" y="180" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">85XXXXXX</text>
+
+          <text x="36" y="198" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">"[material] [garment]"</text>
+          <text x="340" y="198" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">61XXXXXX</text>
+
+          <text x="36" y="216" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">"parts"</text>
+          <text x="340" y="216" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">??? (ambiguous)</text>
+
+          <text x="36" y="234" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">"[abbr] [abbr] [spec] [spec]"</text>
+          <text x="340" y="234" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b">73XXXXXX</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Short, noisy, abbreviated descriptions. Domain abbreviations, shorthand, and cryptic codes. The model has to learn what they mean.</p>
+
+      <p>Three properties make this dataset challenging:</p>
+
+      <p><strong>Extreme class imbalance.</strong> 7,000 classes, but the distribution is heavily skewed. A few hundred codes account for the majority of records. Thousands of codes appear fewer than 100 times across the entire dataset. Long-tail classification is the core challenge.</p>
+
+      <p><strong>Descriptions are absurdly short.</strong> The average description is 3-4 words after cleaning. About 9% of descriptions are a single word. Standard NLP models are designed for sentences and paragraphs. Here, we are trying to classify fragments — often just a product name or an abbreviation.</p>
+
+      <p><strong>Multi-label ambiguity.</strong> Roughly 10% of descriptions map to multiple HS codes. A product description like "valve" could be classified under several different chapters depending on material, function, or application. The description alone is insufficient to disambiguate.</p>
+
+      <h2>Preprocessing</h2>
+
+      <p>Preprocessing turned out to be one of the most impactful stages. The raw descriptions contain unit abbreviations (ctn, kgs, ltr, pcs), measurement values, special characters, and domain-specific shorthand that add noise without semantic value.</p>
+
+      <p>The pipeline:</p>
+      <ol>
+        <li><strong>Lowercase and clean</strong> — remove special characters, normalize whitespace</li>
+        <li><strong>Domain stopwords</strong> — standard English stopwords plus a custom list of trade terms (ctn, bags, kgs, ltr, pcs, nos, etc.) that appear across all categories and carry no discriminative signal</li>
+        <li><strong>Digit filtering</strong> — remove most numeric values (quantities, weights) while preserving meaningful numbers in product codes</li>
+        <li><strong>HS code standardization</strong> — pad all codes to 8 digits, filter out the catch-all code used for unclassifiable items</li>
+        <li><strong>Deduplication</strong> — identical description-code pairs significantly reduced the working dataset</li>
+      </ol>
+
+      <p>After cleaning, I built a Doc2Vec model on the full corpus to generate 100-dimensional word embeddings. These embeddings encode the semantic relationships between trade terms — learning, for example, that "polyester" and "nylon" are closer together than "polyester" and "steel." The embeddings are used as the input layer for all deep learning models.</p>
+
+      <h2>The Experiments</h2>
+
+      <p>I tested six architectures, progressively adding complexity. Each model was trained with batch size 128, categorical cross-entropy loss, and sequences padded to a fixed length (50 or 100 tokens). Evaluation used top-1, top-2, and top-3 accuracy — because in practice, suggesting the correct code among the top 3 predictions is often sufficient for a human operator to select the right one.</p>
+
+      <h3>1. Word2Vec + Logistic Regression (Baseline)</h3>
+
+      <p>The simplest approach: average the Doc2Vec word vectors for each description to get a single document vector, then feed it to a logistic regression classifier. 70/30 train-test split.</p>
+
+      <p>This baseline is deliberately naive. It ignores word order entirely — "cotton blue shirt" and "shirt blue cotton" produce the same vector. But it establishes the floor. If a deep learning model cannot beat averaged word vectors plus logistic regression, something is wrong.</p>
+
+      <p><strong>Strengths:</strong> Fast to train. No GPU required. Interpretable. Handles the full 7,000-class problem without memory issues.</p>
+
+      <p><strong>Weakness:</strong> Ignores word order and context. The averaging operation loses information, especially for short sequences where every word matters.</p>
+
+      <h3>2. LSTM</h3>
+
+      <p>The first neural approach: a single LSTM layer with 100 hidden units on top of the Doc2Vec embeddings (frozen, not fine-tuned). The LSTM processes the sequence left-to-right and the final hidden state is passed to a softmax output layer.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="16" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">BASIC LSTM ARCHITECTURE</text>
+
+          <!-- Input embeddings -->
+          <rect x="30" y="120" width="60" height="30" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="60" y="139" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">w₁</text>
+          <rect x="100" y="120" width="60" height="30" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="130" y="139" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">w₂</text>
+          <rect x="170" y="120" width="60" height="30" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="200" y="139" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">w₃</text>
+          <rect x="240" y="120" width="60" height="30" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="270" y="139" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">w₄</text>
+          <text x="165" y="166" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Embedding (100d, frozen Doc2Vec)</text>
+
+          <!-- LSTM cells -->
+          <rect x="30" y="64" width="60" height="36" rx="3" fill="#6b6b6b"/>
+          <text x="60" y="86" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">LSTM</text>
+          <rect x="100" y="64" width="60" height="36" rx="3" fill="#6b6b6b"/>
+          <text x="130" y="86" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">LSTM</text>
+          <rect x="170" y="64" width="60" height="36" rx="3" fill="#6b6b6b"/>
+          <text x="200" y="86" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">LSTM</text>
+          <rect x="240" y="64" width="60" height="36" rx="3" fill="#1a1a1a"/>
+          <text x="270" y="86" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">LSTM</text>
+
+          <!-- Vertical connections -->
+          <line x1="60" y1="120" x2="60" y2="100" stroke="#999" stroke-width="1"/>
+          <line x1="130" y1="120" x2="130" y2="100" stroke="#999" stroke-width="1"/>
+          <line x1="200" y1="120" x2="200" y2="100" stroke="#999" stroke-width="1"/>
+          <line x1="270" y1="120" x2="270" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- Horizontal arrows (hidden state) -->
+          <line x1="90" y1="82" x2="100" y2="82" stroke="#fff" stroke-width="1" marker-end="url(#arwh)"/>
+          <line x1="160" y1="82" x2="170" y2="82" stroke="#fff" stroke-width="1" marker-end="url(#arwh)"/>
+          <line x1="230" y1="82" x2="240" y2="82" stroke="#fff" stroke-width="1" marker-end="url(#arwh)"/>
+
+          <!-- Final hidden state arrow to output -->
+          <line x1="300" y1="82" x2="360" y2="82" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arwb)"/>
+          <text x="330" y="74" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">h_final</text>
+
+          <!-- Softmax output -->
+          <rect x="364" y="64" width="160" height="36" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="444" y="80" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Dense + Softmax</text>
+          <text x="444" y="92" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">7,000 classes</text>
+
+          <text x="280" y="42" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">100 hidden units &middot; RMSprop &middot; seq_len=100</text>
+
+          <defs>
+            <marker id="arwh" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+              <path d="M0,0 L5,2 L0,4" fill="none" stroke="#fff" stroke-width="0.6"/>
+            </marker>
+            <marker id="arwb" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+
+      <p><strong>Observation:</strong> The LSTM improved over the baseline, but the improvement was modest. With descriptions averaging 4 tokens, the LSTM's sequential processing has little context to accumulate. The final hidden state after 4 steps is not dramatically richer than the averaged embedding. The LSTM's advantage — capturing long-range dependencies — is irrelevant when the range is 4 tokens.</p>
+
+      <p><strong>Training note:</strong> With RMSprop optimizer and 10 epochs over 1,000 steps per epoch, training was stable but convergence was slow. The model's capacity (100 hidden units) was deliberately kept small to avoid overfitting on the short inputs.</p>
+
+      <h3>3. Bidirectional LSTM</h3>
+
+      <p>The hypothesis: reading the description in both directions should help, since a 4-word description has no clear "beginning" and "end" in the way a sentence does. "Battery lithium mobile" and "mobile lithium battery" should produce similar representations.</p>
+
+      <p>Architecture: forward LSTM (64 units) and backward LSTM (64 units), outputs concatenated to produce a 128-dimensional representation. Dropout at 0.5. Adam optimizer.</p>
+
+      <p><strong>Observation:</strong> A meaningful improvement over the unidirectional LSTM. The bidirectional encoding captured more information from the short sequences because it did not privilege left-to-right order. On descriptions of 3-4 words, direction matters less than full coverage — the BiLSTM gave each token context from both sides.</p>
+
+      <p><strong>What surprised me:</strong> switching from RMSprop to Adam and from frozen to trainable embeddings (128d) made a larger difference than the bidirectional architecture itself. The embeddings fine-tuned during training adapted to the domain vocabulary in ways the pre-trained Doc2Vec could not.</p>
+
+      <h3>4. GRU with Parallel CNNs</h3>
+
+      <p>This was the first hybrid architecture: an LSTM for sequential features, combined with parallel CNN branches for n-gram features.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="16" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">GRU + PARALLEL CNN ARCHITECTURE</text>
+
+          <!-- Input -->
+          <rect x="180" y="264" width="200" height="30" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="280" y="283" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Embedding (128d, trainable)</text>
+          <text x="280" y="308" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">seq_len = 50</text>
+
+          <!-- Branch arrows up -->
+          <line x1="220" y1="264" x2="100" y2="228" stroke="#999" stroke-width="1"/>
+          <line x1="260" y1="264" x2="220" y2="228" stroke="#999" stroke-width="1"/>
+          <line x1="300" y1="264" x2="340" y2="228" stroke="#999" stroke-width="1"/>
+          <line x1="340" y1="264" x2="460" y2="228" stroke="#999" stroke-width="1"/>
+
+          <!-- LSTM branch -->
+          <rect x="60" y="196" width="80" height="32" rx="3" fill="#1a1a1a"/>
+          <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">LSTM</text>
+          <text x="100" y="222" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">128 units</text>
+
+          <!-- CNN branches -->
+          <rect x="180" y="196" width="80" height="32" rx="3" fill="#6b6b6b"/>
+          <text x="220" y="212" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Conv1D</text>
+          <text x="220" y="222" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">k=1, 64f</text>
+
+          <rect x="300" y="196" width="80" height="32" rx="3" fill="#6b6b6b"/>
+          <text x="340" y="212" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Conv1D</text>
+          <text x="340" y="222" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">k=2, 64f</text>
+
+          <rect x="420" y="196" width="80" height="32" rx="3" fill="#6b6b6b"/>
+          <text x="460" y="212" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Conv1D</text>
+          <text x="460" y="222" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">k=3, 64f</text>
+
+          <!-- Merge -->
+          <line x1="100" y1="196" x2="280" y2="160" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="220" y1="196" x2="280" y2="160" stroke="#6b6b6b" stroke-width="1"/>
+          <line x1="340" y1="196" x2="280" y2="160" stroke="#6b6b6b" stroke-width="1"/>
+          <line x1="460" y1="196" x2="280" y2="160" stroke="#6b6b6b" stroke-width="1"/>
+
+          <rect x="220" y="136" width="120" height="28" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="280" y="154" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#1a1a1a" text-anchor="middle">Merge (concat)</text>
+
+          <!-- AvgPool + Dropout -->
+          <line x1="280" y1="136" x2="280" y2="118" stroke="#1a1a1a" stroke-width="1"/>
+          <rect x="200" y="90" width="160" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="280" y="108" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">AvgPool1D + Dropout(0.2) + Flatten</text>
+
+          <!-- Dense layers -->
+          <line x1="280" y1="90" x2="280" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+          <rect x="200" y="44" width="160" height="28" rx="3" fill="#1a1a1a"/>
+          <text x="280" y="58" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#fff" text-anchor="middle">Dense(2048) + BN + Dropout(0.2)</text>
+          <text x="280" y="68" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">ELU activation</text>
+
+          <!-- Output -->
+          <line x1="280" y1="44" x2="280" y2="36" stroke="#1a1a1a" stroke-width="1"/>
+          <text x="280" y="32" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">Softmax → 7,000 classes</text>
+        </svg>
+      </figure>
+
+      <p>The idea: the LSTM captures sequential dependencies (word order), while the parallel CNNs with kernel sizes 1, 2, and 3 capture unigram, bigram, and trigram patterns respectively. The merge combines both views. Average pooling (instead of max pooling) retains more information from the short sequences, and a large dense layer (2,048 units with ELU activation and batch normalization) provides capacity for the 7,000-class output.</p>
+
+      <p><strong>Observation:</strong> This was the first architecture that showed a significant jump. The CNN branches were particularly effective because short product descriptions are essentially collections of n-grams. "Cotton tshirt" is a bigram. "Lithium battery mobile" is a trigram. The parallel CNN captured these patterns directly, without requiring the sequential processing that LSTMs impose.</p>
+
+      <p><strong>Key insight:</strong> the kernel-size-1 CNN (unigram) was surprisingly important. For single-word descriptions — which make up 9% of the data — it is the only CNN branch that produces useful features. Removing it dropped accuracy on single-word descriptions noticeably.</p>
+
+      <h3>5. Bidirectional LSTM + CNN Hybrid</h3>
+
+      <p>A refinement of the previous approach: replace the unidirectional LSTM with a bidirectional LSTM (2x 50 units), and add a separate CNN path with kernel sizes 1 and 3 (50 filters each, combined to 100). The LSTM and CNN outputs are merged, then processed by a GRU (100 units) before batch normalization and the final softmax.</p>
+
+      <p>Architecture: embedding (50d) → bidirectional LSTM ‖ Conv1D(k=1,3) → merge → GRU(100) → BatchNorm → softmax. Optimizer: RMSprop.</p>
+
+      <p><strong>Observation:</strong> The additional GRU on top of the merged features helped refine the representation, but the improvement over architecture #4 was marginal. With 50-dimensional embeddings (half the size of architecture #4's 128d), this model was lighter and faster to train, but slightly less expressive. The trade-off favored the larger embeddings.</p>
+
+      <h3>6. TextCNNRNN (TensorFlow)</h3>
+
+      <p>The final architecture was a TensorFlow implementation combining CNN feature extraction (filter sizes 3, 4, 5 with 128 filters each) with a GRU (100 hidden units, dropout 0.5). Max pooling (pool size 4) reduces the CNN outputs before they are processed by the GRU.</p>
+
+      <p>This model was the most complex: three parallel CNN branches with larger filter sizes capture broader n-gram patterns, max pooling selects the strongest activations, and the GRU learns sequential patterns over the pooled features. The GRU uses a dropout wrapper (keep probability 0.5) and produces sequence-length-aware outputs — respecting the actual length of each description rather than the padded length.</p>
+
+      <p><strong>Observation:</strong> The length-aware output collection was this model's most important feature. Because descriptions vary dramatically in length (1 to 100+ tokens), a model that treats all sequences as padded-to-50 wastes capacity on padding tokens. This architecture tracked the real length and used only the relevant GRU outputs for classification. On short descriptions, this was a meaningful improvement.</p>
+
+      <h2>What I Learned</h2>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">MODEL COMPARISON — WHAT MATTERS MOST</text>
+
+          <!-- Table header -->
+          <rect x="20" y="32" width="520" height="28" rx="0" fill="#1a1a1a"/>
+          <text x="110" y="50" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Model</text>
+          <text x="250" y="50" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Strength</text>
+          <text x="410" y="50" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Limitation</text>
+
+          <!-- Row 1 -->
+          <rect x="20" y="60" width="520" height="38" rx="0" fill="#f5f5f3"/>
+          <text x="110" y="78" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">W2V + LogReg</text>
+          <text x="250" y="78" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Fast, simple baseline</text>
+          <text x="410" y="78" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">No word order</text>
+          <text x="110" y="90" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">baseline</text>
+
+          <!-- Row 2 -->
+          <rect x="20" y="98" width="520" height="38" rx="0" fill="#fff"/>
+          <text x="110" y="116" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">LSTM</text>
+          <text x="250" y="116" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Sequential context</text>
+          <text x="410" y="116" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Marginal gain on short text</text>
+          <text x="110" y="128" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">100 units</text>
+
+          <!-- Row 3 -->
+          <rect x="20" y="136" width="520" height="38" rx="0" fill="#f5f5f3"/>
+          <text x="110" y="154" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">BiLSTM</text>
+          <text x="250" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Both directions, no order bias</text>
+          <text x="410" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Still limited by seq length</text>
+          <text x="110" y="166" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">2x64 units</text>
+
+          <!-- Row 4 -->
+          <rect x="20" y="174" width="520" height="38" rx="0" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="110" y="192" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">LSTM + CNN</text>
+          <text x="250" y="192" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">N-gram + sequential features</text>
+          <text x="410" y="192" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">More params, slower</text>
+          <text x="110" y="204" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">best overall</text>
+
+          <!-- Row 5 -->
+          <rect x="20" y="212" width="520" height="38" rx="0" fill="#f5f5f3"/>
+          <text x="110" y="230" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">BiLSTM+CNN+GRU</text>
+          <text x="250" y="230" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Compact, multi-view</text>
+          <text x="410" y="230" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Smaller embeddings hurt</text>
+          <text x="110" y="242" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">50d embeddings</text>
+
+          <!-- Row 6 -->
+          <rect x="20" y="250" width="520" height="38" rx="0" fill="#fff"/>
+          <text x="110" y="268" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">TextCNNRNN</text>
+          <text x="250" y="268" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Length-aware, larger kernels</text>
+          <text x="410" y="268" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Most complex, TF only</text>
+          <text x="110" y="280" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">k=3,4,5</text>
+
+          <!-- Bottom insight -->
+          <rect x="20" y="296" width="520" height="22" rx="0" fill="#f5f5f3"/>
+          <text x="280" y="312" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">The biggest gains came from CNN n-gram features and trainable embeddings — not deeper RNNs.</text>
+        </svg>
+      </figure>
+
+      <p>Across all experiments, five patterns emerged consistently:</p>
+
+      <p><strong>CNNs beat LSTMs on short text.</strong> This was the most important finding. For descriptions averaging 4 words, the sequential processing of an LSTM adds little value — there is almost no long-range dependency to capture. CNNs, which extract n-gram patterns through convolution, are a more natural fit. A bigram kernel on a 4-word description sees nearly the entire input. An LSTM needs to process all 4 tokens sequentially to achieve the same coverage. The CNN is faster and, for this data, more effective.</p>
+
+      <p><strong>Trainable embeddings outperformed frozen embeddings.</strong> Pre-trained Doc2Vec embeddings capture general word relationships, but trade vocabulary is specialized. "Flng" (flange), "ss" (stainless steel), "rf" (raised face) — these abbreviations have no useful representation in a general-purpose embedding. Allowing the embedding layer to fine-tune during training let the model learn domain-specific representations. The jump from frozen to trainable embeddings was one of the largest single improvements.</p>
+
+      <p><strong>Embedding dimension matters.</strong> 128-dimensional embeddings consistently outperformed 50-dimensional ones. With 7,000 output classes, the model needs enough representational capacity in the input space to distinguish fine-grained categories. 50 dimensions was too compressed — it forced the model to collapse distinctions that the 128-dimensional space could preserve.</p>
+
+      <p><strong>Top-3 accuracy is the practical metric.</strong> Top-1 accuracy on 7,000 classes with 4-word descriptions is inherently limited — there are many descriptions where the correct code cannot be determined unambiguously from the text alone. But top-3 accuracy was substantially higher across all models. In a production system where a human operator selects from suggested codes, presenting 3 candidates is enough to be useful. Optimizing for top-3 rather than top-1 changes the model selection calculus.</p>
+
+      <p><strong>The preprocessing pipeline added more value than any architecture change.</strong> Custom domain stopwords, digit filtering, and HS code standardization — each of these preprocessing steps improved all models roughly equally. The aggregate effect of preprocessing was larger than the difference between the best and worst model architectures. This is a humbling lesson: before spending a week trying a new architecture, spend a day on better data cleaning.</p>
+
+      <h2>What I Would Do Differently</h2>
+
+      <p>Looking back, several things I would change:</p>
+
+      <p><strong>Hierarchical classification.</strong> HS codes are hierarchical. The first 2 digits identify the chapter (e.g., 85 = electrical machinery). The first 4 digits identify the heading. The first 6 identify the subheading. Instead of predicting all 8 digits at once from 7,000 flat classes, a hierarchical approach — first predict the chapter, then the heading within that chapter, then the subheading — would reduce the effective number of classes at each level and could leverage the structure of the code system.</p>
+
+      <p><strong>Character-level features.</strong> Many descriptions contain abbreviations that are informative at the character level — two-letter material codes, unit shorthands, and industry-specific acronyms. These are character patterns, not word patterns. A character-level CNN or character embeddings concatenated with word embeddings would likely help, especially for the abbreviated descriptions that dominate this dataset.</p>
+
+      <p><strong>Attention mechanisms.</strong> The Transformer architecture was published last year, and attention mechanisms are showing strong results on classification tasks. For short-text classification, self-attention could help the model learn which words in a description are most important for the code prediction — "lithium" matters more than "battery" for distinguishing battery types. I plan to experiment with attention in the next iteration.</p>
+
+      <p><strong>Better handling of multi-label cases.</strong> The 10% of descriptions that map to multiple HS codes were treated as single-label (using the first code). A multi-label formulation with binary cross-entropy loss would be more principled and could improve recall for ambiguous descriptions.</p>
+
+      <hr />
+
+      <p>HS code classification is a deceptively hard problem. The descriptions are short, noisy, domain-specific, and ambiguous. The class space is enormous. The practical requirements — suggest the right code within the top 3 — are achievable with deep learning, but the architecture matters less than the data preparation and the embedding quality.</p>
+
+      <p>The lesson I keep returning to: in NLP, the data and the features dominate the model. A well-preprocessed dataset with trainable embeddings and a simple CNN will outperform a complex LSTM on poorly prepared data, every time.</p>
+
+      <p>Code: <a href="https://github.com/sunilp/hs_code_classification" target="_blank" rel="noopener">github.com/sunilp/hs_code_classification</a></p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
