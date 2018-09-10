@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A practitioner's breakdown of the Transformer paper — Attention Is All You Need — and why it changes everything about sequence modeling." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Attention Is All You Need — A Practitioner's Guide to the Transformer" />
+  <meta property="og:description" content="Breaking down the paper that replaced RNNs, LSTMs, and sequence-to-sequence models with a single mechanism: attention." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/attention-is-all-you-need/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/attention-is-all-you-need/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Attention Is All You Need — A Practitioner's Guide to the Transformer — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Attention Is All You Need — A Practitioner's Guide to the Transformer",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2018-09-10",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Attention Is All You Need — A Practitioner's Guide to the Transformer</h1>
+      <div class="article-meta">September 2018</div>
+
+      <p>Last year, Vaswani et al. published a paper that I think will matter for a long time: <em>Attention Is All You Need</em>. The title is deliberately provocative. For years, the dominant approach to sequence modeling has been recurrent neural networks — LSTMs, GRUs, and their bidirectional variants. This paper argues that you can throw all of that away and replace it with a single mechanism: attention.</p>
+
+      <p>I have been studying this paper closely during my M.Tech at NUS, and what follows is my attempt to explain the core ideas in practical terms — what the Transformer does, why it works, and why it matters. I am still working through some of the mathematical details, but the architecture is clear enough to write about.</p>
+
+      <h2>The Problem with Recurrence</h2>
+
+      <p>Recurrent neural networks process sequences one token at a time, left to right. The hidden state at position <em>t</em> depends on the hidden state at position <em>t-1</em>. This sequential dependency creates two problems.</p>
+
+      <p>First, it is slow. You cannot process position 100 until you have processed positions 1 through 99. This makes RNNs fundamentally difficult to parallelize on modern hardware. GPUs are designed for massively parallel computation, but recurrence forces sequential execution.</p>
+
+      <p>Second, long-range dependencies are hard. By the time the hidden state has been passed through 200 positions, information from the beginning of the sequence has been compressed, distorted, and often lost. LSTMs and GRUs mitigate this with gating mechanisms, but they do not solve it. In practice, LSTMs struggle with dependencies beyond a few hundred tokens.</p>
+
+      <p>The attention mechanism, introduced by Bahdanau et al. in 2014, was the first crack in the wall. Instead of relying solely on the hidden state to carry information forward, attention allows the decoder to look directly at all encoder positions and decide which ones are relevant for each output step. This was a breakthrough for machine translation — but it was still layered on top of an RNN. The recurrence remained.</p>
+
+      <p>The Transformer removes it entirely.</p>
+
+      <h2>Self-Attention: The Core Idea</h2>
+
+      <p>The central insight of the Transformer is self-attention: every position in a sequence attends to every other position in the same sequence. No recurrence. No convolution. Just attention.</p>
+
+      <p>For each token, the model computes three vectors: a <strong>query</strong>, a <strong>key</strong>, and a <strong>value</strong>. These are linear projections of the input embedding. The attention score between two positions is the dot product of the query at one position with the key at the other, scaled by the square root of the dimension and passed through a softmax. The output for each position is a weighted sum of all value vectors, where the weights are the attention scores.</p>
+
+      <p>Concretely, for a sequence of length <em>n</em> with model dimension <em>d</em>:</p>
+
+      <p style="text-align: center; font-family: var(--mono); font-size: 15px; margin: 28px 0;">Attention(Q, K, V) = softmax(QK<sup>T</sup> / &radic;d) V</p>
+
+      <p>This single equation replaces the entire recurrence mechanism. Every position can attend to every other position in a single step. The computation is a matrix multiplication — and matrix multiplications are exactly what GPUs are good at.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 580 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 580px; display: block; margin: 0 auto;">
+          <!-- Input tokens -->
+          <text x="40" y="20" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">INPUT EMBEDDINGS</text>
+          <rect x="40" y="30" width="60" height="32" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="70" y="50" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">The</text>
+          <rect x="110" y="30" width="60" height="32" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="140" y="50" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">cat</text>
+          <rect x="180" y="30" width="60" height="32" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="210" y="50" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">sat</text>
+
+          <!-- Linear projections -->
+          <line x1="70" y1="62" x2="70" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="140" y1="62" x2="140" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="210" y1="62" x2="210" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- Q K V boxes for "cat" (highlighted) -->
+          <text x="310" y="20" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">LINEAR PROJECTIONS</text>
+
+          <!-- Three projection arrows from each token -->
+          <!-- Token "cat" projections -->
+          <rect x="100" y="100" width="32" height="24" rx="2" fill="#1a1a1a"/>
+          <text x="116" y="116" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Q</text>
+          <rect x="136" y="100" width="32" height="24" rx="2" fill="#6b6b6b"/>
+          <text x="152" y="116" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">K</text>
+          <rect x="172" y="100" width="32" height="24" rx="2" fill="#999"/>
+          <text x="188" y="116" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">V</text>
+
+          <!-- Attention score computation -->
+          <text x="310" y="96" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">ATTENTION SCORES</text>
+
+          <!-- Score matrix visualization -->
+          <rect x="310" y="106" width="230" height="80" rx="4" fill="#fff" stroke="#e8e8e8"/>
+          <!-- Headers -->
+          <text x="370" y="122" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">The</text>
+          <text x="420" y="122" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">cat</text>
+          <text x="470" y="122" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">sat</text>
+          <text x="340" y="142" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">The</text>
+          <text x="340" y="160" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">cat</text>
+          <text x="340" y="178" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">sat</text>
+          <!-- Score values (softmax outputs) -->
+          <rect x="355" y="132" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="370" y="144" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.15</text>
+          <rect x="405" y="132" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="420" y="144" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.60</text>
+          <rect x="455" y="132" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="470" y="144" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.25</text>
+          <!-- Row for "cat" - highlighted -->
+          <rect x="355" y="150" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="370" y="162" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.10</text>
+          <rect x="405" y="150" width="30" height="16" rx="2" fill="#1a1a1a"/>
+          <text x="420" y="162" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">.45</text>
+          <rect x="455" y="150" width="30" height="16" rx="2" fill="#6b6b6b"/>
+          <text x="470" y="162" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">.45</text>
+          <!-- Row for "sat" -->
+          <rect x="355" y="168" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="370" y="180" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.20</text>
+          <rect x="405" y="168" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="420" y="180" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.35</text>
+          <rect x="455" y="168" width="30" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="470" y="180" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b" text-anchor="middle">.45</text>
+
+          <!-- Formula annotation -->
+          <text x="425" y="204" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">softmax(QK&#x1D40; / &radic;d)</text>
+
+          <!-- Arrow to output -->
+          <line x1="425" y1="212" x2="425" y2="240" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="421,240 425,248 429,240" fill="#1a1a1a"/>
+
+          <!-- Weighted sum output -->
+          <text x="310" y="268" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">OUTPUT</text>
+          <rect x="350" y="274" width="150" height="28" rx="3" fill="#1a1a1a"/>
+          <text x="425" y="292" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">weighted sum of V</text>
+
+          <!-- Connection arrow from Q/K/V to score matrix -->
+          <path d="M 204 112 C 260 112, 280 146, 310 146" stroke="#1a1a1a" stroke-width="1" fill="none" marker-end="url(#arw)"/>
+          <defs>
+            <marker id="arw" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Self-attention: each token computes Q, K, V vectors. Attention scores determine how much each position contributes to the output.</p>
+
+      <h2>Multi-Head Attention</h2>
+
+      <p>A single attention function computes one set of attention weights. But language has many types of relationships: syntactic, semantic, positional, coreference. A single attention head cannot capture all of them simultaneously.</p>
+
+      <p>The Transformer solves this by running multiple attention functions in parallel — the paper uses 8 heads. Each head has its own learned query, key, and value projections. Each head learns to attend to different types of relationships. The outputs of all heads are concatenated and projected through a final linear layer.</p>
+
+      <p>In practice, you can inspect what each head learns. Some heads attend to the previous word. Some attend to the syntactic head of a clause. Some attend to coreferent mentions. The model discovers these patterns without being told to look for them.</p>
+
+      <h2>Positional Encoding</h2>
+
+      <p>Without recurrence, the model has no inherent sense of word order. The sentence "the cat sat on the mat" and "mat the on sat cat the" would produce identical representations. This is clearly wrong — word order matters.</p>
+
+      <p>The solution is positional encoding. The paper adds a fixed sinusoidal signal to the input embeddings, where each dimension uses a sine or cosine function of different frequency. Position <em>pos</em> and dimension <em>i</em> get:</p>
+
+      <p style="text-align: center; font-family: var(--mono); font-size: 14px; margin: 28px 0;">PE(pos, 2i) = sin(pos / 10000<sup>2i/d</sup>)<br/>PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d</sup>)</p>
+
+      <p>Why sinusoids? The authors hypothesize that sinusoidal encodings allow the model to learn relative positions, because for any fixed offset <em>k</em>, the encoding at position <em>pos + k</em> can be expressed as a linear function of the encoding at position <em>pos</em>. This is a clever mathematical property, though whether it is optimal remains an open question. I expect we will see learned positional encodings become more common.</p>
+
+      <h2>The Architecture</h2>
+
+      <p>The full Transformer is an encoder-decoder architecture. The encoder is a stack of 6 identical layers, each containing a multi-head self-attention sublayer and a position-wise feed-forward sublayer. The decoder is also 6 layers, but with an additional cross-attention sublayer that attends to the encoder output. Residual connections and layer normalization surround each sublayer.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 520" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- ENCODER -->
+          <text x="150" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">ENCODER (x6)</text>
+          <!-- Encoder block -->
+          <rect x="50" y="32" width="200" height="200" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <!-- Input embeddings -->
+          <rect x="80" y="196" width="140" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="150" y="212" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Input Embedding + PE</text>
+          <!-- Self-attention -->
+          <rect x="80" y="146" width="140" height="32" rx="3" fill="#1a1a1a"/>
+          <text x="150" y="166" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle">Multi-Head Self-Attention</text>
+          <!-- Add & Norm -->
+          <text x="150" y="140" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Add &amp; Norm</text>
+          <!-- FFN -->
+          <rect x="80" y="90" width="140" height="32" rx="3" fill="#6b6b6b"/>
+          <text x="150" y="110" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle">Feed-Forward Network</text>
+          <!-- Add & Norm -->
+          <text x="150" y="82" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Add &amp; Norm</text>
+          <!-- Residual arrows -->
+          <path d="M 68 162 L 58 162 L 58 106 L 68 106" stroke="#e8e8e8" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+          <path d="M 68 106 L 58 106 L 58 50 L 68 50" stroke="#e8e8e8" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+          <!-- Output arrow -->
+          <text x="150" y="48" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">output</text>
+
+          <!-- DECODER -->
+          <text x="410" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">DECODER (x6)</text>
+          <!-- Decoder block -->
+          <rect x="310" y="32" width="200" height="280" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <!-- Output embeddings -->
+          <rect x="340" y="276" width="140" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="410" y="292" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Output Embedding + PE</text>
+          <!-- Masked self-attention -->
+          <rect x="340" y="230" width="140" height="32" rx="3" fill="#1a1a1a"/>
+          <text x="410" y="244" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#fff" text-anchor="middle">Masked Self-Attention</text>
+          <text x="410" y="256" font-family="IBM Plex Mono, monospace" font-size="7" fill="#ccc" text-anchor="middle">no peeking ahead</text>
+          <!-- Add & Norm -->
+          <text x="410" y="222" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Add &amp; Norm</text>
+          <!-- Cross-attention -->
+          <rect x="340" y="170" width="140" height="32" rx="3" fill="#1a1a1a"/>
+          <text x="410" y="190" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle">Cross-Attention</text>
+          <!-- Add & Norm -->
+          <text x="410" y="162" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Add &amp; Norm</text>
+          <!-- FFN -->
+          <rect x="340" y="110" width="140" height="32" rx="3" fill="#6b6b6b"/>
+          <text x="410" y="130" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle">Feed-Forward Network</text>
+          <!-- Add & Norm -->
+          <text x="410" y="102" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Add &amp; Norm</text>
+          <!-- Linear + Softmax -->
+          <rect x="340" y="50" width="140" height="32" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="410" y="70" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Linear + Softmax</text>
+
+          <!-- Cross-attention connection from encoder -->
+          <line x1="250" y1="106" x2="340" y2="186" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arw2)"/>
+          <text x="290" y="136" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" transform="rotate(-20, 290, 136)">K, V from encoder</text>
+
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arw2" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+          </defs>
+
+          <!-- Bottom labels -->
+          <text x="150" y="260" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">source sequence</text>
+          <text x="410" y="340" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">target sequence (shifted right)</text>
+
+          <!-- Key insight callout -->
+          <rect x="50" y="380" width="460" height="56" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="280" y="402" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" text-anchor="middle" font-weight="500">Each layer: attention + feed-forward + residual + normalization</text>
+          <text x="280" y="422" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#999" text-anchor="middle">6 layers stacked. No recurrence anywhere in the architecture.</text>
+
+          <!-- Dimensions callout -->
+          <rect x="50" y="448" width="460" height="56" rx="4" fill="#fff" stroke="#e8e8e8"/>
+          <text x="130" y="472" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">d_model = 512</text>
+          <text x="280" y="472" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">d_ff = 2048</text>
+          <text x="430" y="472" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">heads = 8</text>
+          <text x="130" y="492" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">embedding dim</text>
+          <text x="280" y="492" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">FFN inner dim</text>
+          <text x="430" y="492" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">attention heads</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">The Transformer: encoder (left) and decoder (right). Cross-attention connects them.</p>
+
+      <p>A few architectural details are worth noting:</p>
+
+      <ul>
+        <li><strong>The feed-forward network</strong> is a two-layer MLP with a ReLU activation and inner dimension of 2048, applied identically to each position. This is where the model stores factual knowledge — a point that is not obvious from the paper but has become clear in subsequent work.</li>
+        <li><strong>Masked self-attention</strong> in the decoder prevents positions from attending to future positions. This is essential for autoregressive generation — you cannot look ahead when predicting the next word.</li>
+        <li><strong>Label smoothing</strong> with a value of 0.1 is applied during training. This hurts perplexity (the model becomes less confident) but improves BLEU score. The trade-off between confidence and accuracy is an important practical consideration.</li>
+      </ul>
+
+      <h2>Why This Works: Parallelism and Path Length</h2>
+
+      <p>The Transformer outperforms recurrent models on machine translation (WMT 2014 English-to-German: 28.4 BLEU, English-to-French: 41.0 BLEU) while training significantly faster. The English-to-French model trained in 3.5 days on 8 GPUs. Comparable RNN-based results required weeks.</p>
+
+      <p>Two properties explain this:</p>
+
+      <p><strong>Parallelism.</strong> Self-attention computes all pairwise interactions in a single matrix multiplication. There is no sequential dependency between positions. This allows full utilization of GPU parallelism, making training time proportional to model size, not sequence length.</p>
+
+      <p><strong>Path length.</strong> In an RNN, information from position 1 must traverse <em>n-1</em> steps to reach position <em>n</em>. In self-attention, any position can attend to any other position in a single step. The maximum path length is O(1), compared to O(n) for recurrence and O(log n) for convolutions. Shorter paths make it easier to learn long-range dependencies.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 540 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="270" y="20" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">PATH LENGTH: POSITION 1 TO POSITION N</text>
+
+          <!-- RNN path — sequential hops -->
+          <text x="40" y="60" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">RNN</text>
+          <text x="40" y="74" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">O(n)</text>
+          <!-- Nodes -->
+          <circle cx="120" cy="66" r="12" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="120" y="70" font-family="IBM Plex Mono, monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">1</text>
+          <circle cx="180" cy="66" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="180" y="70" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">2</text>
+          <circle cx="240" cy="66" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="240" y="70" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">3</text>
+          <!-- Dots -->
+          <text x="290" y="70" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#999" text-anchor="middle">...</text>
+          <circle cx="330" cy="66" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="330" y="70" font-family="IBM Plex Mono, monospace" font-size="7" fill="#999" text-anchor="middle">n-1</text>
+          <circle cx="390" cy="66" r="12" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="390" y="70" font-family="IBM Plex Mono, monospace" font-size="8" fill="#fff" text-anchor="middle">n</text>
+          <!-- Arrows between -->
+          <line x1="132" y1="66" x2="166" y2="66" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw3)"/>
+          <line x1="192" y1="66" x2="226" y2="66" stroke="#e8e8e8" stroke-width="1" marker-end="url(#arw3g)"/>
+          <line x1="252" y1="66" x2="276" y2="66" stroke="#e8e8e8" stroke-width="1"/>
+          <line x1="302" y1="66" x2="316" y2="66" stroke="#e8e8e8" stroke-width="1"/>
+          <line x1="342" y1="66" x2="376" y2="66" stroke="#e8e8e8" stroke-width="1" marker-end="url(#arw3g)"/>
+          <!-- n-1 steps label -->
+          <line x1="120" y1="92" x2="390" y2="92" stroke="#999" stroke-width="0.5"/>
+          <line x1="120" y1="88" x2="120" y2="96" stroke="#999" stroke-width="0.5"/>
+          <line x1="390" y1="88" x2="390" y2="96" stroke="#999" stroke-width="0.5"/>
+          <text x="255" y="106" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">n-1 sequential steps</text>
+
+          <!-- Self-Attention path — direct -->
+          <text x="40" y="160" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Attention</text>
+          <text x="40" y="174" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">O(1)</text>
+          <!-- Nodes -->
+          <circle cx="120" cy="166" r="12" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="120" y="170" font-family="IBM Plex Mono, monospace" font-size="8" fill="#fff" text-anchor="middle">1</text>
+          <circle cx="180" cy="166" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="180" y="170" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">2</text>
+          <circle cx="240" cy="166" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="240" y="170" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">3</text>
+          <text x="290" y="170" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#999" text-anchor="middle">...</text>
+          <circle cx="330" cy="166" r="12" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="330" y="170" font-family="IBM Plex Mono, monospace" font-size="7" fill="#999" text-anchor="middle">n-1</text>
+          <circle cx="390" cy="166" r="12" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="390" y="170" font-family="IBM Plex Mono, monospace" font-size="8" fill="#fff" text-anchor="middle">n</text>
+          <!-- Direct arc from 1 to n -->
+          <path d="M 132 160 C 200 120, 320 120, 378 160" stroke="#1a1a1a" stroke-width="2" fill="none" marker-end="url(#arw3)"/>
+          <!-- 1 step label -->
+          <text x="255" y="132" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle" font-weight="500">1 step (direct attention)</text>
+
+          <!-- Comparison box -->
+          <rect x="440" y="50" width="90" height="130" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="485" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">Path length</text>
+          <text x="485" y="100" font-family="IBM Plex Mono, monospace" font-size="11" fill="#6b6b6b" text-anchor="middle">RNN</text>
+          <text x="485" y="116" font-family="IBM Plex Mono, monospace" font-size="14" fill="#6b6b6b" text-anchor="middle">O(n)</text>
+          <line x1="456" y1="128" x2="514" y2="128" stroke="#e8e8e8"/>
+          <text x="485" y="148" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">Attn</text>
+          <text x="485" y="164" font-family="IBM Plex Mono, monospace" font-size="14" fill="#1a1a1a" text-anchor="middle" font-weight="500">O(1)</text>
+
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arw3" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+            <marker id="arw3g" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#e8e8e8" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">RNNs require O(n) sequential steps for distant positions. Self-attention connects any two positions in O(1).</p>
+
+      <p>The trade-off is memory. Self-attention is O(n<sup>2</sup>) in sequence length — every position attends to every other position. For long sequences, this becomes expensive. The paper works with sequences up to 512 tokens. How to scale attention to longer sequences is an important open problem.</p>
+
+      <h2>What This Means for Practitioners</h2>
+
+      <p>I see three immediate implications for anyone building NLP systems.</p>
+
+      <p><strong>Sequence-to-sequence is not just for translation anymore.</strong> The Transformer architecture is general. Anything that can be framed as a sequence-to-sequence problem — summarization, question answering, text generation, even code generation — can potentially benefit from this architecture. I expect the next year will see Transformers applied to tasks far beyond machine translation.</p>
+
+      <p><strong>The feature engineering era for NLP is ending.</strong> With sufficient data and compute, attention-based models learn their own representations. Hand-crafted features, syntactic parsers, and task-specific architectures may become less important. This does not mean domain knowledge becomes irrelevant — it means domain knowledge shifts from feature design to data curation, evaluation design, and system architecture.</p>
+
+      <p><strong>Compute is becoming the bottleneck.</strong> The base Transformer has 65 million parameters. The big model has 213 million. These are large by current standards, but I suspect they are small by future standards. If attention mechanisms scale, the limiting factor will be compute and data, not architectural innovation. This has implications for who can compete in NLP research — organizations with large compute budgets will have a structural advantage.</p>
+
+      <h2>Open Questions</h2>
+
+      <p>The paper leaves several questions open that I find interesting:</p>
+
+      <ul>
+        <li><strong>Can Transformers work without the encoder-decoder split?</strong> The paper uses the full encoder-decoder for translation, but language modeling only needs the decoder. A decoder-only Transformer that generates text autoregressively is an obvious next step. OpenAI's recent GPT work explores this direction.</li>
+        <li><strong>How far can transfer learning go?</strong> If a Transformer learns general language representations during pre-training, can those representations transfer to downstream tasks? The ELMo paper from earlier this year suggests yes. I expect pre-trained Transformer models to become the standard starting point for NLP tasks, similar to how ImageNet pre-training transformed computer vision.</li>
+        <li><strong>What are the limits of self-attention?</strong> Self-attention is O(n<sup>2</sup>). Processing documents of thousands of tokens will require either approximate attention, hierarchical approaches, or architectural modifications. This is likely where the next wave of innovation will come.</li>
+        <li><strong>What exactly do the attention heads learn?</strong> Visualizations suggest they learn interpretable patterns, but we lack a complete understanding. Better interpretability tools for attention would help both researchers and practitioners.</li>
+      </ul>
+
+      <h2>Practical Notes</h2>
+
+      <p>A few practical observations from implementing and experimenting with this architecture:</p>
+
+      <p><strong>Learning rate warmup is essential.</strong> The paper uses a custom learning rate schedule that increases linearly for the first 4000 steps, then decays proportionally to the inverse square root of the step number. Without warmup, training is unstable. The Adam optimizer with the paper's exact hyperparameters (beta1=0.9, beta2=0.98, epsilon=1e-9) works well. Deviating from these defaults can cause training to diverge.</p>
+
+      <p><strong>Dropout matters more than you think.</strong> The paper applies dropout (0.1 for the base model, 0.3 for small datasets) to attention weights, sublayer outputs, and embeddings. Without dropout, the model overfits quickly on smaller datasets. For tasks with limited training data, aggressive dropout and smaller models are more practical than scaling up.</p>
+
+      <p><strong>Byte-pair encoding is a reasonable default.</strong> The paper uses BPE with a shared vocabulary of 37,000 tokens for translation. BPE handles rare words and morphology gracefully, which is important for languages with rich morphology. For English-only tasks, WordPiece (as used in BERT) is a comparable alternative.</p>
+
+      <hr />
+
+      <p>The Transformer is one of those papers where the idea is simpler than the architecture it replaces, and yet it works better. Replacing recurrence with attention is a conceptual simplification that also happens to be a practical improvement. I think we are at the beginning of understanding what this architecture can do. The next few years will be interesting.</p>
+
+      <p>The original paper: Vaswani, A. et al., <em>Attention Is All You Need</em>, NeurIPS 2017. If you read one machine learning paper this year, make it this one.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
