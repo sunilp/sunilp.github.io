@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Practical lessons from building production NER systems with BiLSTM-CRF before Transformers became the default — what worked, what didn't, and what the pipeline actually looks like." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Building NLP Pipelines Before Transformers Were Easy" />
+  <meta property="og:description" content="What production NER looked like in 2018-2019: BiLSTM-CRF, character embeddings, gazetteers, and the engineering that held it all together." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/nlp-before-transformers/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/nlp-before-transformers/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Building NLP Pipelines Before Transformers Were Easy — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building NLP Pipelines Before Transformers Were Easy",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2019-06-20",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Building NLP Pipelines Before Transformers Were Easy</h1>
+      <div class="article-meta">June 2019</div>
+
+      <p>For the past year at Halialabs, I have been building named entity recognition systems for production. Not the kind you see in tutorials — not spaCy out of the box on English news text. The kind where your entities are domain-specific, your languages include Malay and Bahasa Indonesia, your training data is noisy, and the model needs to run on modest hardware with sub-second latency.</p>
+
+      <p>The Transformer paper changed everything in theory. In practice, in mid-2019, most production NLP still runs on architectures from 2016-2017. BERT exists, but fine-tuning it for NER requires GPU infrastructure that many startups do not have, and deploying it at inference time is expensive. The workhorse of production NER today is the BiLSTM-CRF.</p>
+
+      <p>This is a practical account of what building these pipelines actually looks like.</p>
+
+      <h2>Why NER Is Harder Than It Looks</h2>
+
+      <p>Named entity recognition appears simple: given a sentence, identify the spans that refer to people, organizations, locations, dates, and so on. The standard framing is sequence labeling — assign a BIO tag (Begin, Inside, Outside) to each token.</p>
+
+      <p>The difficulty is in the details. Consider these sentences:</p>
+
+      <ul>
+        <li>"Apple released a new product" — Apple is an organization.</li>
+        <li>"He ate an apple" — apple is not an entity.</li>
+        <li>"Jordan played for the Bulls" — Jordan is a person. But also a country.</li>
+        <li>"Bank Negara Malaysia raised rates" — three tokens, one entity.</li>
+      </ul>
+
+      <p>Context determines entity type. Boundary detection determines entity span. Both are hard. And in domain-specific text — legal documents, medical records, financial reports — the entities are not persons and organizations. They are contract clauses, drug names, instrument identifiers, regulatory references. The model has never seen these in pre-training.</p>
+
+      <h2>The BiLSTM-CRF Architecture</h2>
+
+      <p>The architecture that works best for production NER right now is the BiLSTM-CRF, introduced by Lample et al. (2016) and Huang et al. (2015). It combines three ideas:</p>
+
+      <p><strong>Word embeddings</strong> provide the initial representation. We use pre-trained GloVe or FastText embeddings, concatenated with character-level embeddings from a small character CNN or LSTM. The character embeddings capture morphological features — suffixes like "-tion" or "-ing", capitalization patterns, digit patterns. This is critical for unseen words and for languages with rich morphology.</p>
+
+      <p><strong>Bidirectional LSTM</strong> provides contextual representations. A forward LSTM reads left-to-right, a backward LSTM reads right-to-left, and their hidden states are concatenated at each position. This gives each token a representation that incorporates context from both directions. Unlike a Transformer, the BiLSTM processes the sequence sequentially, but for the sequence lengths we work with (typically under 200 tokens), this is fast enough.</p>
+
+      <p><strong>Conditional Random Field (CRF)</strong> provides structured prediction. This is the key insight that separates good NER from mediocre NER. A naive approach would classify each token independently — pass the BiLSTM output through a softmax and pick the highest-scoring tag. But this ignores dependencies between tags. A tag sequence like B-PER followed by B-LOC is unlikely (you expect I-PER after B-PER). The CRF layer models transition probabilities between tags, ensuring the output is a globally coherent sequence, not a series of independent predictions.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">BiLSTM-CRF FOR NAMED ENTITY RECOGNITION</text>
+
+          <!-- CRF layer at top -->
+          <rect x="60" y="34" width="440" height="36" rx="4" fill="#1a1a1a"/>
+          <text x="280" y="56" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="500">CRF Layer — models tag transitions</text>
+
+          <!-- Tag outputs -->
+          <rect x="80" y="80" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="108" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">B-ORG</text>
+          <rect x="160" y="80" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="188" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">I-ORG</text>
+          <rect x="240" y="80" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="268" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">I-ORG</text>
+          <rect x="320" y="80" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="348" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">O</text>
+          <rect x="400" y="80" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="428" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">O</text>
+
+          <!-- Transition arrows between tags -->
+          <path d="M 136 92 L 156 92" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw4)"/>
+          <path d="M 216 92 L 236 92" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw4)"/>
+          <path d="M 296 92 L 316 92" stroke="#e8e8e8" stroke-width="1" marker-end="url(#arw4g)"/>
+          <path d="M 376 92 L 396 92" stroke="#e8e8e8" stroke-width="1" marker-end="url(#arw4g)"/>
+
+          <!-- Vertical connections CRF to BiLSTM -->
+          <line x1="108" y1="104" x2="108" y2="130" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="188" y1="104" x2="188" y2="130" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="268" y1="104" x2="268" y2="130" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="348" y1="104" x2="348" y2="130" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="428" y1="104" x2="428" y2="130" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- BiLSTM layer -->
+          <!-- Forward LSTM -->
+          <rect x="72" y="130" width="72" height="28" rx="3" fill="#6b6b6b"/>
+          <text x="108" y="148" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_fwd</text>
+          <rect x="152" y="130" width="72" height="28" rx="3" fill="#6b6b6b"/>
+          <text x="188" y="148" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_fwd</text>
+          <rect x="232" y="130" width="72" height="28" rx="3" fill="#6b6b6b"/>
+          <text x="268" y="148" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_fwd</text>
+          <rect x="312" y="130" width="72" height="28" rx="3" fill="#6b6b6b"/>
+          <text x="348" y="148" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_fwd</text>
+          <rect x="392" y="130" width="72" height="28" rx="3" fill="#6b6b6b"/>
+          <text x="428" y="148" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_fwd</text>
+
+          <!-- Forward arrows -->
+          <path d="M 144 144 L 150 144" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4w)"/>
+          <path d="M 224 144 L 230 144" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4w)"/>
+          <path d="M 304 144 L 310 144" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4w)"/>
+          <path d="M 384 144 L 390 144" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4w)"/>
+
+          <!-- Backward LSTM -->
+          <rect x="72" y="164" width="72" height="28" rx="3" fill="#999"/>
+          <text x="108" y="182" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_bwd</text>
+          <rect x="152" y="164" width="72" height="28" rx="3" fill="#999"/>
+          <text x="188" y="182" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_bwd</text>
+          <rect x="232" y="164" width="72" height="28" rx="3" fill="#999"/>
+          <text x="268" y="182" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_bwd</text>
+          <rect x="312" y="164" width="72" height="28" rx="3" fill="#999"/>
+          <text x="348" y="182" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_bwd</text>
+          <rect x="392" y="164" width="72" height="28" rx="3" fill="#999"/>
+          <text x="428" y="182" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">h_bwd</text>
+
+          <!-- Backward arrows -->
+          <path d="M 150 178 L 144 178" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4wl)"/>
+          <path d="M 230 178 L 224 178" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4wl)"/>
+          <path d="M 310 178 L 304 178" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4wl)"/>
+          <path d="M 390 178 L 384 178" stroke="#fff" stroke-width="0.8" marker-end="url(#arw4wl)"/>
+
+          <!-- Labels -->
+          <text x="36" y="148" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#6b6b6b" text-anchor="end">forward</text>
+          <text x="36" y="182" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="end">backward</text>
+
+          <!-- BiLSTM label -->
+          <text x="508" y="160" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a">BiLSTM</text>
+          <text x="508" y="172" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999">concat</text>
+
+          <!-- Vertical connections BiLSTM to embeddings -->
+          <line x1="108" y1="192" x2="108" y2="218" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="188" y1="192" x2="188" y2="218" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="268" y1="192" x2="268" y2="218" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="348" y1="192" x2="348" y2="218" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="428" y1="192" x2="428" y2="218" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- Embedding layer -->
+          <text x="280" y="214" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">CONCATENATED EMBEDDINGS</text>
+
+          <!-- Word + char embedding boxes -->
+          <rect x="76" y="220" width="64" height="40" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="108" y="237" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">word emb</text>
+          <text x="108" y="250" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">+ char CNN</text>
+          <rect x="156" y="220" width="64" height="40" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="188" y="237" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">word emb</text>
+          <text x="188" y="250" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">+ char CNN</text>
+          <rect x="236" y="220" width="64" height="40" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="268" y="237" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">word emb</text>
+          <text x="268" y="250" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">+ char CNN</text>
+          <rect x="316" y="220" width="64" height="40" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="348" y="237" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">word emb</text>
+          <text x="348" y="250" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">+ char CNN</text>
+          <rect x="396" y="220" width="64" height="40" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="428" y="237" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">word emb</text>
+          <text x="428" y="250" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">+ char CNN</text>
+
+          <!-- Vertical connections to tokens -->
+          <line x1="108" y1="260" x2="108" y2="284" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="188" y1="260" x2="188" y2="284" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="268" y1="260" x2="268" y2="284" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="348" y1="260" x2="348" y2="284" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="428" y1="260" x2="428" y2="284" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- Input tokens -->
+          <text x="280" y="282" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">INPUT TOKENS</text>
+          <rect x="76" y="288" width="64" height="28" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="108" y="306" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">Bank</text>
+          <rect x="156" y="288" width="64" height="28" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="188" y="306" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">Negara</text>
+          <rect x="236" y="288" width="64" height="28" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="268" y="306" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">Malaysia</text>
+          <rect x="316" y="288" width="64" height="28" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="348" y="306" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">raised</text>
+          <rect x="396" y="288" width="64" height="28" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="428" y="306" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">rates</text>
+
+          <!-- Key insight -->
+          <rect x="60" y="340" width="440" height="44" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="280" y="358" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">CRF enforces: B-ORG &rarr; I-ORG &rarr; I-ORG is valid.</text>
+          <text x="280" y="374" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">B-ORG &rarr; I-LOC is not. Global coherence, not per-token classification.</text>
+
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arw4" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+              <path d="M0,0 L5,2 L0,4" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+            </marker>
+            <marker id="arw4g" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+              <path d="M0,0 L5,2 L0,4" fill="none" stroke="#e8e8e8" stroke-width="0.8"/>
+            </marker>
+            <marker id="arw4w" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+              <path d="M0,0 L5,2 L0,4" fill="none" stroke="#fff" stroke-width="0.6"/>
+            </marker>
+            <marker id="arw4wl" markerWidth="5" markerHeight="4" refX="1" refY="2" orient="auto">
+              <path d="M5,0 L0,2 L5,4" fill="none" stroke="#fff" stroke-width="0.6"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">BiLSTM-CRF: embeddings feed a bidirectional LSTM, whose outputs are decoded by a CRF that enforces valid tag sequences.</p>
+
+      <p>The CRF is what makes this architecture production-ready. Without it, we consistently saw 2-4 F1 points lower on entity-level evaluation, mostly from boundary errors — the model would start an entity but fail to end it correctly, or tag a single token as B-PER I-LOC.</p>
+
+      <h2>The Feature Engineering That Still Matters</h2>
+
+      <p>One thing I have learned building these systems: the model architecture is maybe 40% of the performance. The rest is data and features. Here is what actually moves the needle in production NER:</p>
+
+      <p><strong>Character embeddings are essential, not optional.</strong> For languages like Malay, where many entity names are transliterated or borrowed from English, Arabic, or Tamil, a word-level vocabulary will never cover all entity mentions. Character-level CNNs (typically 3-4 filter widths, 25-50 filters each) capture subword patterns that word embeddings miss. They handle unseen words, capitalization, and morphological patterns. In our experiments, removing character embeddings dropped F1 by 5-8 points on domain-specific entities.</p>
+
+      <p><strong>Gazetteers are underrated.</strong> A gazetteer is a lookup table — a list of known entities. "Is this token in a list of known company names?" "Is this bigram in a list of known regulatory bodies?" In academic papers, gazetteers are often dismissed as engineering rather than research. In production, they are some of the highest-ROI features you can add. We maintain gazetteers for each entity type and encode gazetteer membership as binary features concatenated with the embedding. This is especially valuable for entities that are rare in the training data but well-known in the domain.</p>
+
+      <p><strong>Pre-trained embeddings matter more than model size.</strong> We experimented with GloVe, FastText, and domain-specific embeddings trained on our own corpora. FastText consistently outperformed GloVe on multilingual text because it handles subword information — the embedding for an unseen word is composed from its character n-grams. For English financial text, GloVe was sufficient. For Southeast Asian languages, FastText was the clear winner.</p>
+
+      <h2>The Production Pipeline</h2>
+
+      <p>A production NER system is not just a model. It is a pipeline. Here is what ours looks like:</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">PRODUCTION NER PIPELINE</text>
+
+          <!-- Step 1: Raw Text -->
+          <rect x="20" y="36" width="100" height="44" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="70" y="55" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Raw Text</text>
+          <text x="70" y="68" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">PDF / HTML</text>
+
+          <!-- Arrow -->
+          <line x1="120" y1="58" x2="144" y2="58" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Step 2: Preprocessing -->
+          <rect x="148" y="36" width="100" height="44" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="198" y="52" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Preprocess</text>
+          <text x="198" y="64" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">tokenize</text>
+          <text x="198" y="74" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">sentence split</text>
+
+          <!-- Arrow -->
+          <line x1="248" y1="58" x2="272" y2="58" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Step 3: Feature Extraction -->
+          <rect x="276" y="36" width="100" height="44" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="326" y="52" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Features</text>
+          <text x="326" y="64" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">embeddings</text>
+          <text x="326" y="74" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">gazetteers</text>
+
+          <!-- Arrow -->
+          <line x1="376" y1="58" x2="400" y2="58" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Step 4: Model -->
+          <rect x="404" y="36" width="100" height="44" rx="4" fill="#1a1a1a"/>
+          <text x="454" y="55" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">BiLSTM-CRF</text>
+          <text x="454" y="68" font-family="IBM Plex Mono, monospace" font-size="8" fill="#ccc" text-anchor="middle">predict tags</text>
+
+          <!-- Arrow down from model -->
+          <line x1="454" y1="80" x2="454" y2="104" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Step 5: Post-processing -->
+          <rect x="404" y="108" width="100" height="44" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="454" y="127" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Post-process</text>
+          <text x="454" y="140" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">merge spans</text>
+
+          <!-- Arrow down -->
+          <line x1="454" y1="152" x2="454" y2="176" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Step 6: Entity Linking -->
+          <rect x="404" y="180" width="100" height="44" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="454" y="199" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Entity Link</text>
+          <text x="454" y="212" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">normalize</text>
+
+          <!-- Arrow down -->
+          <line x1="454" y1="224" x2="454" y2="248" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arw5)"/>
+
+          <!-- Output -->
+          <rect x="404" y="252" width="100" height="44" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="454" y="271" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Structured</text>
+          <text x="454" y="284" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">JSON entities</text>
+
+          <!-- Side annotations -->
+          <!-- Preprocessing details -->
+          <rect x="20" y="110" width="200" height="72" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="30" y="128" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a">Preprocessing matters most:</text>
+          <text x="30" y="143" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">1. Language detection</text>
+          <text x="30" y="157" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">2. Tokenization (regex, not ML)</text>
+          <text x="30" y="171" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">3. Sentence segmentation</text>
+
+          <!-- Post-processing details -->
+          <rect x="20" y="196" width="200" height="86" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="30" y="214" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a">Post-processing catches errors:</text>
+          <text x="30" y="229" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">1. Merge split entities</text>
+          <text x="30" y="243" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">2. Apply domain rules</text>
+          <text x="30" y="257" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">3. Confidence thresholding</text>
+          <text x="30" y="271" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b">4. Entity deduplication</text>
+
+          <!-- Connection lines from side annotations -->
+          <path d="M 220 140 C 280 140, 360 110, 400 130" stroke="#e8e8e8" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+          <path d="M 220 240 C 280 240, 360 200, 400 200" stroke="#e8e8e8" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arw5" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Production NER is a pipeline, not a model. Preprocessing and post-processing often matter more than model architecture.</p>
+
+      <p><strong>Preprocessing is where most bugs live.</strong> Tokenization inconsistencies between training and inference are a common source of silent failures. If your training data was tokenized with spaCy but your production pipeline uses regex tokenization, your model will see different inputs at inference time. We standardized on a simple regex tokenizer and never looked back. It is less sophisticated than spaCy's, but it is deterministic and fast.</p>
+
+      <p><strong>Post-processing is where most precision is gained.</strong> Raw model outputs often contain errors that simple rules can fix. If the model tags "Bank" as B-ORG but misses "Negara" as I-ORG, a post-processing rule that checks for known multi-word entities in a gazetteer can recover the full span. We found that rule-based post-processing added 3-5 F1 points on top of the model's raw output. This is not cheating — it is engineering.</p>
+
+      <p><strong>Entity linking is a separate problem.</strong> NER tells you that "BNM" is an organization. Entity linking tells you it refers to Bank Negara Malaysia. For production systems that need to populate a knowledge base or database, entity linking is essential. We use a combination of exact match, fuzzy match, and embedding-based similarity against a curated entity database.</p>
+
+      <h2>What BERT Changes — And What It Does Not</h2>
+
+      <p>BERT was published in October 2018, and it immediately became the most talked-about paper in NLP. The idea is straightforward: pre-train a Transformer encoder on a large corpus using masked language modeling and next-sentence prediction, then fine-tune on downstream tasks. BERT achieves state-of-the-art results on 11 NLP benchmarks, including NER.</p>
+
+      <p>For NER specifically, BERT replaces the embedding layer and the BiLSTM. Instead of GloVe + character CNN + BiLSTM, you use BERT's contextualized embeddings directly as input to the CRF. The representations are better because they are pre-trained on massive data, and they are contextual — the embedding for "bank" in "river bank" is different from "bank" in "central bank".</p>
+
+      <p>But BERT does not solve everything:</p>
+
+      <ul>
+        <li><strong>Inference cost.</strong> BERT-base has 110 million parameters. Our BiLSTM-CRF has about 3 million. On CPU, BERT inference is 10-50x slower depending on sequence length. For batch processing, this is manageable. For real-time systems with latency requirements under 100ms, it is a problem.</li>
+        <li><strong>Domain adaptation.</strong> BERT is pre-trained on English Wikipedia and BooksCorpus. If your domain is Malay legal documents, the pre-trained representations may not help much. Domain-specific pre-training (training BERT on your own corpus) helps, but it requires significant compute.</li>
+        <li><strong>Data efficiency is not magic.</strong> BERT helps most when you have moderate amounts of labeled data (1,000-10,000 examples). With very little data (under 100 examples), it still struggles. With a lot of data (over 50,000 examples), the gap between BERT and a well-tuned BiLSTM-CRF narrows.</li>
+        <li><strong>The CRF still matters.</strong> Even with BERT embeddings, adding a CRF layer on top improves results. The Transformer captures context, but the CRF captures tag-sequence constraints. They solve different problems.</li>
+      </ul>
+
+      <p>My current assessment: BERT will become the default for NER within a year or two, once inference optimization catches up (distillation, quantization, pruning). But the BiLSTM-CRF is not going away for edge cases — low-resource languages, real-time systems, and situations where you need a model that fits in memory on a small device.</p>
+
+      <h2>Lessons from Production</h2>
+
+      <p>After building NER systems for multiple domains and languages, here are the patterns I keep coming back to:</p>
+
+      <p><strong>Start with rules, add ML incrementally.</strong> For a new domain, the fastest path to a working system is a rule-based approach: gazetteers, regex patterns, and deterministic rules. This gives you a baseline that works immediately and generates training data for the ML model. We often run the rule-based system in production for weeks before deploying the ML model, using the rule-based output (with human corrections) as training data.</p>
+
+      <p><strong>Evaluation is harder than modeling.</strong> Entity-level F1 is the standard metric, but it hides important details. A system with 85% F1 might be excellent for one use case and unusable for another, depending on whether the errors are on common entities or rare ones, and whether precision or recall matters more. We track entity-level F1 broken down by type, frequency, and length, and we maintain a curated test set that represents the distribution of entities our users actually care about.</p>
+
+      <p><strong>Active learning is worth the investment.</strong> Labeling data is expensive. Active learning — selecting the most informative examples for human annotation — reduces the amount of labeled data you need by 2-5x. We use uncertainty sampling: the model labels a batch of unlabeled data, we send the most uncertain predictions to human annotators, and we retrain. This loop compounds over time.</p>
+
+      <p><strong>Multi-language is a different problem.</strong> Building NER for English is well-studied. Building NER for Malay, Bahasa Indonesia, or Tamil is a different challenge. Pre-trained embeddings are lower quality. Labeled data is scarce. Tokenization rules are different. We found that multilingual FastText embeddings, combined with transliteration as a preprocessing step, work reasonably well. But the accuracy gap between English and low-resource languages is real and significant.</p>
+
+      <h2>What Comes Next</h2>
+
+      <p>The direction is clear: pre-trained Transformers will replace task-specific architectures for most NLP applications. BERT for English, and multilingual BERT or XLM for other languages. The question is not whether, but when — and the answer depends on infrastructure, not algorithms.</p>
+
+      <p>What I am watching:</p>
+
+      <ul>
+        <li><strong>Model distillation.</strong> Can we compress BERT into a model small enough for real-time inference? Early distillation efforts suggest yes, with modest quality loss.</li>
+        <li><strong>Domain-specific pre-training.</strong> SciBERT and BioBERT show that pre-training on domain text improves downstream performance. I expect every major domain to have its own pre-trained model within two years.</li>
+        <li><strong>Few-shot NER.</strong> The holy grail is a model that can learn new entity types from a handful of examples. Pre-trained Transformers make this more plausible, but we are not there yet.</li>
+        <li><strong>End-to-end systems.</strong> The pipeline approach (tokenize, embed, predict, post-process, link) works but is fragile. End-to-end models that go from raw text to structured entities in a single pass would be more robust.</li>
+      </ul>
+
+      <hr />
+
+      <p>The BiLSTM-CRF is not glamorous. It is not a Transformer. It does not have a catchy name or a leaderboard-topping paper. But it works, it is fast, it is understandable, and it ships. In production NLP, that still counts for a lot.</p>
+
+      <p>For anyone starting an NLP project today: learn the Transformer, but master the pipeline. The model is the smallest part of the system.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
