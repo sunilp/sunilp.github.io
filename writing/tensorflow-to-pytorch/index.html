@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="We switched our NLP projects from TensorFlow to PyTorch mid-pandemic. Here's the technical reasoning, the trade-offs, and what the framework landscape looks like in 2020." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Switching from TensorFlow to PyTorch — A Practical Assessment" />
+  <meta property="og:description" content="TensorFlow 2.x vs PyTorch 1.5 for production NLP in 2020. Eager execution, debugging, ecosystem, and why we switched mid-project." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/tensorflow-to-pytorch/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/tensorflow-to-pytorch/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Switching from TensorFlow to PyTorch — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Switching from TensorFlow to PyTorch — A Practical Assessment",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2020-06-22",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Switching from TensorFlow to PyTorch — A Practical Assessment</h1>
+      <div class="article-meta">June 2020</div>
+
+      <p>It is June 2020 and I am writing this from Pune, India — where I have been stuck since March. I came for a family visit and then the borders closed. Travel restrictions between India and Singapore mean I cannot get back, so I have been working remotely with the Halialabs team for three months now. The lockdown here has been intense — curfews, everything shut, uncertainty about when flights will resume.</p>
+
+      <p>The pandemic has forced a strange kind of focus. With client meetings cancelled and travel impossible, we have had time to address technical debt that kept getting deferred. One decision we finally made: switching our primary deep learning framework from TensorFlow to PyTorch.</p>
+
+      <p>This is not a hot take or a framework war post. It is a practical accounting of why we switched, what the trade-offs are, and what the framework landscape actually looks like in mid-2020 for a small team building production NLP.</p>
+
+      <h2>Where We Started</h2>
+
+      <p>Our codebase was mostly TensorFlow 1.x. We had built our HS code classification system, several NER pipelines, and a text classification service on TF 1.x with Keras as a frontend. The code worked. It was in production. Some of it had been running for over a year without issues.</p>
+
+      <p>But TensorFlow 1.x had problems that compounded over time:</p>
+
+      <p><strong>Session-based execution was painful to debug.</strong> In TF 1.x, you build a computation graph, then execute it in a session. This means you cannot just print a tensor's value — you have to run it in a session, feed in the inputs, and inspect the output. Debugging a shape mismatch or a NaN in the loss meant scattering <code>tf.print</code> statements through the graph and re-running. Compared to writing regular Python, it felt like programming through a wall.</p>
+
+      <p><strong>The API surface was enormous and unstable.</strong> TF 1.x had <code>tf.layers</code>, <code>tf.keras.layers</code>, <code>tf.contrib.layers</code>, and raw <code>tf.nn</code>. All did similar things. Different tutorials used different APIs. Every major release broke something. We had code using <code>tf.contrib</code> functions that were deprecated, moved, or removed across versions. Upgrading TensorFlow was a project in itself.</p>
+
+      <p><strong>Keras integration was half-finished.</strong> Keras was supposed to be the simple API on top of TF. In practice, mixing Keras layers with raw TF operations created subtle bugs. The <code>tf.keras</code> and standalone <code>keras</code> packages diverged. Model serialization was inconsistent — some models saved with <code>model.save()</code>, others needed <code>tf.saved_model</code>, others needed <code>tf.train.Saver</code>. We had three different serialization formats in production.</p>
+
+      <h2>Why PyTorch</h2>
+
+      <p>PyTorch had been gaining traction since 2017, and by 2020 it had crossed a threshold for us. Three things tipped the decision:</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">TENSORFLOW 1.x vs PYTORCH 1.5 — OUR DECISION FACTORS</text>
+
+          <!-- TF column -->
+          <rect x="20" y="36" width="240" height="200" rx="6" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="140" y="58" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#6b6b6b" text-anchor="middle">TensorFlow 1.x</text>
+          <line x1="40" y1="66" x2="240" y2="66" stroke="#e8e8e8"/>
+
+          <text x="40" y="86" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Graph-then-execute</text>
+          <text x="40" y="104" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">3+ API layers for same op</text>
+          <text x="40" y="122" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Session debugging</text>
+          <text x="40" y="140" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">tf.contrib deprecation</text>
+          <text x="40" y="158" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">3 serialization formats</text>
+          <text x="40" y="176" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">TF Serving (production+)</text>
+          <text x="40" y="194" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Mobile/edge (TF Lite)</text>
+          <text x="40" y="212" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">TensorBoard</text>
+
+          <!-- PyTorch column -->
+          <rect x="300" y="36" width="240" height="200" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="420" y="58" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#1a1a1a" text-anchor="middle">PyTorch 1.5</text>
+          <line x1="320" y1="66" x2="520" y2="66" stroke="#e8e8e8"/>
+
+          <text x="320" y="86" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Eager by default</text>
+          <text x="320" y="104" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">One way to do things</text>
+          <text x="320" y="122" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Normal Python debugging</text>
+          <text x="320" y="140" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Stable API since 1.0</text>
+          <text x="320" y="158" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">torch.save / TorchScript</text>
+          <text x="320" y="176" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">HuggingFace ecosystem</text>
+          <text x="320" y="194" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Serving less mature</text>
+          <text x="320" y="212" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Mobile support early</text>
+
+          <!-- Verdict -->
+          <text x="280" y="252" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">TF wins on deployment infra. PyTorch wins on everything a 4-person team touches daily.</text>
+        </svg>
+      </figure>
+
+      <p><strong>Eager execution changes everything.</strong> PyTorch is eager by default — you write <code>y = model(x)</code> and it executes immediately. You can print intermediate values, set breakpoints, use pdb, inspect tensor shapes — all the normal Python debugging tools work. TensorFlow 2.0 added eager execution too, but it was bolted onto an existing graph-based system. In PyTorch, eager is the foundation. The difference in development speed is real — I estimate we debug models 2-3x faster in PyTorch than we did in TF 1.x.</p>
+
+      <p><strong>HuggingFace Transformers is PyTorch-first.</strong> This was the most practical factor. HuggingFace's <code>transformers</code> library — which provides pre-trained BERT, GPT-2, RoBERTa, DistilBERT, and dozens of other models — is primarily a PyTorch library. TensorFlow support exists but lags behind. For an NLP team in 2020, not using HuggingFace is like not using scikit-learn in 2015 — you are reinventing work that has already been done. And HuggingFace means PyTorch.</p>
+
+      <p><strong>Research papers ship PyTorch code.</strong> In 2018, most papers released TensorFlow code. By 2020, the majority release PyTorch code — or PyTorch only. If we want to reproduce results, try new architectures, or adapt published models, PyTorch is where the code is. This is a network effect that has tipped decisively.</p>
+
+      <h2>What We Gave Up</h2>
+
+      <p>The switch was not free. TensorFlow had real advantages we had to replace or accept losing:</p>
+
+      <p><strong>TF Serving is excellent.</strong> Deploying a TensorFlow model behind a gRPC or REST endpoint with TF Serving is battle-tested, performant, and handles batching, versioning, and GPU scheduling out of the box. PyTorch's serving story in mid-2020 is fragmented — TorchServe just launched (experimental), and most teams roll their own Flask/FastAPI wrapper. We moved to a custom FastAPI service with TorchScript for serialization. It works, but it is more code to maintain.</p>
+
+      <p><strong>TF Lite and mobile deployment.</strong> We had one project exploring on-device inference. TF Lite is mature for this. PyTorch Mobile exists but is early. For this specific use case, we kept TensorFlow.</p>
+
+      <p><strong>Existing production models.</strong> We did not rewrite our running production models. The NER pipeline and classification service stayed on TF 1.x. The switch applies to new projects going forward. Rewriting working production code for a framework change is almost never worth it.</p>
+
+      <h2>What About TensorFlow 2.0?</h2>
+
+      <p>The obvious question: TF 2.0 added eager execution, cleaned up the API, and made Keras the official high-level interface. Why not just upgrade to TF 2.0 instead of switching frameworks?</p>
+
+      <p>We considered it. Three things pushed us away:</p>
+
+      <p><strong>Migration effort is similar.</strong> TF 1.x to TF 2.0 is not a simple upgrade. Session-based code has to be rewritten. <code>tf.contrib</code> is gone. The migration script (<code>tf_upgrade_v2</code>) handles syntax changes but not architectural changes. If we were going to rewrite, we might as well rewrite in the framework with better long-term momentum.</p>
+
+      <p><strong>The community has moved.</strong> NLP research in 2020 is happening in PyTorch. When a new model is published — BART, ELECTRA, T5 — the reference implementation is PyTorch. The HuggingFace ecosystem, which has become the de facto standard for NLP, is PyTorch-native. TF 2.0 is catching up, but "catching up" is not where you want your core framework to be.</p>
+
+      <p><strong>Google's own mixed signals.</strong> Google uses TensorFlow internally, but also uses JAX for new research (the T5 paper used JAX). TF 2.0, Keras, JAX, Trax — the number of Google-backed ML frameworks is confusing. PyTorch has one framework, one way of doing things, and a clear roadmap. For a small team, simplicity wins.</p>
+
+      <h2>The Pandemic Factor</h2>
+
+      <p>I would not have written this post without COVID. Not because the pandemic changed our technical reasoning — the framework decision was overdue regardless. But because the pandemic created the conditions for making it.</p>
+
+      <p>Pre-COVID, we were busy with client delivery, travel, on-site work. Technical debt decisions kept getting deferred — "we'll switch after this project," "we'll refactor after this deployment." The pandemic removed the excuses. With client timelines extended, travel impossible, and me working from a different timezone than the rest of the team, we finally had space to make infrastructure decisions that would pay off over months rather than days. The timezone gap between India and Singapore is small enough to make remote collaboration workable, and the forced async style actually helped — more written communication, fewer interruptions.</p>
+
+      <p>The pandemic has been devastating — the human cost in India and globally is real, and I do not want to minimize it. Being separated from my normal life in Singapore, watching the situation in India worsen, seeing friends lose jobs and businesses we worked with close — it has been hard. The uncertainty about when I can return, when things normalize, is constant.</p>
+
+      <p>But for the specific, narrow question of software decisions: the forced slowdown gave us time to think about foundations rather than features. I suspect many engineering teams are having similar moments — using the disruption to address choices they should have made a year ago.</p>
+
+      <h2>Practical Notes on the Migration</h2>
+
+      <p>For anyone considering a similar switch, a few things we learned:</p>
+
+      <p><strong>Start with the training loop, not the model.</strong> The biggest difference between TF and PyTorch is not the layer APIs (they are similar) — it is the training loop. TF/Keras hides the training loop behind <code>model.fit()</code>. PyTorch makes you write it explicitly: forward pass, loss computation, <code>loss.backward()</code>, <code>optimizer.step()</code>. This is more code, but it is also more control. Start by understanding the PyTorch training loop, and the rest follows.</p>
+
+      <p><strong>Data loading is different and better.</strong> PyTorch's <code>DataLoader</code> with <code>Dataset</code> classes and multiprocessing workers is cleaner than <code>tf.data</code>. It is regular Python — no special API, no graph-mode data pipeline. You can debug your data pipeline with print statements. This sounds trivial; it is not.</p>
+
+      <p><strong>Model serialization: use TorchScript for production.</strong> <code>torch.save</code> pickles the model and works for checkpoints. For production serving, TorchScript (<code>torch.jit.trace</code> or <code>torch.jit.script</code>) produces a serialized model that can run without Python. Not every model traces cleanly — dynamic control flow requires <code>torch.jit.script</code>, which has its own quirks. But for standard architectures (BERT, LSTM, CNN), tracing works.</p>
+
+      <p><strong>Use <code>pytorch-lightning</code> to reduce boilerplate.</strong> We discovered <code>pytorch-lightning</code> partway through the migration. It provides the structure of Keras (organized training loop, callbacks, logging) without hiding the PyTorch underneath. For a team that was used to Keras's <code>model.fit()</code>, Lightning was a good bridge.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">OUR NEW STACK (MID-2020)</text>
+
+          <!-- Stack layers -->
+          <rect x="80" y="36" width="400" height="32" rx="4" fill="#1a1a1a"/>
+          <text x="280" y="56" font-family="IBM Plex Mono, monospace" font-size="11" fill="#fff" text-anchor="middle">HuggingFace Transformers</text>
+
+          <rect x="80" y="74" width="195" height="32" rx="4" fill="#6b6b6b"/>
+          <text x="177" y="94" font-family="IBM Plex Mono, monospace" font-size="11" fill="#fff" text-anchor="middle">PyTorch 1.5</text>
+
+          <rect x="285" y="74" width="195" height="32" rx="4" fill="#6b6b6b"/>
+          <text x="382" y="94" font-family="IBM Plex Mono, monospace" font-size="11" fill="#fff" text-anchor="middle">PyTorch Lightning</text>
+
+          <rect x="80" y="112" width="130" height="32" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="145" y="132" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">TorchScript</text>
+
+          <rect x="215" y="112" width="130" height="32" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="280" y="132" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">FastAPI</text>
+
+          <rect x="350" y="112" width="130" height="32" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="132" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Docker</text>
+
+          <rect x="80" y="150" width="400" height="32" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="280" y="170" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">Ubuntu 18.04 / CUDA 10.2 / AWS EC2</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">The new stack: HuggingFace + PyTorch + Lightning for training, TorchScript + FastAPI for serving.</p>
+
+      <h2>Six Months In</h2>
+
+      <p>We are about three months into active development on PyTorch (we made the decision in March, started the migration in April). Early observations:</p>
+
+      <ul>
+        <li><strong>Development velocity is noticeably higher.</strong> Prototyping a new model takes about half the time it did in TF 1.x. Debugging takes a third. The difference is largest for new or experimental work.</li>
+        <li><strong>HuggingFace is as good as advertised.</strong> Fine-tuning DistilBERT for our NER task took less than a day, including data preparation. The same work in TF 1.x took a week the first time we did it.</li>
+        <li><strong>Production serving needs more work.</strong> Our FastAPI + TorchScript setup works but lacks the monitoring and scaling features of TF Serving. We are evaluating TorchServe but it is still early.</li>
+        <li><strong>Old TF code is still running fine.</strong> The production NER pipeline and classification service have not been touched. They do not need to be. If it works, let it work.</li>
+      </ul>
+
+      <hr />
+
+      <p>The framework decision is less important than it feels. The real work — understanding the data, designing the pipeline, evaluating the model, getting it into production — is framework-agnostic. PyTorch makes the daily mechanics of that work faster and more pleasant, which compounds over weeks and months. But it is the work that matters, not the tool.</p>
+
+      <p>If you are on TF 1.x and considering a switch: the answer is probably yes, but do not rewrite working production code. Adopt PyTorch for new projects. Let old code age gracefully. And if you are starting fresh in 2020 — start with PyTorch. The ecosystem has tipped.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
