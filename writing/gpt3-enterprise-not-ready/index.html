@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GPT-3 demonstrates that scale changes everything in language models. But enterprises face a gap between what the API can do and what they can deploy — cost, latency, safety, and governance remain unsolved." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="GPT-3 Changed the Game — Is Enterprise Ready?" />
+  <meta property="og:description" content="175 billion parameters, few-shot learning, and an API. What GPT-3 means for production AI — and why enterprises cannot use it yet." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/gpt3-enterprise-not-ready/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/gpt3-enterprise-not-ready/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>GPT-3 Changed the Game — Is Enterprise Ready? — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "GPT-3 Changed the Game — Is Enterprise Ready?",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2020-11-15",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>GPT-3 Changed the Game — Is Enterprise Ready?</h1>
+      <div class="article-meta">November 2020</div>
+
+      <p>In June, OpenAI released GPT-3 — a language model with 175 billion parameters that can write essays, generate code, answer questions, and perform tasks it was never explicitly trained for, just by being given a few examples in the prompt. The paper, <em>Language Models are Few-Shot Learners</em>, demonstrated something that the scaling laws had been predicting but that few people truly believed: making a language model big enough changes what it can do.</p>
+
+      <p>I have been working with AI in production for over two years now at Halialabs, building NLP systems and exploring how these capabilities translate to real-world applications. GPT-3 is the first model that made me rethink what is possible. But it also made clear how far enterprise infrastructure is from being ready to use it.</p>
+
+      <h2>What Changed</h2>
+
+      <p>GPT-3 is not just a bigger GPT-2. It crosses a threshold. Three capabilities stand out:</p>
+
+      <p><strong>Few-shot learning works.</strong> Give GPT-3 three examples of a task — translating English to French, classifying sentiment, extracting entities — and it performs the task on new inputs without any gradient updates. No fine-tuning. No labeled dataset. No training loop. This is qualitatively different from BERT, which requires task-specific fine-tuning with labeled data. GPT-3 suggests that with enough pre-training, the model learns a meta-learning algorithm: it learns how to learn from examples in context.</p>
+
+      <p><strong>Scaling laws hold.</strong> The relationship between model size, dataset size, compute, and performance follows predictable power laws. This was formalized by Kaplan et al. earlier this year. GPT-3 at 175B parameters sits on the same curve as GPT-2 at 1.5B. The implication is both exciting and sobering: performance will continue to improve with scale, but the compute requirements grow faster than the gains.</p>
+
+      <p><strong>Generality is emerging.</strong> GPT-3 can do arithmetic, write SQL, summarize legal text, generate regex patterns, and translate between programming languages — none of which it was explicitly trained to do. These capabilities emerge from scale. They are not designed; they are discovered. This challenges the assumption that each task needs its own model.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">THE SCALING JUMP: GPT-2 TO GPT-3</text>
+
+          <!-- Scale comparison -->
+          <!-- GPT-2 -->
+          <rect x="40" y="40" width="180" height="100" rx="6" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="130" y="62" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a" text-anchor="middle">GPT-2</text>
+          <text x="130" y="82" font-family="IBM Plex Mono, monospace" font-size="20" fill="#6b6b6b" text-anchor="middle">1.5B</text>
+          <text x="130" y="98" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">parameters</text>
+          <text x="130" y="128" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">40GB text</text>
+
+          <!-- Arrow -->
+          <line x1="230" y1="90" x2="328" y2="90" stroke="#1a1a1a" stroke-width="1.5"/>
+          <polygon points="328,86 336,90 328,94" fill="#1a1a1a"/>
+          <text x="279" y="80" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">117x</text>
+
+          <!-- GPT-3 -->
+          <rect x="340" y="40" width="180" height="100" rx="6" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="430" y="62" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="500" fill="#fff" text-anchor="middle">GPT-3</text>
+          <text x="430" y="82" font-family="IBM Plex Mono, monospace" font-size="20" fill="#fff" text-anchor="middle">175B</text>
+          <text x="430" y="98" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">parameters</text>
+          <text x="430" y="128" font-family="IBM Plex Mono, monospace" font-size="10" fill="#ccc" text-anchor="middle">570GB text</text>
+
+          <!-- Capability comparison bars -->
+          <text x="40" y="174" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">EMERGENT CAPABILITIES</text>
+
+          <!-- Few-shot -->
+          <text x="40" y="198" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Few-shot learning</text>
+          <rect x="200" y="188" width="140" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="200" y="188" width="30" height="14" rx="2" fill="#999"/>
+          <text x="350" y="199" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999">GPT-2: poor</text>
+          <rect x="200" y="206" width="140" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="200" y="206" width="120" height="14" rx="2" fill="#1a1a1a"/>
+          <text x="350" y="217" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a">GPT-3: strong</text>
+
+          <!-- Arithmetic -->
+          <text x="40" y="244" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">2-digit addition</text>
+          <rect x="200" y="234" width="140" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="200" y="234" width="10" height="14" rx="2" fill="#999"/>
+          <text x="350" y="245" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999">GPT-2: ~0%</text>
+          <rect x="200" y="252" width="140" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="200" y="252" width="136" height="14" rx="2" fill="#1a1a1a"/>
+          <text x="350" y="263" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a">GPT-3: ~100%</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">117x more parameters, qualitatively different capabilities. Some abilities don't appear at smaller scales.</p>
+
+      <h2>Five Problems Enterprise Has to Solve First</h2>
+
+      <p>GPT-3 is available through an API. You send text, you get text back. In principle, any application can use it. In practice, there are five problems that make it unsuitable for most enterprise use cases today.</p>
+
+      <p><strong>Cost.</strong> GPT-3's API pricing is roughly $0.06 per 1,000 tokens for the largest model (davinci). Processing a single page of text costs about $0.05. This sounds cheap until you multiply by volume. A document processing pipeline handling 10,000 documents per day, each requiring multiple API calls for extraction, classification, and summarization, can cost hundreds of dollars per day. For comparison, a fine-tuned BERT model running on a $0.50/hour GPU instance can process the same workload for under $12/day. The economics do not work at scale for most routine tasks.</p>
+
+      <p><strong>Latency.</strong> API calls to GPT-3 typically take 1-10 seconds depending on the output length and model size. For interactive applications — chatbots, real-time search, document triage — this is too slow. And because it is an API, latency is variable and depends on OpenAI's infrastructure. You cannot control it, optimize it, or guarantee SLAs.</p>
+
+      <p><strong>Data privacy.</strong> In most enterprise environments — especially financial services, healthcare, and government — sending production data to a third-party API is not permitted. Regulatory frameworks like GDPR, HIPAA, and local data sovereignty laws require that sensitive data be processed within controlled environments. OpenAI's API is a non-starter for any use case involving customer data, financial records, or personally identifiable information in a regulated industry.</p>
+
+      <p><strong>Reliability and consistency.</strong> GPT-3 is non-deterministic by default. The same prompt can produce different outputs on different calls. It can hallucinate — produce fluent, confident text that is factually wrong. It has no notion of ground truth, no mechanism for citing sources, and no way to guarantee that output conforms to a schema. For tasks that require structured, reliable, auditable output, this is a fundamental problem.</p>
+
+      <p><strong>No fine-tuning (yet).</strong> As of now, GPT-3 is a frozen model accessible only through prompting. You cannot fine-tune it on your domain data. Few-shot prompting helps, but it has limits — complex domain-specific tasks (legal entity extraction, medical coding, financial classification) require more than a few examples in the prompt. Fine-tuning APIs are reportedly coming, but they do not exist today.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">THE ENTERPRISE GAP</text>
+
+          <!-- What GPT-3 can do -->
+          <rect x="30" y="34" width="230" height="150" rx="6" fill="#1a1a1a"/>
+          <text x="145" y="58" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#fff" text-anchor="middle">What GPT-3 can do</text>
+          <line x1="60" y1="68" x2="230" y2="68" stroke="#333"/>
+          <text x="50" y="90" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">Write marketing copy</text>
+          <text x="50" y="108" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">Summarize documents</text>
+          <text x="50" y="126" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">Answer questions</text>
+          <text x="50" y="144" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">Generate code</text>
+          <text x="50" y="162" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">Translate languages</text>
+
+          <!-- Gap -->
+          <rect x="268" y="64" width="24" height="110" rx="0" fill="#f5f5f3" stroke="#e8e8e8" stroke-dasharray="4 2"/>
+          <text x="280" y="124" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" transform="rotate(-90, 280, 124)">GAP</text>
+
+          <!-- What enterprise needs -->
+          <rect x="300" y="34" width="230" height="150" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="58" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">What enterprise needs</text>
+          <line x1="330" y1="68" x2="500" y2="68" stroke="#e8e8e8"/>
+          <text x="320" y="90" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Data stays on-premise</text>
+          <text x="320" y="108" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Deterministic outputs</text>
+          <text x="320" y="126" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Audit trails</text>
+          <text x="320" y="144" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Sub-second latency</text>
+          <text x="320" y="162" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">Predictable cost at scale</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">GPT-3's capabilities are real. But enterprise requirements — privacy, cost, latency, reliability — remain unsolved.</p>
+
+      <h2>The Scaling Laws Argument</h2>
+
+      <p>The most important insight from GPT-3 is not the model itself. It is what the scaling laws predict about what comes next.</p>
+
+      <p>Kaplan et al. showed that loss (a proxy for model quality) decreases as a power law of model size, dataset size, and compute budget. The relationship is remarkably smooth — no plateaus, no diminishing returns at the scales tested. If you plot GPT, GPT-2, and GPT-3 on this curve, they fall on a straight line.</p>
+
+      <p>This has two implications:</p>
+
+      <p>First, <strong>bigger models will be better</strong>. GPT-3 at 175B is not the ceiling. The scaling laws suggest that a 1-trillion-parameter model, trained on proportionally more data, would be substantially better. The question is whether anyone will spend the tens of millions of dollars in compute required to train it.</p>
+
+      <p>Second, <strong>the gap between what is possible and what is deployable will widen before it narrows</strong>. Each order of magnitude in model size makes the capabilities more impressive and the deployment more impractical. A 1T parameter model cannot run on a single GPU. It probably cannot run on a single machine. Inference will require distributed systems, specialized hardware, and infrastructure that most organizations do not have.</p>
+
+      <p>The companies that will capture value from this technology are the ones that solve the deployment problem — making large models fast, cheap, private, and reliable enough for production use. This is an infrastructure problem, not a research problem.</p>
+
+      <h2>What This Means For How We Build AI</h2>
+
+      <p>GPT-3 accelerates a shift that was already underway: from task-specific models to general-purpose models adapted to tasks.</p>
+
+      <p>The old paradigm: collect labeled data for your specific task, train a model from scratch (or fine-tune a pre-trained model), deploy the model, maintain it. Each task gets its own model. Each model needs its own data pipeline, training infrastructure, and monitoring.</p>
+
+      <p>The emerging paradigm: use a large, general-purpose model. Adapt it to your task through prompting, fine-tuning, or retrieval. One model serves many tasks. The investment shifts from model training to prompt engineering, evaluation, and guardrails.</p>
+
+      <p>This shift has consequences for how AI teams are structured:</p>
+
+      <ul>
+        <li><strong>Data labeling becomes less critical, prompt engineering becomes more critical.</strong> Getting the right few-shot examples, the right instruction format, and the right constraints in the prompt is a skill that does not exist in most organizations.</li>
+        <li><strong>Evaluation becomes the bottleneck.</strong> When a model can do almost anything, the hard part is measuring whether it is doing it well. Automated evaluation metrics for open-ended generation are still primitive. Human evaluation is expensive and slow.</li>
+        <li><strong>Safety and governance become first-class problems.</strong> A model that can generate any text can also generate harmful text. Content filtering, bias mitigation, and output validation are no longer nice-to-haves — they are requirements for any production deployment.</li>
+      </ul>
+
+      <h2>Where I Think This Is Going</h2>
+
+      <p>Making predictions about AI is a fool's errand, but here is what I expect over the next two to three years:</p>
+
+      <p><strong>Open-source catches up.</strong> GPT-3 is proprietary. But the architecture is published, the training procedure is known, and compute is becoming cheaper. Projects like EleutherAI are already training large open-source language models. Within two years, I expect open-source models that are competitive with GPT-3, available for anyone to fine-tune and deploy on their own infrastructure. This will be the inflection point for enterprise adoption.</p>
+
+      <p><strong>Specialized models beat general ones for most tasks.</strong> GPT-3 is impressive because it is general. But for any specific task, a smaller model trained on domain data will likely outperform it at a fraction of the cost. The pattern I expect: use GPT-3 (or its successors) for prototyping and exploration, then distill into a smaller, faster, cheaper model for production.</p>
+
+      <p><strong>The infrastructure layer is the real opportunity.</strong> Model training is a research problem. Model deployment at scale is an engineering problem. The companies and teams that build the infrastructure to serve large models efficiently — inference optimization, model compression, serving frameworks, monitoring, guardrails — will capture more value than those building the models themselves.</p>
+
+      <hr />
+
+      <p>GPT-3 is a preview. It shows us where natural language processing is going — models that understand and generate language well enough to be useful for real tasks, without task-specific training. But the gap between a research demo and a production system remains wide. Closing that gap is the real work ahead, and it is infrastructure work, not model work.</p>
+
+      <p>For those of us building AI in production: the capabilities are coming. The question is whether our systems — our data governance, our deployment infrastructure, our evaluation frameworks, our organizational readiness — will be ready when they arrive.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
