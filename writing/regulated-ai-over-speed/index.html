@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="After three years building AI at a startup, I moved to a global bank. Here's why regulated environments are where AI gets hardest — and most valuable." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Why I Chose Regulated AI Over Startup Speed" />
+  <meta property="og:description" content="The case for building AI in regulated industries — where constraints force better engineering, governance isn't optional, and impact scales differently." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/regulated-ai-over-speed/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/regulated-ai-over-speed/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Why I Chose Regulated AI Over Startup Speed — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why I Chose Regulated AI Over Startup Speed",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2021-08-20",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Why I Chose Regulated AI Over Startup Speed</h1>
+      <div class="article-meta">August 2021</div>
+
+      <p>Earlier this year I made a career move that surprised some people. After three years as Chief Scientist at Halialabs — an AI startup in Singapore where I built NLP systems, shipped products, and had the freedom to choose my own tools and timelines — I joined a global bank. Regulated. Enterprise. Committees.</p>
+
+      <p>The question I keep getting: why would you leave the speed and autonomy of a startup for the bureaucracy of a bank?</p>
+
+      <p>The answer is straightforward. I did not leave despite the constraints. I joined because of them.</p>
+
+      <h2>What Startups Taught Me</h2>
+
+      <p>Halialabs was a formative experience. We built NER systems for Southeast Asian languages, document extraction pipelines, and conversational AI prototypes. We moved fast. We deployed models with minimal review. We iterated on production systems weekly. I learned more about practical NLP in three years at a startup than in any other period of my career.</p>
+
+      <p>But I also learned the limits of startup AI:</p>
+
+      <p><strong>Scale is capped by economics.</strong> A startup NER system processes thousands of documents per day. A bank processes millions. The architecture decisions, cost optimization, and reliability requirements are qualitatively different. Startup AI is about proving that something works. Enterprise AI is about proving that it works reliably, at scale, for years, under audit.</p>
+
+      <p><strong>Impact is capped by distribution.</strong> We built excellent NLP systems at Halialabs. Some of them were used by a few dozen clients. At a bank with operations in 60 countries, a single improvement to a data pipeline touches billions of dollars in assets. The technical challenge may be similar, but the leverage is orders of magnitude higher.</p>
+
+      <p><strong>Governance is an afterthought until it is a crisis.</strong> At a startup, model governance means "the person who trained the model knows what it does." At a bank, it means model validation, regulatory reporting, audit trails, explainability requirements, and change management. Most AI startups treat governance as overhead. I learned to see it as the thing that determines whether a model actually gets deployed — or sits in a notebook forever.</p>
+
+      <h2>Why Regulated Environments Are Harder</h2>
+
+      <p>There is a common misconception that enterprise AI is technically easier than startup AI — that the hard problems are in research labs and startups, while enterprises just deploy off-the-shelf solutions. This is backwards.</p>
+
+      <p>Enterprise AI in a regulated industry is harder in almost every dimension that matters for production systems:</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">STARTUP AI vs REGULATED AI</text>
+
+          <!-- Column headers -->
+          <text x="140" y="46" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#6b6b6b" text-anchor="middle">Startup</text>
+          <text x="420" y="46" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">Regulated Enterprise</text>
+
+          <!-- Row 1: Data -->
+          <text x="280" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">DATA ACCESS</text>
+          <rect x="40" y="82" width="200" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="140" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Open datasets, scrape freely</text>
+          <rect x="320" y="82" width="200" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="420" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Classified, permissioned, audited</text>
+
+          <!-- Row 2: Deployment -->
+          <text x="280" y="130" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">DEPLOYMENT</text>
+          <rect x="40" y="136" width="200" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="140" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Push to prod, iterate fast</text>
+          <rect x="320" y="136" width="200" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="420" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Model validation, change advisory</text>
+
+          <!-- Row 3: Failure cost -->
+          <text x="280" y="184" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">FAILURE COST</text>
+          <rect x="40" y="190" width="200" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="140" y="208" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Rollback, apologize, fix</text>
+          <rect x="320" y="190" width="200" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="420" y="208" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Regulatory fines, reputation risk</text>
+
+          <!-- Row 4: Timeline -->
+          <text x="280" y="238" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">TIMELINE</text>
+          <rect x="40" y="244" width="200" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="140" y="262" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Ship in weeks</text>
+          <rect x="320" y="244" width="200" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="420" y="262" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Ship in months (with validation)</text>
+
+          <!-- Insight -->
+          <text x="280" y="294" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">Constraints are not overhead. They are the engineering challenge.</text>
+        </svg>
+      </figure>
+
+      <p><strong>Data access is the first constraint.</strong> In a startup, you can scrape data, use public datasets, or ask customers to share their data with minimal legal friction. In a bank, data is classified. Personal data is subject to GDPR and local privacy laws. Market data has licensing restrictions. Cross-border data transfer requires legal review. Getting access to the data you need to train a model can take weeks or months, and the data governance requirements shape your architecture before you write a single line of model code.</p>
+
+      <p><strong>Model validation is a regulatory requirement.</strong> In financial services, models that inform business decisions must go through formal validation — an independent review of the model's methodology, assumptions, performance, and limitations. This is not a code review. It is a regulatory requirement under frameworks like SR 11-7 (Federal Reserve) and SS1/23 (Bank of England). The validation process tests your model against scenarios you did not test, questions assumptions you took for granted, and requires documentation that goes far beyond what any startup would produce. It makes your models better.</p>
+
+      <p><strong>Explainability is not optional.</strong> A startup can deploy a black-box model and explain results post-hoc if a customer asks. A bank often cannot. Regulators and internal risk functions require that model decisions be explainable — not just "the model says this" but "the model says this because of these factors, with this confidence, and here are the limitations." This forces you to think about interpretability from the start, not as an afterthought.</p>
+
+      <p><strong>The cost of failure is asymmetric.</strong> If a startup's NER model misclassifies an entity, the customer sees a wrong answer and files a bug report. If a bank's risk model misclassifies an exposure, the consequence could be a regulatory fine, a capital adequacy issue, or a front-page story. This asymmetry changes how you think about testing, monitoring, and fallback mechanisms.</p>
+
+      <h2>What Regulated AI Forces You to Learn</h2>
+
+      <p>The constraints of regulated environments are not obstacles to good AI. They are forcing functions for better AI.</p>
+
+      <p><strong>You learn to build data platforms before models.</strong> In a startup, you build the model first and figure out the data pipeline later. In a regulated enterprise, the data platform is the foundation. Data lineage, quality monitoring, access control, and cataloging are not nice-to-haves — they are prerequisites. You learn that most AI failures are data failures, and that investing in data infrastructure pays dividends across every model you build.</p>
+
+      <p><strong>You learn to think in systems, not models.</strong> A production AI system in a bank is not a model. It is a model embedded in a data pipeline, connected to source systems, feeding into downstream processes, monitored by operations, governed by risk frameworks, and audited by regulators. The model is the smallest component. If you only know how to train models, you cannot build production AI in this environment. You need to think in systems.</p>
+
+      <p><strong>You learn that governance is a design problem.</strong> Most AI teams treat governance as a tax — something imposed by compliance that slows them down. I have come to see it as a design problem. How do you build a system where model changes are traceable? Where data lineage is automatic? Where model performance is continuously monitored? Where regulatory reporting is a byproduct of good engineering, not a separate workstream? Governance done well is invisible. Governance done poorly is a bottleneck.</p>
+
+      <p><strong>You learn to communicate differently.</strong> At a startup, your audience is other engineers. At a bank, your audience includes business leaders who think in terms of revenue and risk, risk managers who think in terms of exposure and controls, and regulators who think in terms of compliance and consumer protection. You learn to explain AI in the language of your stakeholder, not in the language of your framework.</p>
+
+      <h2>The Opportunity</h2>
+
+      <p>Here is what I find exciting about enterprise AI right now: it is early.</p>
+
+      <p>Most banks, insurance companies, and financial institutions are at the beginning of their AI journey. They have data — enormous amounts of it. They have use cases — risk modeling, fraud detection, document processing, customer analytics, regulatory reporting. They have budget. What they lack is the operating model: the organizational structure, the technical infrastructure, the governance frameworks, and the talent to turn AI from a pilot project into an organizational capability.</p>
+
+      <p>Building that operating model is the work I find most interesting. It is not glamorous. It does not produce demos that go viral on Twitter. But it is the work that determines whether AI scales in the organizations that have the most data, the most resources, and the highest stakes.</p>
+
+      <p>The question for anyone building AI is: where do you want your work to have the most impact? For me, the answer is in the environments where the constraints are highest — because that is where the solutions are most valuable.</p>
+
+      <hr />
+
+      <p>Three years ago I chose a startup because I wanted to learn how to build AI systems. Now I am choosing a regulated enterprise because I want to learn how to build AI systems that last. Both are worth doing. The skills compound.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
