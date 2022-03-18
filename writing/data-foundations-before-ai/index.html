@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why data platforms matter more than models for enterprise AI — Data Vault 2.0, BCBS 239, dbt, BigQuery, and the unsexy prerequisite work that makes AI possible in banking." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Building Data Foundations While Everyone Chased Models" />
+  <meta property="og:description" content="Data Vault 2.0, BCBS 239 compliance, dbt, BigQuery — the unglamorous infrastructure that determines whether enterprise AI succeeds or fails." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/data-foundations-before-ai/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/data-foundations-before-ai/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Building Data Foundations While Everyone Chased Models — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building Data Foundations While Everyone Chased Models",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2022-03-18",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Building Data Foundations While Everyone Chased Models</h1>
+      <div class="article-meta">March 2022</div>
+
+      <p>The industry conversation right now is dominated by models. GPT-3 is almost two years old and every enterprise wants to know how to use large language models. Startups are raising rounds on the premise of fine-tuning foundation models for vertical use cases. The discourse is about parameters, benchmarks, and which API to call.</p>
+
+      <p>Meanwhile, I am at a global bank, building a data platform. Not a model. Not an ML pipeline. A data platform. The thing that ingests data from source systems, stores it with full lineage, transforms it into something trustworthy, and makes it available to anyone who needs it &mdash; including, eventually, models.</p>
+
+      <p>This is not glamorous work. Nobody writes Twitter threads about data vault modeling or BCBS 239 compliance. But after a year of doing this, I am increasingly convinced that the data platform is the single most important prerequisite for enterprise AI &mdash; and the one most organizations skip.</p>
+
+      <h2>The Model Is Not the Hard Part</h2>
+
+      <p>Here is a pattern I have seen repeatedly: a data science team builds a promising model. It works in the notebook. The accuracy metrics are good. Leadership is excited. Then someone asks where the training data came from, and the answer is "I exported it from a dashboard" or "someone in operations sent me a CSV." The model is built on sand.</p>
+
+      <p>In a regulated enterprise, this is not just technically fragile &mdash; it is a compliance failure. When a regulator asks you to demonstrate the provenance of data that fed a model used in a business decision, "I got a CSV" is not an acceptable answer. You need to trace data from source system to model input, with every transformation documented, every quality check recorded, and every version preserved.</p>
+
+      <p>This is what a data platform provides. Without it, every AI initiative is an isolated experiment that cannot be trusted, audited, or scaled.</p>
+
+      <h2>Data Vault 2.0: Why It Matters in Banking</h2>
+
+      <p>The data modeling pattern we chose is Data Vault 2.0. It is not new &mdash; Dan Linstedt published the methodology years ago &mdash; but it is unusually well suited to the constraints of banking.</p>
+
+      <p>The core idea is a separation of concerns into three entity types:</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">DATA VAULT 2.0 PATTERN</text>
+
+          <!-- Hub: Customer -->
+          <rect x="40" y="120" width="140" height="70" rx="4" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="110" y="140" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">HUB</text>
+          <text x="110" y="158" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">Customer</text>
+          <text x="110" y="176" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">hash_key, biz_key, load_ts</text>
+
+          <!-- Hub: Account -->
+          <rect x="380" y="120" width="140" height="70" rx="4" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="140" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">HUB</text>
+          <text x="450" y="158" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">Account</text>
+          <text x="450" y="176" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">hash_key, biz_key, load_ts</text>
+
+          <!-- Link -->
+          <rect x="210" y="120" width="140" height="70" rx="4" fill="#fff" stroke="#6b6b6b" stroke-width="1" stroke-dasharray="4 2"/>
+          <text x="280" y="140" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">LINK</text>
+          <text x="280" y="158" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">Cust-Account</text>
+          <text x="280" y="176" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">link_hk, cust_hk, acct_hk</text>
+
+          <!-- Connecting lines: Hub Customer to Link -->
+          <line x1="180" y1="155" x2="210" y2="155" stroke="#1a1a1a" stroke-width="1"/>
+          <!-- Connecting lines: Link to Hub Account -->
+          <line x1="350" y1="155" x2="380" y2="155" stroke="#1a1a1a" stroke-width="1"/>
+
+          <!-- Satellite: Customer Details -->
+          <rect x="15" y="240" width="190" height="70" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+          <text x="110" y="260" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">SATELLITE</text>
+          <text x="110" y="278" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#6b6b6b" text-anchor="middle">Customer Details</text>
+          <text x="110" y="296" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">hash_key, hashdiff, load_ts, attrs</text>
+
+          <!-- Satellite: Account Details -->
+          <rect x="355" y="240" width="190" height="70" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+          <text x="450" y="260" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">SATELLITE</text>
+          <text x="450" y="278" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#6b6b6b" text-anchor="middle">Account Details</text>
+          <text x="450" y="296" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">hash_key, hashdiff, load_ts, attrs</text>
+
+          <!-- Connecting lines: Hub Customer to Satellite -->
+          <line x1="110" y1="190" x2="110" y2="240" stroke="#e8e8e8" stroke-width="1"/>
+          <!-- Connecting lines: Hub Account to Satellite -->
+          <line x1="450" y1="190" x2="450" y2="240" stroke="#e8e8e8" stroke-width="1"/>
+
+          <!-- Labels -->
+          <text x="110" y="224" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle" font-style="italic">insert-only history</text>
+          <text x="450" y="224" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle" font-style="italic">insert-only history</text>
+
+          <!-- Key principle -->
+          <text x="280" y="50" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Hubs hold identities. Links hold relationships. Satellites hold history.</text>
+          <text x="280" y="68" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Nothing is ever updated or deleted.</text>
+
+          <!-- Bottom annotation -->
+          <text x="280" y="350" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">Every record carries: load_timestamp + record_source</text>
+          <text x="280" y="368" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">Full traceability from source to warehouse, at any point in time.</text>
+        </svg>
+      </figure>
+
+      <p><strong>Hubs</strong> store business keys &mdash; the unique identifiers for business entities. A customer ID. An account number. A trade reference. Once a business key is inserted, it is never updated or deleted.</p>
+
+      <p><strong>Links</strong> store relationships between hubs. Customer-to-account. Account-to-transaction. Like hubs, links are insert-only. A relationship, once recorded, is permanent.</p>
+
+      <p><strong>Satellites</strong> store descriptive attributes and their full change history. When a customer's address changes, a new satellite record is inserted &mdash; the old record stays. Change detection uses a hash differential: if the hash of the current payload differs from the previous load, a new record is created. If it matches, nothing happens.</p>
+
+      <p>Every record in every table carries a load timestamp and a record source. This means any fact in the warehouse can be traced to exactly when it arrived and which upstream system produced it.</p>
+
+      <p>This sounds academic until you are sitting across from a regulator who asks: "Show me the customer data that backed this risk calculation on February 3rd." With Data Vault, that is a temporal query. With a traditional warehouse that updates in place, it is a prayer.</p>
+
+      <h2>BCBS 239: The Regulation Nobody Talks About</h2>
+
+      <p>BCBS 239 is a Basel Committee framework for risk data aggregation and reporting. It was published in 2013 as a response to the 2008 financial crisis, where banks discovered they could not aggregate their risk exposures quickly or accurately enough to understand what was happening to them.</p>
+
+      <p>The framework defines 14 principles, but four are particularly relevant to data platform architecture:</p>
+
+      <p><strong>Accuracy and integrity</strong> (Principle 3). Data used in risk reporting must be accurate, reliable, and sourced from authoritative systems. This means your data platform needs to track provenance &mdash; where data came from, how it was transformed, and whether it passed quality checks.</p>
+
+      <p><strong>Completeness</strong> (Principle 4). Risk data must cover all material exposures across the enterprise. This means your platform cannot be a departmental silo. It needs to integrate data from multiple source systems, multiple business lines, and multiple geographies.</p>
+
+      <p><strong>Timeliness</strong> (Principle 5). Data must be available within agreed timeframes. Not "when the batch job finishes" but within committed SLAs. This means your platform needs operational reliability &mdash; monitoring, alerting, and incident management for data pipelines.</p>
+
+      <p><strong>Adaptability</strong> (Principle 6). The data infrastructure must be flexible enough to accommodate new reporting requirements without major rework. This is where Data Vault shines &mdash; adding a new source system means adding new satellites to existing hubs, not restructuring the model.</p>
+
+      <p>Most data teams I talk to have never heard of BCBS 239. But if you are building a data platform in a bank, it is the specification your architecture needs to satisfy. It is not optional. Regulators check compliance.</p>
+
+      <h2>The dbt + BigQuery Stack</h2>
+
+      <p>For the transformation layer, we use dbt running on BigQuery. The choice was deliberate.</p>
+
+      <p>dbt forces a discipline that most data teams lack: every transformation is a SQL file in version control. Every model has tests &mdash; not_null, unique, accepted_values, referential integrity. Every dependency is explicit. Every run produces an audit log of what was executed, what passed, and what failed.</p>
+
+      <p>In a Data Vault implementation, this translates directly:</p>
+
+      <ul>
+        <li><strong>Staging models</strong> handle cleansing, typing, and hash key generation. A staging model takes raw source data and produces a clean, typed, hash-keyed record ready for vault loading.</li>
+        <li><strong>Raw vault models</strong> implement the insert-only pattern using dbt's incremental materialization. The merge strategy with a unique key on the hash ensures idempotent loads &mdash; run it twice, get the same result.</li>
+        <li><strong>Business vault models</strong> compute derived business logic &mdash; point-in-time (PIT) tables and bridge tables that make the vault queryable without complex temporal joins.</li>
+        <li><strong>Mart models</strong> flatten the vault into business-consumable views. This is the layer that analysts and downstream applications see.</li>
+      </ul>
+
+      <p>BigQuery handles the compute. Its columnar storage and separation of storage from compute means we can store the full insert-only history &mdash; which grows fast &mdash; without the cost being proportional to storage volume. We pay for queries, not for keeping data.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">DATA PLATFORM ARCHITECTURE</text>
+
+          <!-- Layer 1: Sources -->
+          <rect x="20" y="50" width="100" height="40" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="70" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">Core Banking</text>
+          <rect x="130" y="50" width="100" height="40" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="180" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">Trading Systems</text>
+          <rect x="240" y="50" width="100" height="40" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="290" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">Risk Engines</text>
+          <rect x="350" y="50" width="100" height="40" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="400" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">Reference Data</text>
+          <rect x="460" y="50" width="80" height="40" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="500" y="74" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#6b6b6b" text-anchor="middle">Market Data</text>
+          <text x="280" y="44" font-family="IBM Plex Sans, sans-serif" font-size="8" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">SOURCE SYSTEMS</text>
+
+          <!-- Arrow down -->
+          <line x1="280" y1="90" x2="280" y2="118" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="276,114 280,122 284,114" fill="#1a1a1a"/>
+
+          <!-- Layer 2: Ingestion -->
+          <rect x="140" y="124" width="280" height="36" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1"/>
+          <text x="280" y="146" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#1a1a1a" text-anchor="middle">Ingestion Layer (Pub/Sub, Dataflow, CDC)</text>
+
+          <!-- Arrow down -->
+          <line x1="280" y1="160" x2="280" y2="180" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="276,176 280,184 284,176" fill="#1a1a1a"/>
+
+          <!-- Layer 3: Raw Vault (BigQuery) -->
+          <rect x="60" y="186" width="440" height="50" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="280" y="205" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#1a1a1a" text-anchor="middle">BigQuery &mdash; Data Vault 2.0 (Raw Vault)</text>
+          <text x="280" y="222" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">Hubs | Links | Satellites &mdash; insert-only, full history</text>
+
+          <!-- Arrow down -->
+          <line x1="280" y1="236" x2="280" y2="254" stroke="#6b6b6b" stroke-width="1"/>
+          <polygon points="276,250 280,258 284,250" fill="#6b6b6b"/>
+
+          <!-- Layer 4: dbt -->
+          <rect x="120" y="260" width="320" height="36" rx="3" fill="#fff" stroke="#6b6b6b" stroke-width="1"/>
+          <text x="280" y="282" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#6b6b6b" text-anchor="middle">dbt (Staging &rarr; Raw Vault &rarr; Business Vault &rarr; Marts)</text>
+
+          <!-- Side labels -->
+          <text x="30" y="282" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="start" font-style="italic">tested</text>
+          <text x="30" y="292" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="start" font-style="italic">versioned</text>
+          <text x="30" y="302" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="start" font-style="italic">auditable</text>
+
+          <!-- Bottom label -->
+          <text x="280" y="314" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" font-style="italic">BCBS 239: accuracy, completeness, timeliness, adaptability</text>
+        </svg>
+      </figure>
+
+      <h2>Why "Good Data" Is the Hardest Problem</h2>
+
+      <p>I used to think the hard problems in data engineering were technical &mdash; schema evolution, exactly-once delivery, query optimization. Those are real problems, but they are solvable problems with known solutions.</p>
+
+      <p>The hard problems are organizational:</p>
+
+      <p><strong>Source system ownership is ambiguous.</strong> The system that produces the data often has no clear owner. Or the owner is a team that views the data as a byproduct of an operational process, not as an asset that downstream consumers depend on. When that system changes its schema without notice &mdash; and it will &mdash; there is no one to call.</p>
+
+      <p><strong>Data quality is everyone's problem and nobody's job.</strong> Everyone agrees data quality matters. Nobody wants to own the alerting, triage, and remediation process. Data quality degrades silently until something breaks visibly &mdash; usually a report to a regulator.</p>
+
+      <p><strong>Business definitions are not agreed upon.</strong> Ask three people in a bank what "customer" means and you will get four answers. Is it the legal entity? The relationship? The individual? The account holder? Until these definitions are codified in a data catalog and enforced in transformation logic, every downstream use case is built on ambiguity.</p>
+
+      <p><strong>Data access is a political negotiation.</strong> In a regulated enterprise, data access is governed by classification, jurisdiction, and purpose. Getting access to the data you need for a legitimate use case can take weeks. Not because the process is wrong &mdash; data protection matters &mdash; but because the process is often manual, undocumented, and dependent on knowing the right person to ask.</p>
+
+      <p>None of these problems are solved by better models. They are solved by better data platforms, better governance, and better organizational clarity about who owns what.</p>
+
+      <h2>Practical Lessons from the First Year</h2>
+
+      <p>A year into building a data platform in a regulated environment, here is what I would tell someone starting the same work:</p>
+
+      <p><strong>Start with the audit, not the dashboard.</strong> Design your platform as if the first consumer is a regulator, not a business analyst. If the platform can satisfy a regulatory audit &mdash; full lineage, point-in-time reconstruction, quality evidence &mdash; it can satisfy any downstream use case. The reverse is not true.</p>
+
+      <p><strong>Hash keys are worth the upfront cost.</strong> Computing SHA-256 hashes in the staging layer adds complexity. But it enables parallel loading without coordination, deterministic key assignment across environments, and change detection without column-by-column comparison. The payoff compounds with every source system you add.</p>
+
+      <p><strong>Test data, not just code.</strong> dbt's testing framework should be used aggressively. Not just schema tests (not_null, unique) but custom tests for business rules. If a regulation says customer records must have a valid LEI, write a test that checks for it. Make the test suite a living expression of your data contract.</p>
+
+      <p><strong>Invest in the staging layer.</strong> Most data platform problems originate in the staging layer &mdash; the boundary between the source system and the warehouse. Get the typing, cleansing, null handling, and hash generation right in staging, and the rest of the pipeline is mechanical. Get staging wrong, and errors propagate through every downstream model.</p>
+
+      <p><strong>Document as you build.</strong> dbt's documentation generation is not a nice-to-have. It is the artefact that proves your platform is governable. When someone asks "what does this column mean?" the answer should be in the dbt docs, not in someone's head.</p>
+
+      <p><strong>Accept that this is slow work.</strong> Building a data platform in a regulated environment is slow. Not because the technology is slow, but because the organizational coordination is slow. Source system onboarding requires negotiation. Data classification requires review. Schema changes require impact analysis. This is the nature of the work. If you are impatient with it, you will cut corners that create audit findings later.</p>
+
+      <h2>The Connection to AI</h2>
+
+      <p>Everything I have described &mdash; Data Vault, BCBS 239, dbt, lineage, quality testing &mdash; is foundational infrastructure. It is not AI. But it is what makes AI possible in a regulated enterprise.</p>
+
+      <p>A model needs training data with known provenance. The data platform provides that. A model needs feature inputs with documented quality. The data platform provides that. A model in production needs monitoring data to detect drift. The data platform provides that. A model under regulatory review needs full lineage from source to prediction. The data platform provides that.</p>
+
+      <p>The organisations that will succeed with enterprise AI are not the ones that move fastest to adopt the latest model architecture. They are the ones that build the data foundations first &mdash; accurately, completely, with full traceability &mdash; and then deploy models on top of infrastructure they can trust and defend.</p>
+
+      <p>That is the work. It is not exciting. But it is the work that matters.</p>
+
+      <hr />
+
+      <p>The industry will keep chasing models. Bigger models, faster models, models that write code and generate images. That is fine. Someone needs to build the part underneath &mdash; the part that makes enterprise data trustworthy enough for any of those models to be useful. That is the part I am building.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
