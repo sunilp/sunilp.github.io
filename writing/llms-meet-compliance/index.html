@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GPT-4 arrives and every enterprise wants LLMs. But model risk frameworks built for logistic regressions cannot govern systems that hallucinate, accept adversarial instructions, and produce non-deterministic outputs." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="The Year LLMs Met Compliance — And Compliance Wasn't Ready" />
+  <meta property="og:description" content="GPT-4 changed what enterprise AI can do. But governance frameworks designed for classical ML are not equipped for non-determinism, hallucination, and training data opacity." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/llms-meet-compliance/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/llms-meet-compliance/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>The Year LLMs Met Compliance — And Compliance Wasn't Ready — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Year LLMs Met Compliance — And Compliance Wasn't Ready",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2023-10-12",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>The Year LLMs Met Compliance — And Compliance Wasn't Ready</h1>
+      <div class="article-meta">October 2023</div>
+
+      <p>In March, OpenAI released GPT-4. Within weeks, every business unit at the bank had the same question: how do we use this? By April, there were pilot proposals from wealth management, operations, compliance, legal, and technology. By June, I had lost count. The demand was genuine — GPT-4 is genuinely good — but the governance infrastructure designed to manage model risk was built for a different category of system entirely.</p>
+
+      <p>This is the year that large language models met enterprise compliance. And compliance was not ready.</p>
+
+      <h2>GPT-4 as the Tipping Point</h2>
+
+      <p>GPT-3 was impressive. ChatGPT was viral. But GPT-4 is the model that made enterprise adoption unavoidable.</p>
+
+      <p>The capabilities are real. GPT-4 passes the bar exam in the 90th percentile. It can read and reason about complex documents — contracts, regulatory filings, research reports — with a fluency that was simply not possible twelve months ago. It follows nuanced instructions. It handles multi-step reasoning. When you give it a compliance question with relevant context, the answer is often better than what a junior analyst would produce in twice the time.</p>
+
+      <p>This is not hype. I have tested it extensively on real banking use cases — summarizing credit memos, extracting terms from ISDA documents, drafting regulatory responses, classifying customer complaints. The quality is high enough that people who see the output immediately want to deploy it. And that is where the problems start.</p>
+
+      <p>Simultaneously, the open-source ecosystem has exploded. Meta released LLaMA in February, and the community fine-tuned it into dozens of variants within weeks. The Technology Innovation Institute released Falcon. Mistral AI, founded by former DeepMind and Meta researchers, released Mistral 7B in September — a model that outperforms LLaMA 2 13B on most benchmarks despite being half the size. For the first time, enterprises have a credible path to running capable language models on their own infrastructure.</p>
+
+      <p>The combination — a frontier model that demonstrates what is possible, and open-source models that make on-premise deployment feasible — has created more pressure to adopt LLMs than any technology I have seen in enterprise AI.</p>
+
+      <h2>The Governance Gap</h2>
+
+      <p>Every large financial institution has a model risk management framework. Most follow SR 11-7, the Federal Reserve's supervisory guidance on model risk management from 2011. It defines models, sets expectations for development, validation, and governance, and requires a risk-proportionate approach. It is well-designed for the models it was written for.</p>
+
+      <p>It was written for logistic regressions, gradient-boosted trees, and neural networks that produce numerical predictions from structured inputs. It was not written for systems that generate free text from natural language prompts, that have been trained on a significant fraction of the public internet, and whose internal representations are not interpretable by any existing method.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">WHAT SR 11-7 ASSUMES vs WHAT LLMs DO</text>
+
+          <!-- Column headers -->
+          <text x="150" y="46" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#6b6b6b" text-anchor="middle">Classical ML</text>
+          <text x="420" y="46" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">Large Language Models</text>
+
+          <!-- Row 1: Input -->
+          <text x="280" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">INPUT</text>
+          <rect x="40" y="82" width="210" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="145" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Structured features, known schema</text>
+          <rect x="310" y="82" width="210" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Arbitrary natural language</text>
+
+          <!-- Row 2: Output -->
+          <text x="280" y="130" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">OUTPUT</text>
+          <rect x="40" y="136" width="210" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="145" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Numerical prediction, bounded</text>
+          <rect x="310" y="136" width="210" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="154" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Free text, unbounded</text>
+
+          <!-- Row 3: Determinism -->
+          <text x="280" y="184" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">DETERMINISM</text>
+          <rect x="40" y="190" width="210" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="145" y="208" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Same input = same output</text>
+          <rect x="310" y="190" width="210" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="208" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Same input = different output</text>
+
+          <!-- Row 4: Training Data -->
+          <text x="280" y="238" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">TRAINING DATA</text>
+          <rect x="40" y="244" width="210" height="28" rx="3" fill="#fff" stroke="#e8e8e8"/>
+          <text x="145" y="262" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b" text-anchor="middle">Known, curated, auditable</text>
+          <rect x="310" y="244" width="210" height="28" rx="3" fill="#f5f5f3" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="262" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">Internet-scale, opaque, unauditable</text>
+
+          <!-- Row 5: Validation -->
+          <text x="280" y="292" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">VALIDATION</text>
+          <rect x="40" y="298" width="210" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="40" y="298" width="180" height="14" rx="2" fill="#999"/>
+          <text x="260" y="309" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6b6b">well-defined</text>
+          <rect x="310" y="298" width="210" height="14" rx="2" fill="#e8e8e8"/>
+          <rect x="310" y="298" width="50" height="14" rx="2" fill="#1a1a1a"/>
+          <text x="530" y="309" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a">open problem</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">SR 11-7 was written for systems on the left. Every enterprise is now deploying systems on the right.</p>
+
+      <p>The governance gap is not theoretical. I have watched it play out in real time. A team builds a document summarization prototype using GPT-4's API. It works well in demos. They want to move to production. The model risk team asks: what is the model? They are told it is GPT-4. They ask: can we review the training data? No. Can we inspect the model weights? No. Can we run independent validation on the model itself? No — only on the application built on top of it. Can we guarantee that the same input produces the same output? No. Can we explain why a specific output was produced? Not with any precision.</p>
+
+      <p>The model risk team is not being obstructionist. They are applying their framework, and the framework does not have answers for these questions.</p>
+
+      <h2>Why LLMs Break Traditional Model Validation</h2>
+
+      <p>There are four specific properties of LLMs that break the assumptions embedded in traditional model risk frameworks:</p>
+
+      <p><strong>Non-determinism.</strong> Classical models are deterministic: given the same input and model version, they produce the same output. This is fundamental to validation — you test the model on a holdout set, record the results, and those results are reproducible. LLMs sample from a probability distribution. Even with temperature set to zero, floating-point variations across hardware can produce different outputs. This means traditional backtesting and regression testing approaches do not work the same way. You cannot validate an LLM the way you validate a credit scoring model.</p>
+
+      <p><strong>Emergent capabilities.</strong> LLMs exhibit behaviors that were not explicitly trained and cannot be predicted from the training objective. GPT-4 can do chain-of-thought reasoning, write code in languages that represent a tiny fraction of its training data, and solve logic puzzles. These capabilities emerge at scale and are not well-understood. For model validation, this is a problem: how do you validate a system whose capabilities are not fully catalogued? How do you test for failure modes in behaviors that were never specified?</p>
+
+      <p><strong>Training data opacity.</strong> SR 11-7 expects that model developers can describe the data used to train their models. For LLMs trained on internet-scale corpora, this is not feasible. OpenAI has not published the training data for GPT-4. Even for open-source models like LLaMA, the training data (a mix of CommonCrawl, Wikipedia, GitHub, ArXiv, and other sources) is described at a high level but cannot be audited at the record level. If the training data contains biased, incorrect, or copyrighted content, the model may reproduce it — and neither the developer nor the validator can trace the source.</p>
+
+      <p><strong>The hallucination problem.</strong> LLMs produce fluent, confident text that is sometimes factually wrong. This is not a bug that will be fixed with more data or better training. It is an inherent property of how autoregressive language models work — they predict the most likely next token, not the most truthful one. In regulated contexts, hallucination is not an inconvenience. A system that confidently cites a regulation that does not exist, or summarizes a contract clause that was never in the document, is a compliance event. Traditional model risk metrics — accuracy, precision, recall — are necessary but not sufficient. You need a separate evaluation dimension for faithfulness: does the output stay grounded in the provided context, or does the model add information that is not there?</p>
+
+      <h2>Open-Source LLMs and the Enterprise Path</h2>
+
+      <p>The open-source LLM ecosystem has changed the conversation about enterprise adoption in ways that were not obvious six months ago.</p>
+
+      <p>When the only option was the OpenAI API, enterprise adoption faced a hard wall: you cannot send customer data, financial records, or proprietary documents to a third-party API in a regulated environment. The data residency problem alone killed most use cases.</p>
+
+      <p>LLaMA changed this. Meta released the weights in February, and within weeks the community had fine-tuned versions running on consumer hardware. Falcon 40B from the Technology Innovation Institute offered a permissively licensed alternative. Then in September, Mistral 7B demonstrated that a well-trained small model could compete with models several times its size.</p>
+
+      <p>For enterprise, this matters for three reasons:</p>
+
+      <p><strong>On-premise deployment.</strong> You can run Mistral 7B or LLaMA 2 13B on a single GPU within your own data center. No data leaves your network. No third-party API. The data residency problem is solved. This alone unblocks the majority of use cases that were previously impossible.</p>
+
+      <p><strong>Fine-tuning on domain data.</strong> With open weights, you can fine-tune on your own data. A LLaMA 2 model fine-tuned on internal credit memos produces better summaries of credit memos than GPT-4 with few-shot prompting — because it has learned the specific vocabulary, structure, and conventions of your institution. Fine-tuning also reduces hallucination for domain-specific tasks, because the model learns to stay within the distribution of your data.</p>
+
+      <p><strong>Inspectable, if not fully explainable.</strong> Open weights do not make LLMs interpretable in the way a logistic regression is interpretable. But they do allow your model risk team to do things that are impossible with a proprietary API: run the model locally, probe its behavior systematically, analyze attention patterns, and ensure the model version does not change without your knowledge. This is not full transparency, but it is a significant improvement over a black-box API endpoint.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">ENTERPRISE LLM ADOPTION: TWO PATHS</text>
+
+          <!-- Path 1: Proprietary API -->
+          <rect x="30" y="38" width="230" height="180" rx="6" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="145" y="62" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#6b6b6b" text-anchor="middle">Proprietary API</text>
+          <line x1="60" y1="72" x2="230" y2="72" stroke="#e8e8e8"/>
+          <text x="50" y="94" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#6b6b6b">GPT-4, Claude, PaLM 2</text>
+          <text x="50" y="116" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">+ Best capability</text>
+          <text x="50" y="134" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">+ Fastest to prototype</text>
+          <text x="50" y="156" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">- Data leaves your network</text>
+          <text x="50" y="174" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">- No weight inspection</text>
+          <text x="50" y="192" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">- Vendor controls model</text>
+          <text x="50" y="210" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">- No fine-tuning (mostly)</text>
+
+          <!-- Path 2: Open-Source On-Prem -->
+          <rect x="300" y="38" width="230" height="180" rx="6" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="415" y="62" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#fff" text-anchor="middle">Open-Source On-Prem</text>
+          <line x1="330" y1="72" x2="500" y2="72" stroke="#333"/>
+          <text x="320" y="94" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc">LLaMA 2, Falcon, Mistral</text>
+          <text x="320" y="116" font-family="IBM Plex Mono, monospace" font-size="10" fill="#ccc">+ Data stays on-premise</text>
+          <text x="320" y="134" font-family="IBM Plex Mono, monospace" font-size="10" fill="#ccc">+ Fine-tunable on domain data</text>
+          <text x="320" y="156" font-family="IBM Plex Mono, monospace" font-size="10" fill="#ccc">+ You control the model</text>
+          <text x="320" y="174" font-family="IBM Plex Mono, monospace" font-size="10" fill="#ccc">+ Weights inspectable</text>
+          <text x="320" y="192" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">- Lower capability ceiling</text>
+          <text x="320" y="210" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">- Infra investment required</text>
+
+          <!-- Arrow annotation -->
+          <text x="280" y="234" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">For regulated industries, the path on the right is often the only viable one.</text>
+        </svg>
+      </figure>
+
+      <h2>What a GenAI Governance Framework Needs</h2>
+
+      <p>The answer is not to abandon existing model risk frameworks. SR 11-7's principles — risk-proportionate governance, independent validation, ongoing monitoring — are correct. But the framework needs extensions that address the specific properties of LLMs.</p>
+
+      <p>Based on what I have seen this year trying to govern LLM deployments in practice, here is what is missing:</p>
+
+      <p><strong>A new risk classification dimension for LLMs.</strong> Your existing risk matrix probably scores models on data sensitivity, decision autonomy, and financial impact. It needs additional dimensions: hallucination severity (what happens if the output is fabricated?), prompt injection susceptibility (can users manipulate the system's behavior?), and training data opacity (can you audit the data the model was trained on?). These three dimensions change the risk profile of an LLM application significantly compared to a traditional ML model.</p>
+
+      <p><strong>A hallucination policy.</strong> Your framework has accuracy thresholds. It does not have hallucination thresholds — because logistic regressions do not hallucinate. A hallucination policy defines: what hallucination rate is acceptable for each risk tier, how you measure it (faithfulness evaluation against source context, not just general accuracy), what mitigations are mandatory (grounding instructions, source attribution, the ability to say "I don't know"), and when human review is required before output reaches a consumer.</p>
+
+      <p><strong>Validation methods that work for non-deterministic systems.</strong> You cannot validate an LLM the way you validate a credit model. You need evaluation suites — large sets of domain-specific test cases with expected outputs — and you need to run them repeatedly to characterize the distribution of outputs, not just a single point estimate. You need adversarial testing: prompt injection attacks, boundary probes, questions designed to elicit hallucination. And you need human evaluation, because automated metrics for open-ended text generation are still unreliable.</p>
+
+      <p><strong>Prompt governance.</strong> Prompts are the new code. The system prompt determines the behavior of an LLM application as much as the model weights do. If prompts are written ad-hoc, stored in application code, and changed without review, you have ungoverned model configuration. Prompts should be version-controlled, peer-reviewed, tested against evaluation suites, and tracked in an audit trail.</p>
+
+      <p><strong>Third-party model risk management.</strong> If you use GPT-4 through an API, OpenAI controls the model. They can update it, change its behavior, or deprecate the version you validated against — and you may not be notified. Your framework needs continuous evaluation (run your test suite against the API regularly to detect behavioral changes), contractual protections (DPA, data retention terms, model change notification), and a validated fallback model from a different provider for critical use cases.</p>
+
+      <p><strong>Audit trails for prompts and responses.</strong> Every interaction with an LLM in a regulated context should be logged: the system prompt, the user input, the retrieved context (for RAG systems), the model version, the raw model output, any guardrail actions, and the final output delivered. When a regulator asks what your AI system told a customer on a specific date, you need to reconstruct the full interaction from logs.</p>
+
+      <h2>What I Have Seen in Practice</h2>
+
+      <p>Seven months of watching an enterprise try to adopt LLMs has taught me several things that are not in any vendor whitepaper:</p>
+
+      <p><strong>The governance bottleneck is real and immediate.</strong> Every team that builds an LLM prototype wants to move to production. The model risk team, which is staffed and tooled for classical ML validation, is now asked to validate systems they do not have frameworks for. The queue grows. Frustration builds on both sides. The risk is not that governance blocks adoption — it is that teams route around governance because it is too slow, deploying LLM applications as "tools" or "utilities" that technically fall outside the model risk framework.</p>
+
+      <p><strong>RAG is the most viable enterprise pattern right now.</strong> Retrieval-augmented generation — where the LLM answers questions based on retrieved documents rather than its training data — is the architecture that most effectively addresses both the hallucination problem and the data privacy problem. The LLM becomes a reasoning engine over your documents, not a knowledge base. Hallucination rates drop significantly when the model is instructed to only use the provided context. And because the documents are your own, you control what information the model has access to.</p>
+
+      <p><strong>The people problem is bigger than the technology problem.</strong> Most compliance teams have never interacted with a language model. Most model risk analysts have backgrounds in statistics and quantitative finance, not NLP. Most business users do not understand the difference between a model that knows things and a model that generates plausible text. Training everyone — risk teams, compliance officers, business sponsors, end users — on what LLMs actually are and are not is the prerequisite for everything else.</p>
+
+      <p><strong>Start with internal use cases.</strong> The lowest-risk, highest-value path is LLMs for internal productivity: summarizing internal documents, drafting first versions of routine reports, answering questions about internal policies. The data sensitivity is lower. The hallucination tolerance is higher (because the user is expected to review). And the regulatory exposure is minimal compared to customer-facing applications. Build governance maturity on internal use cases before attempting customer-facing deployment.</p>
+
+      <hr />
+
+      <p>2023 is the year that LLMs became capable enough to be useful in enterprise and available enough — through open-source models — to be deployable. But the governance infrastructure lags behind the technology by at least a year. The organizations that will succeed with enterprise LLMs are not the ones that adopt fastest. They are the ones that extend their risk frameworks now, build evaluation capabilities, train their risk teams, and create the governance structures that allow adoption to be durable rather than reckless.</p>
+
+      <p>The capabilities are here. The compliance frameworks are not. That gap is the most important problem in enterprise AI right now.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
