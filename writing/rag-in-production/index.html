@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="What breaks when you move RAG from a tutorial to production — chunking, retrieval quality, evaluation, guardrails, and the architecture patterns that actually work." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="RAG in Production: What Breaks When You Move Past the Tutorial" />
+  <meta property="og:description" content="The gap between demo RAG and production RAG is where most teams get stuck. Retrieval quality, evaluation, guardrails, and what actually works." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/rag-in-production/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/rag-in-production/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>RAG in Production — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "RAG in Production: What Breaks When You Move Past the Tutorial",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2024-06-14",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>RAG in Production: What Breaks When You Move Past the Tutorial</h1>
+      <div class="article-meta">June 2024</div>
+
+      <p>Every RAG tutorial follows the same arc. Load some PDFs. Split them into chunks. Embed the chunks with OpenAI. Store them in a vector database. At query time, retrieve the top-k similar chunks, stuff them into a prompt, and call the LLM. It works. The demo is impressive. Stakeholders are excited.</p>
+
+      <p>Then you try to put it into production. And everything that was easy in the tutorial becomes hard in ways the tutorial never mentioned.</p>
+
+      <p>I've been building RAG systems in a banking environment for the past year. Not prototypes &mdash; production systems that handle regulatory documents, internal policies, and client-facing knowledge bases where a wrong answer has real consequences. What follows is what I've learned about where RAG breaks and what actually works.</p>
+
+      <h2>The Gap Between Demo and Production</h2>
+
+      <p>Tutorial RAG works because the conditions are controlled. The corpus is small and clean. The questions are the kind that have obvious answers sitting in a single paragraph. There's no ambiguity, no multi-document reasoning, no adversarial inputs, and nobody checking whether the answer is actually correct.</p>
+
+      <p>Production RAG breaks these assumptions in every dimension:</p>
+
+      <ul>
+        <li><strong>The corpus is messy.</strong> Documents have headers, footers, tables, nested lists, cross-references, and version histories. PDFs are the worst &mdash; the same visual layout can produce wildly different text depending on the extraction tool.</li>
+        <li><strong>The questions are ambiguous.</strong> Users don't ask "What is the maximum LTV ratio for commercial real estate?" &mdash; they ask "what's the limit for CRE?" and expect the system to resolve the acronym, find the right policy, and handle the fact that the limit differs by jurisdiction.</li>
+        <li><strong>Wrong answers have consequences.</strong> In a regulated environment, a hallucinated policy citation isn't a demo glitch. It's a compliance incident.</li>
+        <li><strong>Scale changes everything.</strong> A vector store with 10,000 chunks behaves differently from one with 10 million. Retrieval quality degrades. Latency increases. The naive "embed and search" approach stops being sufficient.</li>
+      </ul>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 520" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">TUTORIAL RAG vs PRODUCTION RAG</text>
+
+          <!-- Tutorial RAG (left) -->
+          <text x="150" y="52" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a" text-anchor="middle">Tutorial RAG</text>
+
+          <rect x="75" y="66" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="85" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">Load PDFs</text>
+
+          <line x1="150" y1="96" x2="150" y2="114" stroke="#e8e8e8" stroke-width="1"/>
+          <polygon points="146,114 150,120 154,114" fill="#e8e8e8"/>
+
+          <rect x="75" y="124" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="143" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">Fixed-size chunks</text>
+
+          <line x1="150" y1="154" x2="150" y2="172" stroke="#e8e8e8" stroke-width="1"/>
+          <polygon points="146,172 150,178 154,172" fill="#e8e8e8"/>
+
+          <rect x="75" y="182" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="201" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">Embed &amp; store</text>
+
+          <line x1="150" y1="212" x2="150" y2="230" stroke="#e8e8e8" stroke-width="1"/>
+          <polygon points="146,230 150,236 154,230" fill="#e8e8e8"/>
+
+          <rect x="75" y="240" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="259" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">Top-k retrieval</text>
+
+          <line x1="150" y1="270" x2="150" y2="288" stroke="#e8e8e8" stroke-width="1"/>
+          <polygon points="146,288 150,294 154,288" fill="#e8e8e8"/>
+
+          <rect x="75" y="298" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="317" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">Stuff into prompt</text>
+
+          <line x1="150" y1="328" x2="150" y2="346" stroke="#e8e8e8" stroke-width="1"/>
+          <polygon points="146,346 150,352 154,346" fill="#e8e8e8"/>
+
+          <rect x="75" y="356" width="150" height="30" rx="3" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+          <text x="150" y="375" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6b6b" text-anchor="middle">LLM generates</text>
+
+          <!-- Production RAG (right) -->
+          <text x="450" y="52" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a" text-anchor="middle">Production RAG</text>
+
+          <rect x="375" y="66" width="150" height="30" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="85" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Parse &amp; clean</text>
+
+          <line x1="450" y1="96" x2="450" y2="114" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,114 450,120 454,114" fill="#1a1a1a"/>
+
+          <rect x="375" y="124" width="150" height="30" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="143" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Semantic chunking</text>
+
+          <line x1="450" y1="154" x2="450" y2="172" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,172 450,178 454,172" fill="#1a1a1a"/>
+
+          <rect x="375" y="182" width="150" height="30" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="201" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Embed + metadata</text>
+
+          <line x1="450" y1="212" x2="450" y2="230" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,230 450,236 454,230" fill="#1a1a1a"/>
+
+          <rect x="375" y="240" width="150" height="30" rx="3" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="259" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">Hybrid search</text>
+
+          <line x1="450" y1="270" x2="450" y2="288" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,288 450,294 454,288" fill="#1a1a1a"/>
+
+          <rect x="375" y="298" width="150" height="30" rx="3" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="317" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">Re-rank + filter</text>
+
+          <line x1="450" y1="328" x2="450" y2="346" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,346 450,352 454,346" fill="#1a1a1a"/>
+
+          <rect x="375" y="356" width="150" height="30" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="450" y="375" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Generate + cite</text>
+
+          <line x1="450" y1="386" x2="450" y2="404" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,404 450,410 454,404" fill="#1a1a1a"/>
+
+          <rect x="375" y="414" width="150" height="30" rx="3" fill="#6b6b6b" stroke="#6b6b6b" stroke-width="1.5"/>
+          <text x="450" y="433" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">Guardrails</text>
+
+          <line x1="450" y1="444" x2="450" y2="462" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="446,462 450,468 454,462" fill="#1a1a1a"/>
+
+          <rect x="375" y="472" width="150" height="30" rx="3" fill="#6b6b6b" stroke="#6b6b6b" stroke-width="1.5"/>
+          <text x="450" y="491" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">Evaluate + log</text>
+
+          <!-- Dividing line -->
+          <line x1="300" y1="46" x2="300" y2="505" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="4,4"/>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Tutorial RAG stops at generation. Production RAG adds hybrid search, re-ranking, guardrails, and evaluation.</p>
+
+      <h2>Chunking Matters More Than Your Embedding Model</h2>
+
+      <p>Teams spend weeks evaluating embedding models &mdash; OpenAI <code>text-embedding-ada-002</code> vs. Cohere <code>embed-v3</code> vs. open-source alternatives like <code>e5-large</code> or <code>bge-large</code>. This matters, but not as much as they think. The bigger lever is chunking.</p>
+
+      <p>Fixed-size chunking (split every 512 tokens with 50-token overlap) is the tutorial default. It's fast and predictable. It's also terrible for documents with structure. A fixed-size chunk can split a regulation mid-sentence, separate a table from its header, or merge the conclusion of one section with the introduction of the next. The embedding captures the semantics of this jumbled text faithfully &mdash; the problem is the text itself is semantically incoherent.</p>
+
+      <p>What works better:</p>
+
+      <ul>
+        <li><strong>Structure-aware chunking.</strong> Use document structure &mdash; headings, sections, paragraphs &mdash; as chunk boundaries. A section about "Capital Requirements for Commercial Real Estate" should be one chunk, not three fragments of it mixed with adjacent sections. This requires parsing the document structure, which is straightforward for HTML and Markdown but painful for PDF.</li>
+        <li><strong>Semantic chunking.</strong> Use embedding similarity between adjacent sentences to find natural break points. When the embedding similarity between consecutive sentences drops below a threshold, insert a chunk boundary. This produces chunks that are semantically coherent without requiring structural markup.</li>
+        <li><strong>Parent-child chunking.</strong> Embed small chunks for retrieval precision, but store them with a reference to the larger parent chunk. At retrieval time, return the parent. This gives you the precision of small chunks with the context of large ones. LlamaIndex calls this "sentence window retrieval." The idea is sound regardless of the framework.</li>
+      </ul>
+
+      <p>In our regulatory document system, switching from fixed-size to structure-aware chunking improved retrieval precision by roughly 25% &mdash; without changing the embedding model, the vector database, or anything else in the pipeline. Chunking is the foundation. Get it wrong and everything downstream is working with degraded inputs.</p>
+
+      <h2>Retrieval Quality Is the Bottleneck</h2>
+
+      <p>The single most important insight from building production RAG: if the right information isn't in the retrieved chunks, no amount of prompt engineering will fix the output. The LLM can only work with what you give it.</p>
+
+      <p>Most RAG debugging sessions that start with "the model is hallucinating" end with "the retriever didn't return the relevant document." Generation quality is rarely the bottleneck. Retrieval quality almost always is.</p>
+
+      <p>This reframes where you invest your engineering effort. Instead of fine-tuning the LLM or crafting elaborate system prompts, focus on:</p>
+
+      <p><strong>Hybrid search.</strong> Pure semantic search (vector similarity) fails on exact terms. If a user asks about "BCBS 239 Principle 3," a semantic search might return documents about data governance in general rather than the specific principle. Pure keyword search (BM25) fails on paraphrases. Hybrid search &mdash; combining BM25 and vector similarity with reciprocal rank fusion &mdash; handles both cases. Every production system I've seen that works well uses hybrid search. It's the practical default.</p>
+
+      <p><strong>Metadata filtering.</strong> Not every chunk is relevant to every query. If a user asks about the current policy, you don't want the system retrieving superseded versions. Metadata filtering &mdash; document type, effective date, jurisdiction, department &mdash; reduces the search space before semantic search even runs. This is simple to implement and dramatically reduces noise in the results.</p>
+
+      <p><strong>Re-ranking.</strong> Embedding similarity is a rough sort. A cross-encoder re-ranker (Cohere Rerank, a fine-tuned BERT model, or ColBERT) takes the initial candidate set and re-scores them with a more expensive but more accurate model that looks at the query and each candidate together. Re-ranking typically lifts the top-1 accuracy by 10-20% over vector search alone. It's the single highest-leverage addition to a naive RAG pipeline.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="300" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">PRODUCTION RETRIEVAL PIPELINE</text>
+
+          <!-- Query -->
+          <rect x="10" y="72" width="72" height="56" rx="4" fill="#1a1a1a"/>
+          <text x="46" y="96" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Query</text>
+          <text x="46" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">+ metadata</text>
+
+          <!-- Arrow -->
+          <line x1="82" y1="100" x2="102" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="102,96 108,100 102,104" fill="#1a1a1a"/>
+
+          <!-- Hybrid Search block -->
+          <rect x="110" y="56" width="100" height="88" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="160" y="78" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a" text-anchor="middle">HYBRID SEARCH</text>
+          <line x1="120" y1="86" x2="200" y2="86" stroke="#e8e8e8" stroke-width="1"/>
+          <rect x="120" y="94" width="80" height="18" rx="2" fill="#f5f5f3"/>
+          <text x="160" y="107" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">BM25</text>
+          <rect x="120" y="118" width="80" height="18" rx="2" fill="#f5f5f3"/>
+          <text x="160" y="131" font-family="IBM Plex Mono, monospace" font-size="8" fill="#6b6b6b" text-anchor="middle">Vector sim</text>
+
+          <!-- Arrow -->
+          <line x1="210" y1="100" x2="230" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="230,96 236,100 230,104" fill="#1a1a1a"/>
+
+          <!-- RRF -->
+          <rect x="238" y="72" width="62" height="56" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="269" y="96" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle" font-weight="500">RRF</text>
+          <text x="269" y="112" font-family="IBM Plex Mono, monospace" font-size="7" fill="#999" text-anchor="middle">rank fusion</text>
+
+          <!-- Arrow -->
+          <line x1="300" y1="100" x2="320" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="320,96 326,100 320,104" fill="#1a1a1a"/>
+
+          <!-- Re-rank -->
+          <rect x="328" y="72" width="80" height="56" rx="4" fill="#1a1a1a"/>
+          <text x="368" y="96" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#fff" text-anchor="middle" font-weight="500">Re-rank</text>
+          <text x="368" y="112" font-family="IBM Plex Mono, monospace" font-size="7" fill="#999" text-anchor="middle">cross-encoder</text>
+
+          <!-- Arrow -->
+          <line x1="408" y1="100" x2="428" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="428,96 434,100 428,104" fill="#1a1a1a"/>
+
+          <!-- Generate -->
+          <rect x="436" y="72" width="72" height="56" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="472" y="96" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">Generate</text>
+          <text x="472" y="112" font-family="IBM Plex Mono, monospace" font-size="7" fill="#999" text-anchor="middle">LLM + cite</text>
+
+          <!-- Arrow -->
+          <line x1="508" y1="100" x2="528" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="528,96 534,100 528,104" fill="#1a1a1a"/>
+
+          <!-- Validate -->
+          <rect x="536" y="72" width="56" height="56" rx="4" fill="#6b6b6b"/>
+          <text x="564" y="96" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#fff" text-anchor="middle" font-weight="500">Guard</text>
+          <text x="564" y="112" font-family="IBM Plex Mono, monospace" font-size="7" fill="#e8e8e8" text-anchor="middle">validate</text>
+
+          <!-- Candidate count annotations -->
+          <text x="160" y="164" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">~100 candidates</text>
+          <text x="269" y="164" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">~50</text>
+          <text x="368" y="164" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">top 5-10</text>
+          <text x="472" y="164" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">1 answer</text>
+
+          <!-- Arrows from stages to annotations -->
+          <line x1="160" y1="144" x2="160" y2="156" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="269" y1="128" x2="269" y2="156" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="368" y1="128" x2="368" y2="156" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="472" y1="128" x2="472" y2="156" stroke="#e8e8e8" stroke-width="0.5"/>
+
+          <!-- Funnel label -->
+          <text x="300" y="188" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" font-style="italic">progressive narrowing &mdash; each stage trades recall for precision</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">The retrieval pipeline is a funnel. Hybrid search casts wide, re-ranking narrows to the most relevant.</p>
+
+      <h2>Evaluation Is the Hardest Part</h2>
+
+      <p>How do you know if your RAG system is working? This is the question most teams avoid. They eyeball a few examples, declare it "pretty good," and move on. This works until it doesn't &mdash; and in a regulated environment, "pretty good" is not an acceptable standard.</p>
+
+      <p>RAG evaluation has two distinct problems:</p>
+
+      <p><strong>Retrieval evaluation.</strong> Did the retriever return the right chunks? This requires a ground truth dataset &mdash; a set of questions paired with the documents that contain the correct answer. Building this dataset is labor-intensive. There's no shortcut. You need domain experts to curate a representative set of questions, identify the correct source passages, and validate that the passages actually answer the questions.</p>
+
+      <p>Once you have ground truth, standard retrieval metrics apply: recall@k (did the right document appear in the top k results?), MRR (where did the right document rank?), and precision@k (what fraction of the top k results were relevant?). These metrics are well-understood, cheap to compute, and directly actionable.</p>
+
+      <p><strong>Generation evaluation.</strong> Did the LLM produce a correct, grounded, well-formed answer? This is harder. Automated metrics exist &mdash; RAGAS provides faithfulness (is the answer supported by the retrieved context?), answer relevancy (does the answer address the question?), and context recall (does the retrieved context contain the necessary information?). These are useful directional signals. They are not sufficient for compliance sign-off.</p>
+
+      <p>In our systems, we run RAGAS metrics on every evaluation cycle to catch regressions, but the final quality gate is human review. A sample of production queries is reviewed weekly by subject matter experts who check factual accuracy, source attribution, and completeness. This is expensive. It's also the only way to build the level of confidence that a regulated environment requires.</p>
+
+      <p>The practical framework:</p>
+
+      <ul>
+        <li><strong>Pre-production:</strong> Build a curated evaluation set of 200-500 question-answer-source triples. Measure retrieval recall and RAGAS metrics. Set thresholds. Block deployment if thresholds aren't met.</li>
+        <li><strong>Production:</strong> Log every query, the retrieved chunks, and the generated answer. Run automated metrics on a rolling basis. Flag anomalies for human review. Maintain a growing golden dataset from validated production queries.</li>
+        <li><strong>Feedback loops:</strong> When human reviewers identify failures, trace whether the failure was retrieval (wrong chunks) or generation (right chunks, wrong answer). This distinction drives where you invest improvement effort.</li>
+      </ul>
+
+      <h2>Guardrails in Regulated Contexts</h2>
+
+      <p>In banking, a RAG system that produces a plausible but incorrect answer about capital requirements, sanctions policy, or client eligibility isn't just a bad user experience. It's a potential regulatory violation. Guardrails aren't a nice-to-have. They're the cost of admission.</p>
+
+      <p>What we've found works:</p>
+
+      <p><strong>Source citation as a hard requirement.</strong> Every answer must cite the specific document and section it's drawing from. If the system can't identify a source, it says so. "I don't have enough information to answer that" is a better output than a confident hallucination. Implementing this means the LLM must be instructed to ground every claim in retrieved context and the system must verify that the cited passages actually exist in the retrieval results.</p>
+
+      <p><strong>Confidence-based routing.</strong> When retrieval scores are low &mdash; below a calibrated threshold &mdash; the system escalates to a human rather than generating a speculative answer. This requires tuning the threshold against your evaluation set: too high and the system escalates everything, too low and you let through unreliable answers. We found that retrieval score alone isn't sufficient; we also check whether the top-ranked chunk actually contains an answer to the question using a lightweight NLI (natural language inference) model.</p>
+
+      <p><strong>Topic boundaries.</strong> The system should only answer questions within its domain. A RAG system trained on credit policy documents should not answer questions about employment law, even if some tangentially relevant text exists in the corpus. Topic classification on the input query, using either a fine-tuned classifier or a few-shot LLM prompt, prevents the system from overreaching.</p>
+
+      <p><strong>Output validation.</strong> Before returning an answer to the user, run a check: does the answer contradict any of the retrieved context? Does it contain claims not supported by the context? This is essentially a faithfulness check at inference time. It adds latency &mdash; typically 200-500ms for a lightweight model &mdash; but it catches the most dangerous failure mode: a fluent, confident, wrong answer.</p>
+
+      <h2>Architecture Patterns That Work</h2>
+
+      <p>After iterating through several approaches, these are the patterns I'd recommend for a production RAG system in an enterprise context:</p>
+
+      <p><strong>Separate ingestion from serving.</strong> Document processing, chunking, and embedding should be a batch pipeline that runs asynchronously. The query-time path should hit an already-populated index. Mixing ingestion and serving creates latency and reliability issues.</p>
+
+      <p><strong>Version your index.</strong> When you re-chunk or re-embed your corpus (and you will, as you iterate on chunking strategy), maintain the previous version alongside the new one. This lets you A/B test retrieval quality and roll back if the new approach regresses. Treat your vector index like a deployment artifact, not a mutable database.</p>
+
+      <p><strong>Use a query understanding layer.</strong> Before embedding the user's query, process it. Expand acronyms. Resolve ambiguity. For complex questions, decompose them into sub-queries. This can be as simple as a prompt that rewrites the query for retrieval, or as sophisticated as a multi-step planning agent. The key insight is that user queries are optimized for human communication, not for vector similarity search. A translation layer helps.</p>
+
+      <p><strong>Cache aggressively.</strong> Many RAG queries are variations of the same question. Semantic caching &mdash; mapping similar queries to cached responses &mdash; reduces latency and cost. In our system, roughly 30% of queries are close enough to a previously answered question that we can serve a cached response with high confidence.</p>
+
+      <p><strong>Monitor retrieval quality in production.</strong> Track the distribution of retrieval scores over time. If average scores drop, something changed &mdash; new documents that aren't chunked well, a shift in query patterns, or index degradation. Retrieval score monitoring is the RAG equivalent of model drift monitoring in ML systems.</p>
+
+      <h2>What I'd Do Differently</h2>
+
+      <p>Looking back on a year of building these systems:</p>
+
+      <p>I'd invest in the evaluation dataset earlier. We spent too long iterating on architecture without a rigorous way to measure improvement. Subjective assessment is unreliable. Build the eval set first, even if it's small. You can always expand it.</p>
+
+      <p>I'd start with hybrid search from day one. We began with pure vector search and bolted on BM25 later when we hit keyword-specific failures. Hybrid search should be the starting point, not an optimization.</p>
+
+      <p>I'd spend more time on document parsing and less on embedding model selection. The difference between a well-parsed, cleanly chunked document and a poorly parsed one dwarfs the difference between embedding models. If your PDF extraction is producing garbage, it doesn't matter how good your embeddings are.</p>
+
+      <p>And I'd set up guardrails before the first user touches the system, not after the first incident. In a regulated environment, the cost of a hallucinated answer in production is orders of magnitude higher than the cost of building validation into the pipeline from the start.</p>
+
+      <hr />
+
+      <p>RAG is the most practical pattern for bringing LLMs into enterprise environments &mdash; it lets you ground generation in your own data without fine-tuning. But the gap between a working demo and a production system is significant, and most of it has nothing to do with the LLM. It's parsing, chunking, retrieval, evaluation, and guardrails. The unglamorous infrastructure that makes the difference between a system that impresses in a demo and one that holds up under real-world use.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
