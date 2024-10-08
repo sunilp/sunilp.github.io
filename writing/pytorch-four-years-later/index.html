@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Four years after switching from TensorFlow to PyTorch at a startup, a look back at whether the decision was right — and what the ML framework landscape looks like in 2024." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="We Switched to PyTorch in 2020. Was It the Right Call?" />
+  <meta property="og:description" content="Revisiting a framework decision four years later — what happened to TensorFlow, why PyTorch won research, and what comes next with JAX, MLX, and LLM inference engines." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/pytorch-four-years-later/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/pytorch-four-years-later/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>We Switched to PyTorch in 2020. Was It the Right Call? — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "We Switched to PyTorch in 2020. Was It the Right Call?",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2024-10-08",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>We Switched to PyTorch in 2020. Was It the Right Call?</h1>
+      <div class="article-meta">October 2024</div>
+
+      <p>In June 2020, I wrote about switching our NLP projects from TensorFlow 1.x to PyTorch. I was stuck in Pune during the pandemic, working remotely with the Halialabs team in Singapore, and we used the forced slowdown to make an infrastructure decision we had been deferring.</p>
+
+      <p>Four years later, I have left that startup, moved to a global bank, and the ML framework landscape looks nothing like what any of us expected. This is a look back at whether the decision was right — and a look forward at where tooling is headed.</p>
+
+      <h2>The Short Answer</h2>
+
+      <p>Yes. Switching to PyTorch was unambiguously the right call.</p>
+
+      <p>Not because PyTorch turned out to be the perfect framework — it has its own problems. But because the ecosystem consolidated around it in ways that made every alternative more expensive. In 2020, it was a bet on momentum. By 2024, it is the default.</p>
+
+      <h2>What Happened to TensorFlow</h2>
+
+      <p>This is the part I did not predict. In 2020, I expected TensorFlow 2.x to remain a strong contender — it had Google's backing, a mature serving infrastructure, and a massive installed base. I wrote that TF's advantages in production deployment were real and that we kept TF for some projects.</p>
+
+      <p>What actually happened:</p>
+
+      <p><strong>Research abandoned TensorFlow almost entirely.</strong> By 2022-2023, the shift was decisive. At major conferences (NeurIPS, ICML, ACL), PyTorch papers outnumber TensorFlow papers roughly 5:1 or higher. New model releases — LLaMA, Mistral, Stable Diffusion, Whisper — are PyTorch-only. The research ecosystem that used to be split is now overwhelmingly PyTorch.</p>
+
+      <p><strong>Google moved to JAX internally.</strong> This was the signal that mattered most. Google's own research teams — DeepMind, Google Brain (now merged) — increasingly use JAX rather than TensorFlow for new work. Gemini was trained with JAX. PaLM was trained with JAX. When the creator of a framework stops using it for new flagship projects, that tells you something.</p>
+
+      <p><strong>Keras decoupled from TensorFlow.</strong> In late 2023, Keras 3 launched as a multi-backend framework — supporting TensorFlow, PyTorch, and JAX. This was a tacit acknowledgment that Keras needed to hedge beyond TF. It is a well-engineered library, but the multi-backend approach means it is no longer the on-ramp to TensorFlow. It is a layer that can sit on top of whichever framework wins.</p>
+
+      <p><strong>TF Serving is still good.</strong> I will give credit where it is due. TensorFlow Serving, TF Lite, and the TensorFlow.js ecosystem remain strong for deployment use cases, especially edge and mobile. If your primary concern is inference on constrained hardware, TF still has advantages. But for the full workflow — research, training, fine-tuning, experimentation — PyTorch won.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 560 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 560px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="280" y="18" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">ML FRAMEWORK LANDSCAPE — 2020 vs 2024</text>
+
+          <!-- 2020 -->
+          <text x="140" y="44" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#6b6b6b" text-anchor="middle">2020</text>
+
+          <rect x="40" y="54" width="100" height="36" rx="4" fill="#6b6b6b"/>
+          <text x="90" y="76" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">TensorFlow</text>
+          <rect x="148" y="54" width="84" height="36" rx="4" fill="#1a1a1a"/>
+          <text x="190" y="76" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">PyTorch</text>
+
+          <rect x="40" y="96" width="40" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="60" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">JAX</text>
+          <rect x="88" y="96" width="52" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="114" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Keras</text>
+          <rect x="148" y="96" width="40" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="168" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">MX</text>
+
+          <text x="140" y="138" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" font-style="italic">Two contenders, several niche players</text>
+
+          <!-- Arrow -->
+          <line x1="260" y1="88" x2="296" y2="88" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arw6)"/>
+
+          <!-- 2024 -->
+          <text x="420" y="44" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a" text-anchor="middle">2024</text>
+
+          <rect x="320" y="54" width="140" height="36" rx="4" fill="#1a1a1a"/>
+          <text x="390" y="76" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">PyTorch</text>
+
+          <rect x="468" y="54" width="72" height="36" rx="4" fill="#6b6b6b"/>
+          <text x="504" y="76" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">JAX</text>
+
+          <rect x="320" y="96" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="348" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">Keras 3</text>
+          <rect x="384" y="96" width="56" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="412" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">MLX</text>
+          <rect x="448" y="96" width="92" height="24" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="494" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999" text-anchor="middle">TF (deploy)</text>
+
+          <text x="420" y="138" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" font-style="italic">One clear winner, JAX for Google scale</text>
+
+          <!-- New layer: inference engines -->
+          <text x="280" y="170" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">NEW IN 2024: LLM INFERENCE ENGINES</text>
+          <rect x="60" y="182" width="100" height="28" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="110" y="200" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle">vLLM</text>
+          <rect x="172" y="182" width="100" height="28" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="222" y="200" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle">TGI</text>
+          <rect x="284" y="182" width="100" height="28" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="334" y="200" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle">llama.cpp</text>
+          <rect x="396" y="182" width="100" height="28" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="446" y="200" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle">Ollama</text>
+
+          <text x="280" y="228" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle" font-style="italic">A new category that didn't exist in 2020 — framework-agnostic, inference-optimized</text>
+
+          <defs>
+            <marker id="arw6" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+
+      <h2>What I Got Right</h2>
+
+      <p><strong>HuggingFace became the center of gravity.</strong> In 2020 I wrote that not using HuggingFace was like not using scikit-learn. That turned out to be an understatement. HuggingFace is now the GitHub of ML models — the Hub hosts over 500,000 models, the <code>transformers</code> library is the standard way to load and fine-tune models, and the ecosystem (datasets, tokenizers, evaluate, PEFT) has become the default toolkit for applied ML. It is still PyTorch-first.</p>
+
+      <p><strong>PyTorch's ecosystem compounded.</strong> Lightning matured into a serious framework. TorchServe improved substantially. ONNX export became reliable. The tooling that was thin in 2020 — serving, profiling, distributed training — filled in. Meta's continued investment kept the project healthy.</p>
+
+      <p><strong>"Don't rewrite working code" was correct.</strong> The TF models we left running in 2020 continued running fine at Halialabs. The right approach was always: adopt the new framework for new work, let old code age gracefully.</p>
+
+      <h2>What I Got Wrong</h2>
+
+      <p><strong>I underestimated JAX.</strong> In 2020 I barely mentioned JAX. By 2024, it is the framework of choice at Google and DeepMind for training the largest models. JAX's functional paradigm — pure functions, explicit randomness, composable transformations (<code>jit</code>, <code>grad</code>, <code>vmap</code>, <code>pmap</code>) — turns out to be a better fit for distributed training across thousands of TPUs. It will not replace PyTorch for most practitioners, but for frontier model training, JAX is serious.</p>
+
+      <p><strong>I overestimated how much the training framework matters for production LLMs.</strong> In 2020, I was thinking about training models. In 2024, most production LLM work is not training — it is inference, fine-tuning with adapters (LoRA, QLoRA), and orchestration (RAG, agents, chains). The training framework matters less when you are downloading a pre-trained model and serving it. The tools that matter now — vLLM, TGI, llama.cpp, Ollama — are inference engines, not training frameworks. They operate at a layer below (or beside) PyTorch.</p>
+
+      <p><strong>I did not foresee the convergence of hardware and framework.</strong> Apple's MLX for Apple Silicon, NVIDIA's TensorRT-LLM, Intel's OpenVINO — hardware vendors are building their own inference stacks optimized for their chips. The framework layer is becoming thinner. You train in PyTorch, export to ONNX or a vendor format, and serve with a hardware-optimized engine. The training framework is an authoring tool, not a runtime.</p>
+
+      <h2>The Current State (Late 2024)</h2>
+
+      <p>If someone asked me today what to use, the answer depends on what they are doing:</p>
+
+      <p><strong>Fine-tuning or training custom models:</strong> PyTorch + HuggingFace. This is not even a discussion anymore. The ecosystem, community, model availability, and tooling are overwhelmingly concentrated here. Use Lightning or the HuggingFace Trainer for structure.</p>
+
+      <p><strong>Serving LLMs in production:</strong> vLLM or TGI for GPU inference. llama.cpp or Ollama for local/edge inference. These are specialized tools that handle batching, quantization, KV caching, and GPU memory management in ways that a raw PyTorch serving loop cannot match. TorchServe works for non-LLM models.</p>
+
+      <p><strong>Training at Google scale:</strong> JAX. If you have access to TPU pods and are training billion-parameter models from scratch, JAX's functional model and TPU integration are superior. For everyone else, this is academic.</p>
+
+      <p><strong>On-device / edge:</strong> Depends on hardware. TF Lite (Android), CoreML/MLX (Apple), ONNX Runtime (cross-platform). PyTorch Mobile exists but is not the leader here.</p>
+
+      <p><strong>Quick prototyping:</strong> Keras 3 is actually excellent for this now. It runs on PyTorch, TF, or JAX backends, and the API is clean. For rapid experimentation where you do not care about the backend, it is a good choice.</p>
+
+      <h2>Where This Is Going</h2>
+
+      <p>Looking forward, three trends seem clear to me:</p>
+
+      <p><strong>The framework becomes invisible.</strong> Most ML practitioners in 2025 will interact with models through high-level APIs — HuggingFace, LangChain, inference engines, cloud APIs. The training framework will matter less and less as pre-trained models dominate. Writing raw PyTorch training loops will become a specialist skill, like writing raw SQL is for most application developers — important to understand, rarely done directly.</p>
+
+      <p><strong>Inference optimization is the new battleground.</strong> Training a frontier model costs hundreds of millions of dollars and is done by a handful of labs. Serving that model efficiently to millions of users is the problem that most engineers face. Quantization (GPTQ, AWQ, GGUF), speculative decoding, continuous batching, paged attention — these inference optimizations are where the most impactful work is happening. The tools are new, fast-moving, and often independent of the training framework.</p>
+
+      <p><strong>Compilation will unify the fragmentation.</strong> PyTorch 2.0's <code>torch.compile</code> (backed by TorchDynamo and TorchInductor) is an attempt to get the best of both worlds — eager execution for development, compiled execution for performance. If this matures, it could make the eager-vs-graph debate obsolete. Write eager PyTorch, compile it for production, serve it on any backend. We are not there yet, but the direction is clear.</p>
+
+      <hr />
+
+      <p>Four years ago I switched frameworks during a pandemic, stuck in Pune, working remotely with a team in Singapore. It was the right decision for reasons I anticipated (HuggingFace, debugging, community) and reasons I did not (TensorFlow's decline, JAX's rise, the inference engine revolution).</p>
+
+      <p>The meta-lesson: framework decisions matter less than they feel like they matter. The choice between TF and PyTorch in 2020 felt consequential. In hindsight, what mattered was that we were building NLP systems, understanding the data, and shipping to production. The framework was the medium, not the message. That is even more true in 2024, when the framework is increasingly just an authoring tool for models that will be served by something else entirely.</p>
+
+      <p>Pick the framework with the best ecosystem for your work today. Do not overthink it. And do not rewrite working code.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
