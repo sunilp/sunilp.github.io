@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Seven years from BiLSTM-CRF NER pipelines to multi-agent LLM systems — what changed, what stayed the same, and what it means for practitioners building production NLP." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="From NER Pipelines to LLM Agents: How Production NLP Changed in Seven Years" />
+  <meta property="og:description" content="A practitioner's arc from 2018 BiLSTM-CRF at a startup to 2025 multi-agent protocols — connecting five eras of production NLP." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/ner-to-agents/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/ner-to-agents/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>From NER Pipelines to LLM Agents — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "From NER Pipelines to LLM Agents: How Production NLP Changed in Seven Years",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2025-03-10",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>From NER Pipelines to LLM Agents: How Production NLP Changed in Seven Years</h1>
+      <div class="article-meta">March 2025</div>
+
+      <p>In 2018, I was at NUS studying the Transformer paper and building BiLSTM-CRF NER systems at a startup in Singapore. The state of the art for named entity recognition was a 3-million-parameter model with hand-tuned character embeddings and gazetteer features. Deploying it meant exporting a PyTorch model, writing a Flask API, and SSH-ing into a server.</p>
+
+      <p>Seven years later, I am publishing research on multi-agent LLM protocols — systems where multiple language models delegate tasks to each other, negotiate payload formats, and maintain governed sessions. The NER pipeline I built in 2018 would now be a single function call to an LLM.</p>
+
+      <p>This is not a history lesson. It is an attempt to connect the dots — to identify what actually changed in production NLP, what stayed the same, and what the arc tells us about where we are going.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 580 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 580px; display: block; margin: 0 auto;">
+          <!-- Title -->
+          <text x="290" y="16" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">FIVE ERAS OF PRODUCTION NLP</text>
+
+          <!-- Timeline line -->
+          <line x1="40" y1="60" x2="540" y2="60" stroke="#e8e8e8" stroke-width="2"/>
+
+          <!-- Era markers -->
+          <!-- Era 1: Feature Engineering -->
+          <circle cx="60" cy="60" r="6" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+          <text x="60" y="46" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">pre-2018</text>
+          <rect x="20" y="76" width="80" height="44" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="60" y="93" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle">Feature</text>
+          <text x="60" y="106" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">Engineering</text>
+
+          <!-- Era 2: Pre-training -->
+          <circle cx="170" cy="60" r="6" fill="#999" stroke="#6b6b6b" stroke-width="1.5"/>
+          <text x="170" y="46" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">2018-19</text>
+          <rect x="130" y="76" width="80" height="44" rx="3" fill="#fff" stroke="#999" stroke-width="1.5"/>
+          <text x="170" y="93" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#6b6b6b" text-anchor="middle">Pre-training</text>
+          <text x="170" y="106" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">BERT, ELMo</text>
+
+          <!-- Era 3: Scale -->
+          <circle cx="280" cy="60" r="6" fill="#6b6b6b" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="280" y="46" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">2020-22</text>
+          <rect x="240" y="76" width="80" height="44" rx="3" fill="#fff" stroke="#6b6b6b" stroke-width="1.5"/>
+          <text x="280" y="93" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#6b6b6b" text-anchor="middle">Scale</text>
+          <text x="280" y="106" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">GPT-3, PaLM</text>
+
+          <!-- Era 4: Application -->
+          <circle cx="390" cy="60" r="6" fill="#6b6b6b" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="390" y="46" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">2023-24</text>
+          <rect x="350" y="76" width="80" height="44" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="390" y="93" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a" text-anchor="middle">Application</text>
+          <text x="390" y="106" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">ChatGPT, RAG</text>
+
+          <!-- Era 5: Agents -->
+          <circle cx="500" cy="60" r="8" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+          <text x="500" y="46" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle" font-weight="500">2025</text>
+          <rect x="460" y="76" width="80" height="44" rx="3" fill="#1a1a1a"/>
+          <text x="500" y="93" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#fff" text-anchor="middle">Agents</text>
+          <text x="500" y="106" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#ccc" text-anchor="middle">Multi-agent, tools</text>
+
+          <!-- Key milestones below -->
+          <text x="60" y="140" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">CRF, BiLSTM</text>
+          <text x="60" y="152" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">gazetteers</text>
+
+          <text x="170" y="140" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Transformer</text>
+          <text x="170" y="152" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">transfer learning</text>
+
+          <text x="280" y="140" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">scaling laws</text>
+          <text x="280" y="152" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">few-shot</text>
+
+          <text x="390" y="140" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">RLHF, RAG</text>
+          <text x="390" y="152" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">enterprise pilots</text>
+
+          <text x="500" y="140" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">delegation</text>
+          <text x="500" y="152" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">tool use, MCP</text>
+
+          <!-- Model size progression -->
+          <text x="290" y="185" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1">MODEL SIZE</text>
+          <rect x="40" y="194" width="20" height="12" rx="2" fill="#e8e8e8"/>
+          <text x="68" y="204" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999">3M</text>
+          <rect x="130" y="194" width="40" height="12" rx="2" fill="#e8e8e8"/>
+          <text x="178" y="204" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999">110M</text>
+          <rect x="240" y="194" width="80" height="12" rx="2" fill="#e8e8e8"/>
+          <text x="328" y="204" font-family="IBM Plex Mono, monospace" font-size="8" fill="#999">175B</text>
+          <rect x="350" y="194" width="130" height="12" rx="2" fill="#6b6b6b"/>
+          <text x="488" y="204" font-family="IBM Plex Mono, monospace" font-size="8" fill="#1a1a1a">1T+</text>
+
+          <!-- Bottom note -->
+          <text x="290" y="232" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle" font-style="italic">Each era made the previous era's hard problem trivial — and revealed a new one.</text>
+        </svg>
+      </figure>
+
+      <h2>Era 1: Feature Engineering (pre-2018)</h2>
+
+      <p>Before I entered the field, production NLP was dominated by hand-crafted features. Conditional Random Fields for sequence labeling. Bag-of-words and TF-IDF for classification. Regex patterns and rule-based systems for extraction. The skill was in feature engineering — knowing which features to compute, how to combine them, and how to handle the edge cases.</p>
+
+      <p>The models were small, fast, and interpretable. They were also brittle. Every new domain required new features. Every new language required new tokenizers, new gazetteers, new rules. The cost was human expertise, and it did not scale.</p>
+
+      <h2>Era 2: Pre-training (2018-2019)</h2>
+
+      <p>ELMo, BERT, and the Transformer changed the economics of NLP overnight. Instead of engineering features for each task, you could pre-train a language model on a large corpus and fine-tune it on your specific task with a few thousand examples. Transfer learning had arrived for NLP, the way ImageNet had arrived for computer vision years earlier.</p>
+
+      <p>At Halialabs, I lived through this transition. We were building BiLSTM-CRF NER systems with GloVe embeddings and character CNNs. BERT arrived in October 2018 and immediately outperformed everything we had built on English benchmarks. But we could not use it — inference was too slow for our latency requirements, and BERT was not pre-trained on Malay or Bahasa Indonesia.</p>
+
+      <p>The lesson: <strong>breakthrough papers change what is possible. Deployment constraints determine what actually changes.</strong> BERT was state of the art in 2018. We were still deploying BiLSTM-CRFs in production in 2019 because they were faster, smaller, and worked for our languages.</p>
+
+      <h2>Era 3: Scale (2020-2022)</h2>
+
+      <p>GPT-3 in 2020 demonstrated that scaling language models — making them much bigger, trained on much more data — produced qualitatively new capabilities. Few-shot learning. Arithmetic from prompts. Code generation. The scaling laws (Kaplan et al.) showed this was predictable: loss decreases as a power law of model size and compute.</p>
+
+      <p>For practitioners, the implication was profound. The old paradigm — collect labeled data, train a task-specific model, deploy it — started to look expensive and slow compared to prompting a large model. But the large models were expensive to run, non-deterministic, and available only through APIs that regulated industries could not use.</p>
+
+      <p>I had moved to a global bank by this point, building data platforms and AI infrastructure. The scaling era was visible in research papers but invisible in enterprise production. The gap between what was possible and what was deployable widened with every new model release.</p>
+
+      <h2>Era 4: Application (2023-2024)</h2>
+
+      <p>ChatGPT in November 2022 was the tipping point. Not because it was technically superior to GPT-3 — it was a fine-tuned version with RLHF — but because it made LLM capabilities legible to non-technical stakeholders. Executives who had never heard of language models were suddenly asking about them. Budget appeared. Urgency appeared. Governance did not.</p>
+
+      <p>2023-2024 was the year of the enterprise pilot. RAG (Retrieval-Augmented Generation) became the dominant pattern for enterprise LLM applications — ground the model in your documents, reduce hallucinations, stay within your data boundaries. Every organization I spoke to was building a "chat with your docs" system. Most were discovering the same things: chunking strategy matters more than embedding model. Retrieval quality matters more than generation quality. Evaluation is the hardest problem.</p>
+
+      <p>Open-source models (LLaMA, Mistral, Mixtral) made on-premise deployment possible for the first time. This was the inflection point for regulated industries — you could now run a capable language model inside your own infrastructure, fine-tune it on your own data, and control every aspect of the deployment.</p>
+
+      <p>But governance lagged. Model risk frameworks designed for logistic regression and gradient-boosted trees could not handle non-deterministic models with emergent capabilities trained on unknown data. The gap between what was being deployed and what was being governed was uncomfortable.</p>
+
+      <h2>Era 5: Agents (2025)</h2>
+
+      <p>We are now in the agent era. LLMs are no longer just question-answering systems. They are being given tools — the ability to search databases, call APIs, execute code, and delegate to other models. Multi-agent systems, where specialized models collaborate on complex tasks, are moving from research prototypes to early production deployments.</p>
+
+      <p>This is what motivated my recent research on LDP (LLM Delegate Protocol). When multiple agents delegate to each other, the protocols they use matter. Current protocols like MCP treat every model as a black box — they expose skill names but not model identity, latency characteristics, or cost profiles. Identity-aware routing, where the system knows which model is behind each agent and routes accordingly, can reduce latency by 12x on tasks that do not need the largest model.</p>
+
+      <p>The agent era introduces new problems: how do you govern a system where one model decides which other model to call? How do you audit a chain of delegations? How do you attribute errors when three models contributed to a single output? These are the problems I expect to define the next few years of production AI.</p>
+
+      <h2>What Changed</h2>
+
+      <p>The obvious changes are architectural. In seven years, production NLP went from:</p>
+
+      <ul>
+        <li>Task-specific models → general-purpose models adapted to tasks</li>
+        <li>Feature engineering → pre-training + prompting</li>
+        <li>Small models (3M parameters) → large models (100B+)</li>
+        <li>Single models → multi-model systems</li>
+        <li>Structured output → natural language output</li>
+        <li>Deterministic pipelines → probabilistic generation</li>
+      </ul>
+
+      <p>Less obvious but equally important: the <strong>bottleneck shifted</strong>. In 2018, the bottleneck was model quality — the model was not good enough, so you compensated with features and rules. In 2025, the bottleneck is everything around the model — evaluation, governance, retrieval quality, cost optimization, and system architecture.</p>
+
+      <h2>What Stayed the Same</h2>
+
+      <p>This is the part that matters more.</p>
+
+      <p><strong>Data quality still dominates model quality.</strong> In 2018, bad training data produced bad NER models. In 2025, bad retrieval data produces bad RAG outputs. The models changed. The dependency on data quality did not. Every era of NLP has been a contest between better models and worse data, and data keeps winning.</p>
+
+      <p><strong>Evaluation is still the hardest problem.</strong> In 2018, we argued about entity-level F1 vs. token-level F1 vs. partial match scoring. In 2025, we argue about RAGAS vs. G-Eval vs. human evaluation vs. LLM-as-judge. The metrics changed. The fundamental difficulty — measuring whether a system is good enough for production — did not.</p>
+
+      <p><strong>The pipeline matters more than the model.</strong> In 2018, preprocessing and post-processing added 3-5 F1 points on top of the model. In 2025, chunking strategy and retrieval pipeline add more quality than switching embedding models. The model is always the most visible component and never the most impactful one.</p>
+
+      <p><strong>Governance is always late.</strong> In 2018, model governance for NER was an afterthought. In 2023, model governance for LLMs was an afterthought. The technology moves faster than the frameworks designed to govern it. This has been true for every era, and there is no reason to think it will change.</p>
+
+      <p><strong>Production is where learning happens.</strong> Research papers describe what is possible. Production systems describe what works. The gap between these two has existed for every era, and bridging it has always been the highest-leverage work.</p>
+
+      <h2>The Meta-Lesson</h2>
+
+      <p>Looking back across seven years, the pattern I see is this: each era made the previous era's hard problem trivial and revealed a new hard problem.</p>
+
+      <p>Pre-training made feature engineering trivial. Scale made task-specific training trivial. Applications made capability access trivial. Agents are making single-model architectures trivial.</p>
+
+      <p>But each era also introduced a new hard problem. Pre-training introduced the compute bottleneck. Scale introduced the governance gap. Applications introduced the evaluation crisis. Agents are introducing the coordination and attribution problem.</p>
+
+      <p>The practitioners who thrive are not the ones who master each era's dominant technique. They are the ones who see the new hard problem early — while everyone else is still celebrating that the old hard problem is solved.</p>
+
+      <hr />
+
+      <p>In 2018, I trained a 3-million-parameter model to find company names in Malay text. In 2025, I am designing protocols for systems where multiple billion-parameter models negotiate and delegate. The scale is different. The fundamental challenges — data quality, evaluation, governance, system thinking — are not.</p>
+
+      <p>If you are entering the field today: learn the current tools, but invest in the fundamentals. The tools change every two years. The fundamentals have not changed in seven. They probably will not change in the next seven either.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
