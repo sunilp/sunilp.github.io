@@ -1,117 +1,15 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/project/human-activity-recognition/</loc>
-      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/post/intro-to-tensorflow/</loc>
-      <lastmod>2017-08-03T21:59:35+08:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/post/stockindexforecasting/</loc>
-      <lastmod>2017-07-18T15:20:11+05:30</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/post/welcome/</loc>
-      <lastmod>2017-07-01T15:20:22+05:30</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/project/sign-language-recognition/</loc>
-      <lastmod>2017-06-13T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/categories/</loc>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/tags/machine-learning/</loc>
-      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/post/</loc>
-      <lastmod>2017-08-03T21:59:35+08:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/project/</loc>
-      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/publication_types/</loc>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/</loc>
-      <lastmod>2017-07-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>http://sunilprakash.com/tags/</loc>
-      <lastmod>2017-09-27T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://sunilprakash.com/</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://sunilprakash.com/llms.txt</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

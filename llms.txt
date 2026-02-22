@@ -1,0 +1,33 @@
+# Sunil Prakash Singh
+
+## Profile
+AI transformation and platform strategy leader focused on enterprise-scale delivery in regulated environments.
+
+## Current Role
+- Vice President, Cloud & Platform Architecture, Deutsche Bank (2021-present)
+
+## Leadership Focus
+- Enterprise AI strategy and operating models
+- Platform and data transformation
+- AI governance, controls, and production readiness
+- Cross-functional execution across engineering, product, and risk stakeholders
+
+## Career Highlights
+- Deutsche Bank: modernization of legacy estates to cloud-native platforms and enterprise data foundations
+- Halialabs: scaled NLP and deep learning systems with end-to-end AI lifecycle practices
+- Cognizant: architecture and delivery governance across enterprise programs
+
+## Education & Credentials
+- PGPMAX (Executive MBA), Indian School of Business (in progress)
+- M.Tech, Enterprise Business Analytics, National University of Singapore
+- B.E., Computer Science, RGTU, India
+- Google Cloud Professional Cloud Architect
+
+## Canonical URLs
+- https://sunilprakash.com/
+- https://sunilprakash.com/sitemap.xml
+- https://sunilprakash.com/robots.txt
+
+## Contact
+- LinkedIn: https://www.linkedin.com/in/sunilprakash
+- Email: sunil@sunilprakash.com
