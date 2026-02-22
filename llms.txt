@@ -1,4 +1,4 @@
-# Sunil Prakash Singh
+# Sunil Prakash
 
 ## Profile
 AI transformation and platform strategy leader focused on enterprise-scale delivery in regulated environments.
@@ -11,6 +11,7 @@ AI transformation and platform strategy leader focused on enterprise-scale deliv
 - Platform and data transformation
 - AI governance, controls, and production readiness
 - Cross-functional execution across engineering, product, and risk stakeholders
+- Responsible AI and EU AI Act readiness in regulated contexts
 
 ## Career Highlights
 - Deutsche Bank: modernization of legacy estates to cloud-native platforms and enterprise data foundations
@@ -22,6 +23,14 @@ AI transformation and platform strategy leader focused on enterprise-scale deliv
 - M.Tech, Enterprise Business Analytics, National University of Singapore
 - B.E., Computer Science, RGTU, India
 - Google Cloud Professional Cloud Architect
+
+## Mobility
+- Open to global leadership mandates
+
+## Thought Leadership Topics
+- Structuring an AI Center of Excellence for enterprise delivery
+- Managing technical debt in agentic workflows
+- Operating models for enterprise AI governance
 
 ## Canonical URLs
 - https://sunilprakash.com/
