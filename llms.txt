@@ -1,42 +1,46 @@
 # Sunil Prakash
 
 ## Profile
-AI transformation and platform strategy leader focused on enterprise-scale delivery in regulated environments.
+Enterprise AI and platform architecture leader. Building durable technology capability in regulated environments.
 
 ## Current Role
-- Vice President, Cloud & Platform Architecture, Deutsche Bank (2021-present)
+Vice President, Cloud & Platform Architecture, Deutsche Bank (2021–present)
 
-## Leadership Focus
+## Focus Areas
 - Enterprise AI strategy and operating models
-- Platform and data transformation
-- AI governance, controls, and production readiness
-- Cross-functional execution across engineering, product, and risk stakeholders
-- Responsible AI and EU AI Act readiness in regulated contexts
+- Data platform architecture (Data Vault 2.0, dbt, BigQuery)
+- AI governance and regulatory compliance (EU AI Act, SR 11-7, BCBS 239)
+- Cloud platform modernization in banking
+- Cross-functional execution across engineering, product, and risk
 
-## Career Highlights
-- Deutsche Bank: modernization of legacy estates to cloud-native platforms and enterprise data foundations
-- Halialabs: scaled NLP and deep learning systems with end-to-end AI lifecycle practices
-- Cognizant: architecture and delivery governance across enterprise programs
+## Career
+- Deutsche Bank: Cloud & platform architecture, enterprise data foundations, regulatory-grade data platforms
+- Halialabs: AI/ML platform architecture, NLP and deep learning productionization
+- Cognizant: Enterprise architecture and delivery governance
 
-## Education & Credentials
-- PGPMAX (Executive MBA), Indian School of Business (in progress)
+## Education
+- PGPMAX (Executive MBA), Indian School of Business
 - M.Tech, Enterprise Business Analytics, National University of Singapore
 - B.E., Computer Science, RGTU, India
 - Google Cloud Professional Cloud Architect
 
-## Mobility
-- Open to global leadership mandates
+## Writing
+- Why Most Enterprise AI Programs Fail Before They Start — https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/
+- Data Vault 2.0 in Banking — https://sunilprakash.com/writing/data-vault-in-banking/
+- The AI Center of Excellence Is Dead — https://sunilprakash.com/writing/ai-operating-model/
 
-## Thought Leadership Topics
-- Structuring an AI Center of Excellence for enterprise delivery
-- Managing technical debt in agentic workflows
-- Operating models for enterprise AI governance
+## Open Source
+- reference-data-platform-gcp — https://github.com/sunilp/reference-data-platform-gcp
+- ai-governance-framework — https://github.com/sunilp/ai-governance-framework
+- dbt-data-vault-starter — https://github.com/sunilp/dbt-data-vault-starter
 
-## Canonical URLs
+## Pages
 - https://sunilprakash.com/
-- https://sunilprakash.com/sitemap.xml
-- https://sunilprakash.com/robots.txt
+- https://sunilprakash.com/writing/
+- https://sunilprakash.com/portfolio/
+- https://sunilprakash.com/speaking/
 
 ## Contact
 - LinkedIn: https://www.linkedin.com/in/sunilprakash
+- GitHub: https://github.com/sunilp
 - Email: sunil@sunilprakash.com

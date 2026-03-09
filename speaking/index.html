@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Speaking topics by Sunil Prakash — enterprise AI governance, data platform architecture, and technology leadership." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Speaking — Sunil Prakash" />
+  <meta property="og:description" content="Talk topics on AI governance, data architecture, and enterprise transformation." />
+  <meta property="og:url" content="https://sunilprakash.com/speaking/" />
+  <link rel="canonical" href="https://sunilprakash.com/speaking/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Speaking — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/" class="active">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="wrap reveal" style="--delay: 0.05s;">
+        <h1>Speaking</h1>
+        <p class="hero-sub">I speak about the organizational and architectural decisions that determine whether AI, data, and cloud programs succeed or stall at the enterprise level.</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <div class="wrap">
+        <p class="section-label">Talk Topics</p>
+
+        <div class="entry reveal" style="--delay: 0.08s;">
+          <h3>Why Most Enterprise AI Programs Fail Before They Start</h3>
+          <p>The failure mode isn't technical — it's organizational. This talk covers the operating model gap: why enterprises skip governance, what an AI operating model looks like, and how to build one that enables rather than constrains.</p>
+          <p class="meta">Audience: CTOs, CIOs, Heads of AI, VP Engineering</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.12s;">
+          <h3>Data Architecture for Regulatory Defensibility</h3>
+          <p>How to design data platforms that satisfy BCBS 239, DORA, and emerging AI regulations by default — not through bolt-on compliance. Covers Data Vault 2.0, lineage patterns, point-in-time reconstruction, and why insert-only modeling matters in banking.</p>
+          <p class="meta">Audience: Data architects, platform engineers, compliance leaders</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.16s;">
+          <h3>The AI Operating Model: From CoE to Enterprise Capability</h3>
+          <p>Centers of Excellence centralize capability. Operating models distribute it. This talk covers the structural shift from centralized AI teams to distributed AI capability with shared standards — platform teams, domain ownership, and tiered governance.</p>
+          <p class="meta">Audience: AI leaders, Chief Data Officers, transformation executives</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.2s;">
+          <h3>AI Governance as Enablement</h3>
+          <p>Governance doesn't have to be a bottleneck. This talk presents a tiered governance framework that scales requirements with risk — lighter governance for low-impact models, rigorous governance for consequential ones. Includes practical patterns for risk classification, deployment gates, and monitoring standards.</p>
+          <p class="meta">Audience: Risk officers, model validation teams, AI program leads</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.24s;">
+          <h3>Platform Thinking for Enterprise Data</h3>
+          <p>Why treating data infrastructure as a product — with platform teams, developer experience, and self-service capabilities — produces better outcomes than project-based data engineering. Covers platform architecture, dbt patterns, and the organizational design that makes data platforms work.</p>
+          <p class="meta">Audience: Platform engineering leads, data engineering teams, engineering directors</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap reveal" style="--delay: 0.28s;">
+        <p class="section-label">Inquiries</p>
+        <p class="section-title">Available for conferences, executive offsites, and panels.</p>
+        <p class="section-desc">If you're organizing an event on enterprise AI, data architecture, or technology leadership and think there's a fit, I'd welcome the conversation.</p>
+        <div class="contact-grid">
+          <a href="mailto:sunil@sunilprakash.com">sunil@sunilprakash.com</a>
+          <a href="https://www.linkedin.com/in/sunilprakash" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

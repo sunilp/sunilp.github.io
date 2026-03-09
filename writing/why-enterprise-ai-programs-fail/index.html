@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why most enterprise AI programs fail before they start — the organizational failure mode that no amount of tooling can fix." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Why Most Enterprise AI Programs Fail Before They Start" />
+  <meta property="og:description" content="The failure mode isn't technical. It's organizational." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Why Most Enterprise AI Programs Fail Before They Start — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why Most Enterprise AI Programs Fail Before They Start",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-01",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article reveal" style="--delay: 0.05s;">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Why Most Enterprise AI Programs Fail Before They Start</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>Every large organization wants to be "AI-first." The board has mandated it. The strategy deck says it. The budget is approved. And yet, eighteen months later, the same organizations are stuck with a handful of disconnected pilots, a frustrated data science team, and a growing suspicion that AI was overpromised.</p>
+
+      <p>The conventional diagnosis is technical: bad data, wrong tools, insufficient talent. These are real constraints. But they're not the root cause. The root cause is organizational. Most enterprises skip the operating model and jump straight to tooling — then wonder why nothing scales past the proof of concept.</p>
+
+      <h2>The Operating Model Gap</h2>
+
+      <p>An AI operating model answers the questions that tooling cannot:</p>
+
+      <ul>
+        <li><strong>Who decides</strong> which AI use cases get investment, and against what criteria?</li>
+        <li><strong>Who is accountable</strong> when a model in production drifts, produces biased outcomes, or makes a regulatory-significant decision?</li>
+        <li><strong>What happens</strong> when the data science team builds a model that the platform team can't deploy, or the risk team can't validate?</li>
+        <li><strong>How are trade-offs resolved</strong> between speed-to-market and governance requirements?</li>
+      </ul>
+
+      <p>Without clear answers, every AI initiative becomes a negotiation. Teams build in isolation. Risk and compliance get involved too late. Deployment becomes an ad hoc exercise in persuasion rather than a repeatable process with known gates.</p>
+
+      <h2>Three Organizational Failure Modes</h2>
+
+      <h3>1. The Missing Intake</h3>
+
+      <p>Most organizations have no structured way to evaluate AI use cases against business value, technical feasibility, and risk exposure simultaneously. What they have instead is influence — whoever has the loudest sponsor gets the data scientists. This produces a portfolio of initiatives that reflects politics, not strategy.</p>
+
+      <p>A functioning intake process doesn't need to be bureaucratic. It needs a scoring rubric that business and technology leaders both trust, a review cadence that's fast enough to not become a bottleneck, and clear decision rights about who says yes or no.</p>
+
+      <h3>2. The Validation Vacuum</h3>
+
+      <p>In regulated industries — banking, insurance, healthcare — model validation isn't optional. It's a regulatory requirement. Yet many AI programs treat validation as a phase-gate to be passed, not an ongoing discipline.</p>
+
+      <p>The result is predictable. Models get built by data scientists who understand algorithms but not the regulatory context. Validation teams receive models they weren't involved in scoping. The feedback loop between development and validation becomes adversarial rather than collaborative.</p>
+
+      <p>The fix is structural: validation input at the design stage, not just the approval stage. This means validation teams need to be staffed, skilled, and involved from day one — not bolted on at the end.</p>
+
+      <h3>3. The Production Cliff</h3>
+
+      <p>The gap between "model works in a notebook" and "model runs reliably in production" is where most enterprise AI programs die. This isn't a deployment problem. It's a standards problem.</p>
+
+      <p>Without agreed-upon patterns for model serving, monitoring, rollback, and retraining, every deployment is a bespoke engineering project. The data science team throws a model over the wall. The platform team catches it — or doesn't. Each team blames the other for the delay.</p>
+
+      <p>Production-grade AI requires shared standards: what a deployable model looks like, what monitoring is non-negotiable, what triggers a rollback, how retraining is initiated. These are operating model decisions, not technology decisions.</p>
+
+      <h2>What an AI Operating Model Actually Looks Like</h2>
+
+      <p>An effective AI operating model has four components:</p>
+
+      <p><strong>Demand management.</strong> A clear process for evaluating, prioritizing, and funding AI use cases — balancing business impact, technical feasibility, and risk exposure.</p>
+
+      <p><strong>Lifecycle governance.</strong> Defined stages from ideation through decommissioning, with clear accountabilities, quality gates, and documentation requirements at each stage.</p>
+
+      <p><strong>Platform standards.</strong> Shared infrastructure, tooling, and deployment patterns that make it possible for data science teams to go from experiment to production without reinventing the wheel each time.</p>
+
+      <p><strong>Roles and accountability.</strong> A RACI that everyone understands — not on paper, but in practice. Who owns the model in production? Who is accountable for monitoring? Who decides when a model is retrained or retired?</p>
+
+      <h2>The Uncomfortable Truth</h2>
+
+      <p>Building an AI operating model is less exciting than buying a new platform or hiring a star data scientist. It doesn't demo well. It doesn't generate LinkedIn posts about breakthrough results.</p>
+
+      <p>But it's the difference between an organization that has AI capabilities and an organization that has AI projects. Capabilities endure and compound. Projects start and stop.</p>
+
+      <p>The enterprises that will lead in AI over the next decade aren't the ones with the best models. They're the ones with the best operating models. The model is the easy part. The operating model is the hard part — and the part most organizations skip.</p>
+
+      <hr />
+
+      <p>I work on these problems at Deutsche Bank, where building AI capability in a regulated environment means the operating model isn't a nice-to-have — it's a prerequisite. If you're working through similar challenges, I'd welcome the conversation.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

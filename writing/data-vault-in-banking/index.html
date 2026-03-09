@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why Data Vault 2.0 is the right modeling pattern for banking data platforms — auditability, lineage, and regulatory defensibility by design." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Data Vault 2.0 in Banking: Architecture for the Audit That Hasn't Happened Yet" />
+  <meta property="og:description" content="Insert-only modeling, hash keys, and full lineage aren't academic — they're survival patterns in regulated environments." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/data-vault-in-banking/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/data-vault-in-banking/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Data Vault 2.0 in Banking — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Data Vault 2.0 in Banking: Architecture for the Audit That Hasn't Happened Yet",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-01-15",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article reveal" style="--delay: 0.05s;">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Data Vault 2.0 in Banking: Architecture for the Audit That Hasn't Happened Yet</h1>
+      <div class="article-meta">January 2026</div>
+
+      <p>In banking, the question is never whether you'll be audited. It's when. And when that audit arrives — regulatory examination, internal model validation, compliance review — the data platform needs to answer a specific set of questions: What data did we have? When did we have it? Where did it come from? Has it been altered?</p>
+
+      <p>Most data warehouse architectures can't answer these questions cleanly. They weren't designed to. Kimball star schemas optimize for query performance. Data lakes optimize for flexibility. Neither was designed for the immutable, auditable, source-faithful record that regulated environments demand.</p>
+
+      <p>Data Vault 2.0 was.</p>
+
+      <h2>The Core Idea</h2>
+
+      <p>Data Vault separates the data warehouse into three concerns, each with distinct rules:</p>
+
+      <p><strong>Hubs</strong> store business keys — the unique identifiers that define business entities. A customer ID. An account number. A transaction reference. Hubs are insert-only. Once a business key is recorded, it's never updated or deleted.</p>
+
+      <p><strong>Links</strong> store relationships between business keys. Customer-to-account. Transaction-to-account. Links are also insert-only. A relationship, once recorded, is a permanent fact.</p>
+
+      <p><strong>Satellites</strong> store descriptive attributes and their change history. Every time a customer's address changes, a new satellite record is inserted — the old record remains untouched. Change detection uses hash differentials: if the hash of the current attributes differs from the hash of the previous load, a new record is created.</p>
+
+      <p>Every record in every table carries two mandatory metadata fields: a load timestamp and a record source. This means any record in the warehouse can be traced back to exactly when it arrived and which source system it came from.</p>
+
+      <h2>Why This Matters in Banking</h2>
+
+      <h3>BCBS 239: Data Aggregation and Reporting</h3>
+
+      <p>BCBS 239 requires banks to aggregate risk data accurately, completely, and in a timely manner. The principles demand full traceability of data from source to report. Data Vault's insert-only pattern and mandatory source tracking directly satisfy Principle 3 (accuracy and integrity), Principle 4 (completeness), and Principle 6 (adaptability).</p>
+
+      <p>When a regulator asks "show me the data that backed this risk report on March 15th," a Data Vault platform can reconstruct the exact state of every entity as it existed at that point in time. A traditional warehouse that updates in place cannot.</p>
+
+      <h3>Point-in-Time Reconstruction</h3>
+
+      <p>Because satellites are insert-only with load timestamps, reconstructing the state of any entity at any historical moment is a straightforward temporal query. This isn't just useful for audits — it's essential for model validation, where regulators may ask to see the exact data a model was trained on, or the exact inputs it received at a specific decision point.</p>
+
+      <h3>Source System Independence</h3>
+
+      <p>Banks operate dozens of source systems, many of which are legacy, poorly documented, or scheduled for migration. Data Vault's separation of business keys (hubs) from descriptive attributes (satellites) means source system changes don't break the core model. A new source system for customer data simply adds new satellite records — the hub and its history remain untouched.</p>
+
+      <h2>Implementation Patterns</h2>
+
+      <h3>Hash Keys Over Sequences</h3>
+
+      <p>Data Vault 2.0 uses hash-based surrogate keys instead of database sequences. The hash is computed from the business key using a deterministic function — typically SHA-256 of the uppercased, null-handled, concatenated business key columns.</p>
+
+      <p>This has a practical advantage: hash keys are computed in the staging layer, which means they're identical regardless of load order or parallelism. Two independent loads of the same customer produce the same hash key. This enables parallel loading without coordination — a critical requirement for enterprise-scale platforms.</p>
+
+      <h3>Hashdiff for Change Detection</h3>
+
+      <p>Satellite change detection uses a hash differential — a hash computed over all descriptive attributes. On each load, the current hashdiff is compared to the most recent existing record. If they differ, a new record is inserted. If they match, the record is skipped. This is efficient, deterministic, and produces a clean change history without requiring column-by-column comparison.</p>
+
+      <h3>Ghost Records</h3>
+
+      <p>When a link references a hub that hasn't yet been loaded (a common scenario with parallel, source-independent loading), a ghost record provides a placeholder. The ghost record uses a deterministic key — typically the hash of an empty string — and is recognizable by its record source of "SYSTEM." Ghost records prevent referential integrity violations while maintaining the principle that every relationship is recorded as received.</p>
+
+      <h2>The dbt Implementation</h2>
+
+      <p>dbt makes Data Vault implementation pragmatic. Staging models handle cleansing, typing, and hash key generation. Raw vault models use incremental materialization with merge strategy — insert new records, skip duplicates. Business vault models (PIT tables, bridges) use table materialization for performance. Mart models flatten the vault structure into business-consumable views.</p>
+
+      <p>The key insight is that dbt's incremental model maps naturally to Data Vault's insert-only pattern. The merge strategy with a unique key on the hash key ensures idempotent loads — a critical property for reliability in production.</p>
+
+      <p>I've open-sourced a reference implementation: <a href="https://github.com/sunilp/dbt-data-vault-starter">dbt-data-vault-starter</a> covers hubs, links, satellites, PIT tables, bridges, and marts with a banking domain example.</p>
+
+      <h2>When Data Vault Is Wrong</h2>
+
+      <p>Data Vault adds modeling complexity. For small teams, non-regulated environments, or analytics-only use cases where historical auditability isn't a requirement, a simpler approach — even a well-structured star schema — may be more appropriate.</p>
+
+      <p>The question isn't whether Data Vault is the best pattern in general. It's whether your environment requires full history, source traceability, and audit defensibility by default. In banking, the answer is almost always yes.</p>
+
+      <hr />
+
+      <p>For a production-grade implementation including Terraform, dbt, and compliance patterns mapped to BCBS 239 and DORA, see <a href="https://github.com/sunilp/reference-data-platform-gcp">reference-data-platform-gcp</a>.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

@@ -4,107 +4,57 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
-  <title>Page Not Found | Sunil Prakash</title>
-  <link rel="icon" type="image/png" href="img/icon.png" />
+  <title>Not Found — Sunil Prakash</title>
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f6f7f3;
-      --panel: #ffffff;
-      --text: #16242a;
-      --muted: #5e6f73;
-      --border: #d9e1df;
-      --brand: #0f4c5c;
-      --shadow: 0 10px 34px rgba(14, 40, 48, 0.09);
-      --radius: 20px;
-      --body: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
+    * { box-sizing: border-box; margin: 0; }
     body {
-      margin: 0;
       min-height: 100vh;
       display: grid;
       place-items: center;
-      font-family: var(--body);
-      color: var(--text);
-      background:
-        radial-gradient(900px 420px at 10% 10%, rgba(199, 125, 43, 0.1), transparent 68%),
-        radial-gradient(1000px 600px at 90% -15%, rgba(15, 76, 92, 0.12), transparent 70%),
-        linear-gradient(180deg, #f8faf8 0%, #f4f5ef 100%);
+      font-family: "IBM Plex Sans", -apple-system, sans-serif;
+      color: #1a1a1a;
+      background: #fafaf8;
       padding: 24px;
     }
-
-    .card {
-      width: min(680px, 100%);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 28px;
-    }
-
+    main { width: min(520px, 100%); }
     .code {
       font-size: 12px;
-      color: #2f5c64;
-      background: #ebf3f2;
-      border: 1px solid #d2e4e2;
-      border-radius: 999px;
-      display: inline-block;
-      padding: 6px 10px;
+      color: #999;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.2;
       margin-bottom: 12px;
     }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 38px);
-      line-height: 1.1;
-    }
-
-    p {
-      margin: 12px 0 0;
-      color: var(--muted);
-      max-width: 50ch;
-    }
-
-    .actions {
-      margin-top: 18px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
+    p { color: #6b6b6b; font-size: 15px; line-height: 1.7; max-width: 44ch; }
+    .links { margin-top: 28px; display: flex; gap: 24px; }
+    .links a {
+      font-size: 14px;
+      color: #1a1a1a;
       text-decoration: none;
-      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+      padding-bottom: 2px;
     }
-
-    .btn.primary {
-      color: #fff;
-      border-color: var(--brand);
-      background: linear-gradient(160deg, #0f4c5c 0%, #136476 100%);
-    }
+    .links a:hover { border-color: #1a1a1a; }
   </style>
 </head>
 <body>
-  <main class="card">
+  <main>
     <div class="code">404</div>
     <h1>This page does not exist.</h1>
-    <p>
-      The link may be outdated after the site refresh. Use the homepage to access the latest profile and leadership summary.
-    </p>
-    <div class="actions">
-      <a class="btn primary" href="/">Back to Homepage</a>
-      <a class="btn" href="https://www.linkedin.com/in/sunilprakash" target="_blank" rel="noopener">View LinkedIn</a>
+    <p>The link may be outdated. Try the homepage or one of the pages below.</p>
+    <div class="links">
+      <a href="/">Home</a>
+      <a href="/writing/">Writing</a>
+      <a href="/portfolio/">Portfolio</a>
     </div>
   </main>
 </body>

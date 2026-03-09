@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Writing by Sunil Prakash on enterprise AI strategy, data architecture, governance, and technology leadership." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Writing — Sunil Prakash" />
+  <meta property="og:description" content="Ideas on AI governance, data architecture, and enterprise transformation." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Writing — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="wrap reveal" style="--delay: 0.05s;">
+        <h1>Writing</h1>
+        <p class="hero-sub">On the decisions that shape enterprise AI, data platforms, and technology organizations.</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <div class="wrap">
+        <div class="entry reveal" style="--delay: 0.08s;">
+          <h3><a href="/writing/why-enterprise-ai-programs-fail/">Why Most Enterprise AI Programs Fail Before They Start</a></h3>
+          <p class="meta">March 2026</p>
+          <p>The failure mode isn't technical. It's organizational. Most enterprises skip the operating model and jump straight to tooling — then wonder why nothing scales past the pilot.</p>
+          <a class="link" href="/writing/why-enterprise-ai-programs-fail/">Read</a>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.12s;">
+          <h3><a href="/writing/data-vault-in-banking/">Data Vault 2.0 in Banking: Architecture for the Audit That Hasn't Happened Yet</a></h3>
+          <p class="meta">January 2026</p>
+          <p>Why insert-only modeling, hash keys, and full lineage aren't academic exercises — they're survival patterns in regulated environments where every record must be defensible.</p>
+          <a class="link" href="/writing/data-vault-in-banking/">Read</a>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.16s;">
+          <h3><a href="/writing/ai-operating-model/">The AI Center of Excellence Is Dead. Long Live the AI Operating Model.</a></h3>
+          <p class="meta">November 2025</p>
+          <p>Centers of Excellence centralize capability. Operating models distribute it. The difference determines whether AI scales or stalls at the enterprise level.</p>
+          <a class="link" href="/writing/ai-operating-model/">Read</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

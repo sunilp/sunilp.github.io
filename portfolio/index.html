@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Selected architecture and transformation work by Sunil Prakash — anonymized case studies from enterprise AI, data platforms, and cloud modernization." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Portfolio — Sunil Prakash" />
+  <meta property="og:description" content="Anonymized case studies from enterprise AI, data platform, and cloud transformation programs." />
+  <meta property="og:url" content="https://sunilprakash.com/portfolio/" />
+  <link rel="canonical" href="https://sunilprakash.com/portfolio/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Portfolio — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/" class="active">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="wrap reveal" style="--delay: 0.05s;">
+        <h1>Portfolio</h1>
+        <p class="hero-sub">Anonymized architecture and transformation case studies. Details are generalized to respect confidentiality while preserving the decision patterns.</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <div class="wrap">
+        <div class="entry reveal" style="--delay: 0.08s;">
+          <p class="section-label">Data Platform</p>
+          <h3>Enterprise Data Foundation for a Tier-1 Bank</h3>
+          <p class="meta">Multi-year program — GCP, BigQuery, Dataflow, Composer, dbt, Data Vault 2.0</p>
+          <p><strong>Context.</strong> A global bank needed to replace fragmented data pipelines with a unified, auditable data platform capable of supporting regulatory reporting, analytics, and AI use cases. The existing estate was a mix of legacy ETL, ad hoc scripts, and disconnected data stores with no consistent lineage or source tracking.</p>
+          <p><strong>Approach.</strong> Designed a three-layer architecture: ingestion (Dataflow + Pub/Sub), orchestration (Cloud Composer), and modeling (dbt with Data Vault 2.0 on BigQuery). Data Vault was chosen for its insert-only pattern and mandatory metadata — enabling point-in-time reconstruction and full source traceability required by BCBS 239 and DORA.</p>
+          <p><strong>Key decisions.</strong> CMEK encryption for all data at rest. Private IP networking with no public endpoints. Column-level security via BigQuery policy tags. Terraform modules for reproducible infrastructure. Incremental loading with merge strategy for idempotent operations.</p>
+          <p><strong>Outcome.</strong> Unified data platform serving multiple business domains. Full lineage from source to report. Regulatory examination readiness built into the architecture rather than bolted on after the fact.</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.12s;">
+          <p class="section-label">AI Governance</p>
+          <h3>AI Governance Framework for Regulated Financial Services</h3>
+          <p class="meta">Framework design and implementation — Risk classification, lifecycle governance, compliance mapping</p>
+          <p><strong>Context.</strong> A financial institution was scaling AI use cases across credit, fraud, and customer analytics but had no consistent governance framework. Model development was ad hoc. Validation was inconsistent. Production monitoring was the responsibility of whoever happened to deploy the model.</p>
+          <p><strong>Approach.</strong> Designed a tiered governance framework that scales requirements with risk. Four tiers (Critical, High, Medium, Low) with distinct requirements for validation rigor, monitoring depth, and review cadence. The framework covers the full model lifecycle: development standards, independent validation, deployment gates, production monitoring, and decommissioning.</p>
+          <p><strong>Key decisions.</strong> Governance as enablement, not gatekeeping — the framework reduces ambiguity rather than adding bureaucracy. Compliance mapping to EU AI Act (Articles 9-15) and SR 11-7 built into the framework structure. Worked examples (credit scoring, fraud detection) to make the framework concrete rather than theoretical.</p>
+          <p><strong>Outcome.</strong> Consistent governance across AI use cases with clear accountabilities. Faster time-to-production for lower-risk models. Regulatory examination readiness for higher-risk models. A shared language between data science, risk, and compliance teams.</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.16s;">
+          <p class="section-label">Cloud Modernization</p>
+          <h3>Legacy-to-Cloud Platform Transformation</h3>
+          <p class="meta">Multi-year program — Application modernization, cloud-native architecture, delivery governance</p>
+          <p><strong>Context.</strong> A large enterprise needed to modernize a portfolio of business-critical applications from on-premises legacy infrastructure to cloud-native architecture. The existing estate had accumulated years of technical debt, with tightly coupled dependencies and limited observability.</p>
+          <p><strong>Approach.</strong> Rather than a wholesale migration, adopted a phased modernization strategy. Defined target architecture patterns per application tier. Established delivery governance with clear accountability across architecture, engineering, and operations. Built shared platform capabilities (CI/CD, observability, security baseline) that application teams could adopt incrementally.</p>
+          <p><strong>Key decisions.</strong> Strangler fig pattern over big-bang rewrite. Shared platform services over per-team duplication. Architecture decision records for every significant technical choice. Production readiness reviews as deployment gates rather than post-incident artifacts.</p>
+          <p><strong>Outcome.</strong> Reduced deployment friction and improved production resilience. Shared architectural patterns across teams. Engineering capabilities that compound over time rather than reset with each project.</p>
+        </div>
+
+        <div class="entry reveal" style="--delay: 0.2s;">
+          <p class="section-label">AI Productionization</p>
+          <h3>NLP and Deep Learning Platform</h3>
+          <p class="meta">3-year program — Event-driven architecture, model lifecycle, production ML</p>
+          <p><strong>Context.</strong> An AI-focused organization needed to move from bespoke model development to a repeatable platform for building, deploying, and monitoring NLP and deep learning models. Each project was essentially starting from scratch — different data pipelines, different serving infrastructure, different monitoring approaches.</p>
+          <p><strong>Approach.</strong> Built a shared ML platform with standardized components: data ingestion pipelines, experiment tracking, model registry, deployment automation, and production monitoring. Event-driven architecture for real-time inference. Batch pipelines for training and retraining.</p>
+          <p><strong>Key decisions.</strong> Standardized model packaging format to decouple development from deployment. Event-driven serving for latency-sensitive use cases. Automated retraining pipelines triggered by data drift detection. Centralized experiment tracking to make model development reproducible.</p>
+          <p><strong>Outcome.</strong> Reduced time from experiment to production. Consistent monitoring and alerting across all deployed models. Reusable platform components that accelerated each subsequent project.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

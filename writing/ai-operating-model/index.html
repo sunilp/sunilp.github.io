@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why AI Centers of Excellence fail at scale and what an AI Operating Model looks like in practice." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="The AI Center of Excellence Is Dead. Long Live the AI Operating Model." />
+  <meta property="og:description" content="Centers of Excellence centralize capability. Operating models distribute it." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/ai-operating-model/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/ai-operating-model/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>The AI Center of Excellence Is Dead — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The AI Center of Excellence Is Dead. Long Live the AI Operating Model.",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2025-11-10",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article reveal" style="--delay: 0.05s;">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>The AI Center of Excellence Is Dead. Long Live the AI Operating Model.</h1>
+      <div class="article-meta">November 2025</div>
+
+      <p>The AI Center of Excellence (CoE) was the standard playbook. Stand up a centralized team of data scientists. Give them a mandate. Let them prove value. Then scale.</p>
+
+      <p>It doesn't work. Not because the people are wrong, but because the structure is wrong.</p>
+
+      <p>A centralized AI CoE creates a bottleneck by design. Every use case funnels through a single team. That team becomes overloaded. Prioritization becomes political. Business units that don't get served start building their own shadow AI capability. Within two years, the organization has a CoE that handles a fraction of demand, three or four rogue data science teams building on different stacks, and no shared standards for anything — deployment, monitoring, governance, or quality.</p>
+
+      <p>This is not a people problem. It's an architecture problem.</p>
+
+      <h2>What Went Wrong with the CoE Model</h2>
+
+      <p>The CoE model made three assumptions that don't hold at enterprise scale:</p>
+
+      <p><strong>Assumption 1: AI capability should be centralized.</strong> In reality, AI use cases are deeply domain-specific. A fraud detection model requires different data, different validation, and different operational characteristics than a customer segmentation model. Centralizing the talent doesn't centralize the context — and context is what makes AI work.</p>
+
+      <p><strong>Assumption 2: Proving value will naturally lead to scaling.</strong> Proving value and scaling are fundamentally different challenges. A successful pilot proves that a model can work. Scaling proves that an organization can repeatedly develop, validate, deploy, monitor, and govern models. These are operating model capabilities, not data science capabilities.</p>
+
+      <p><strong>Assumption 3: The hard part is building models.</strong> The hard part is everything around the model — the data pipeline that feeds it, the validation process that approves it, the platform that serves it, the monitoring that watches it, the governance that ensures it remains compliant, and the organizational clarity about who is accountable for each of these things.</p>
+
+      <h2>The Operating Model Alternative</h2>
+
+      <p>An AI operating model doesn't centralize capability. It distributes capability while centralizing standards.</p>
+
+      <p>The distinction matters. In an operating model approach:</p>
+
+      <p><strong>A central platform team</strong> owns the shared infrastructure — compute, feature stores, model registries, deployment pipelines, monitoring frameworks. They don't build models. They build the platform that makes model development, deployment, and monitoring repeatable.</p>
+
+      <p><strong>Domain teams</strong> own their own AI development. They have embedded data scientists or ML engineers who understand the domain. They build models against shared platform standards, using shared tooling, following shared governance.</p>
+
+      <p><strong>A governance function</strong> owns the risk framework — risk classification, validation requirements, monitoring standards, escalation paths. This function sets the rules. It doesn't do the work. Model owners in domain teams are accountable for compliance. The governance function audits, advises, and escalates.</p>
+
+      <h2>What This Looks Like in Practice</h2>
+
+      <h3>Demand and Intake</h3>
+
+      <p>Use cases originate in business domains. A lightweight intake process scores them on business value, technical feasibility, data readiness, and risk tier. High-risk use cases (credit decisions, regulatory reporting) trigger enhanced validation requirements automatically. Low-risk use cases (internal analytics, operational dashboards) move through a lighter path.</p>
+
+      <h3>Development Standards</h3>
+
+      <p>Domain teams develop models using shared templates — model cards, experiment tracking, code review standards, bias testing requirements. The central platform provides the tooling. The governance function provides the templates. The domain team does the work.</p>
+
+      <h3>Deployment Gates</h3>
+
+      <p>Every model passes through deployment gates before reaching production. The gates vary by risk tier. A Tier 1 model (high regulatory impact) requires independent validation, shadow deployment, and sign-off from the model risk function. A Tier 4 model (low impact, internal use) requires peer review and automated testing.</p>
+
+      <p>The gates are defined centrally but executed locally. The domain team is responsible for meeting the gate criteria. The platform team provides the deployment infrastructure. The governance function audits compliance.</p>
+
+      <h3>Monitoring and Lifecycle</h3>
+
+      <p>Models in production are monitored against defined thresholds — data drift (Population Stability Index), performance degradation, fairness metrics. The monitoring infrastructure is centrally provided. The thresholds are set per model based on risk tier. When a threshold is breached, the response follows a defined escalation path — again, varying by risk tier.</p>
+
+      <h2>The Organizational Shift</h2>
+
+      <p>Moving from a CoE to an operating model is an organizational change, not a technology change. It requires:</p>
+
+      <ul>
+        <li><strong>Clear role definitions.</strong> Platform team, domain teams, governance function — each with distinct accountabilities. Overlapping accountability is no accountability.</li>
+        <li><strong>Shared standards that are actually shared.</strong> Not a document in a wiki that nobody reads. Living standards embedded in tooling, templates, and deployment pipelines.</li>
+        <li><strong>Investment in platform capability.</strong> The central team's job shifts from "doing AI" to "making AI doable." This requires engineering investment in developer experience, deployment automation, and monitoring infrastructure.</li>
+        <li><strong>Executive sponsorship of the model, not just the outcomes.</strong> The operating model itself needs a sponsor who cares about whether it's working — not just whether individual AI projects are delivering results.</li>
+      </ul>
+
+      <h2>Why This Matters Now</h2>
+
+      <p>The EU AI Act introduces regulatory requirements that make governance non-optional. Model risk management in banking (SR 11-7, BCBS 239) already demands it. As AI becomes embedded in more consequential decisions — credit, hiring, fraud, medical — the organizations that can demonstrate governance at scale will have a structural advantage.</p>
+
+      <p>You can't demonstrate governance at scale with a CoE. You need an operating model. The CoE was the right answer for 2018, when AI was experimental and the goal was to prove value. The operating model is the right answer for 2026, when AI is operational and the goal is to govern it at scale while continuing to deliver value.</p>
+
+      <p>The Center of Excellence served its purpose. It's time to replace it with something that actually scales.</p>
+
+      <hr />
+
+      <p>For a practical governance framework that implements these ideas — risk classification, lifecycle governance, compliance mapping — see <a href="https://github.com/sunilp/ai-governance-framework">ai-governance-framework</a> on GitHub.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
