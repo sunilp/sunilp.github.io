@@ -17,6 +17,7 @@ Vice President, Cloud & Platform Architecture, Deutsche Bank (2021–present)
 - Deutsche Bank: Cloud & platform architecture, enterprise data foundations, regulatory-grade data platforms
 - Halialabs: AI/ML platform architecture, NLP and deep learning productionization
 - Cognizant: Enterprise architecture and delivery governance
+- Syntel: Software engineering and project leadership
 
 ## Education
 - PGPMAX (Executive MBA), Indian School of Business
