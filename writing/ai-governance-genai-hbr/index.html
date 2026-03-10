@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Most organizations are governing generative AI with frameworks built for a fundamentally different kind of technology. That's a board-level risk." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Most Companies Are Governing AI with Yesterday's Playbook" />
+  <meta property="og:description" content="Your AI risk framework was designed for models that produce numbers. Generative AI produces language, decisions, and actions. The governance gap is a board-level risk." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/ai-governance-genai-hbr/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/ai-governance-genai-hbr/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Most Companies Are Governing AI with Yesterday's Playbook — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Most Companies Are Governing AI with Yesterday's Playbook",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-10",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Most Companies Are Governing AI with Yesterday's Playbook</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>Imagine this board meeting. The Chief Risk Officer presents the quarterly AI risk update. The slide says: "AI governance framework in place. All models classified by risk tier. Validation, monitoring, and escalation procedures operational." The board is reassured. The item moves to the next agenda topic.</p>
+
+      <p>Here's the problem: that governance framework was built for credit scoring models, fraud detection systems, and pricing engines. It was built for AI that produces numbers. The organization is now deploying AI that produces language — customer communications, research summaries, compliance analysis, contract reviews. And the framework that governs these systems has fundamental gaps that the board doesn't know about.</p>
+
+      <p>This isn't a hypothetical. It's the situation in the majority of large financial institutions, healthcare organizations, and enterprises that have mature model risk management programs. They have a governance framework. It works well for what it was designed for. It was not designed for generative AI.</p>
+
+      <h2>The Old AI and the New AI Are Fundamentally Different</h2>
+
+      <p>Traditional AI models are trained on your data, by your team, to perform a specific task. You control the model from end to end. When something goes wrong, your data scientists can inspect the model, trace the error to a specific feature or data issue, and fix it.</p>
+
+      <p>Generative AI is different in ways that matter for governance:</p>
+
+      <p><strong>You didn't build the model.</strong> Most enterprises use foundation models from OpenAI, Anthropic, Google, or open-source providers. The core behavior of your AI system is determined by a vendor you cannot audit. You can't inspect the training data. You can't explain why the model said what it said. Your risk team is validating a system built on technology they don't control and can't fully understand.</p>
+
+      <p><strong>The model doesn't just predict — it generates.</strong> A credit model produces a score between 0 and 1. You can validate that score against expected distributions and flag anomalies. A generative AI system produces paragraphs of text. You cannot programmatically verify that a paragraph is factually correct, appropriately nuanced, free of bias, and compliant with your regulatory obligations. Validation is harder by orders of magnitude.</p>
+
+      <p><strong>The model accepts instructions from users.</strong> Traditional models receive structured data inputs. Generative AI receives natural language — from your employees, your customers, your partners. Those inputs can include adversarial instructions designed to manipulate the system's behavior. This attack surface doesn't exist in traditional AI, and most risk frameworks don't account for it.</p>
+
+      <p><strong>The model can take actions.</strong> The next generation of AI — agentic systems — doesn't just answer questions. It plans, executes multi-step tasks, queries databases, and takes actions on production systems. A hallucination in a chatbot produces a wrong answer. A hallucination in an agent produces a wrong action. The consequence shifts from misinformation to operational impact.</p>
+
+      <h2>Five Questions Your Board Should Be Asking</h2>
+
+      <p>These questions expose the gaps between traditional AI governance and what generative AI requires. If your organization can't answer them clearly, you have a governance gap.</p>
+
+      <h3>1. "What is our tolerance for AI-generated errors?"</h3>
+
+      <p>Traditional AI governance sets performance thresholds — the model must achieve a certain accuracy, a certain precision, a certain AUC score. These metrics don't apply to generative AI. The relevant question is: how often is it acceptable for our AI to produce information that is plausible-sounding but factually wrong?</p>
+
+      <p>This is the hallucination problem, and it doesn't have a one-size-fits-all answer. A generative AI system drafting internal meeting notes can tolerate more error than one answering customer questions about their account. A system summarizing compliance documents requires near-zero error tolerance for dates, requirements, and obligations — but may tolerate imprecise language in narrative sections.</p>
+
+      <p>The governance framework must define tolerance levels by use case and risk tier, establish measurement methods (because measuring factual accuracy in free text is not straightforward), and mandate mitigations — grounding the AI in verified source material, requiring human review for consequential outputs, and building automated quality evaluation into the production pipeline.</p>
+
+      <p>Without an explicit hallucination policy, every team makes its own judgment. Some will be paralyzed by caution. Others will ship systems that confidently tell customers the wrong information.</p>
+
+      <h3>2. "Who controls the AI we depend on?"</h3>
+
+      <p>Your organization probably has rigorous vendor risk management for cloud providers, data platforms, and core banking systems. Does it have the same rigor for foundation model providers?</p>
+
+      <p>When you depend on a vendor's AI model, you depend on their decisions about model behavior, safety alignment, pricing, data handling, and product continuity. The vendor can change the model — often without notice. An update that improves general performance may degrade performance on your specific use case. A model version can be deprecated, forcing migration on the vendor's timeline, not yours.</p>
+
+      <p>For critical applications, the governance framework must require: validated fallback models from alternative providers, continuous performance monitoring (not just at onboarding), contractual clarity on data handling and training data usage, and an exit strategy that's been tested, not just documented.</p>
+
+      <p>If more than half of your AI-powered systems depend on a single provider, you have a concentration risk that belongs on the board's agenda.</p>
+
+      <h3>3. "Can we reconstruct what our AI said to a customer six months ago?"</h3>
+
+      <p>Regulatory examination readiness requires the ability to reconstruct any decision your AI system made. For traditional models, this means logging predictions, input features, and model versions. For generative AI, this means logging the complete context: the system instructions, the user's query, the documents the system retrieved, the raw output, any safety filters applied, and the final response delivered.</p>
+
+      <p>This is a substantially larger logging requirement than most organizations have in place for their AI systems. It also raises data governance questions — those logs may contain customer PII, confidential business information, or regulated data. The audit trail must be immutable, access-controlled, and retained for the period required by your regulatory framework.</p>
+
+      <p>When a regulator asks "what did your AI system tell this customer on this date, and why?" — you need to answer that question from records, not from guesswork. If you can't, you have a compliance gap.</p>
+
+      <h3>4. "Are our deployment gates designed for this kind of AI?"</h3>
+
+      <p>Most organizations have a gating process before AI enters production: development review, validation, risk assessment, operational readiness. The structure is right. The criteria inside each gate are wrong for generative AI.</p>
+
+      <p>A generative AI deployment gate must verify things that don't appear in a traditional AI gate: Has the system been tested for adversarial manipulation? Has hallucination rate been measured on domain-specific tasks? Has data residency been validated — where does customer data go when it enters the AI pipeline? Has the vendor's data handling been contractually secured? Is there a human oversight mechanism appropriate to the risk level? Are cost controls in place — because generative AI charges per use, and a misconfigured system can generate significant unexpected costs?</p>
+
+      <p>If your deployment gates haven't been updated for generative AI, systems are reaching production without being assessed against the risks that are specific to them.</p>
+
+      <h3>5. "Are we prepared for AI that takes actions, not just generates text?"</h3>
+
+      <p>Agentic AI is moving from research to production. These systems autonomously plan tasks, execute multi-step workflows, use tools, and interact with databases and APIs. They are the highest-risk AI deployment pattern in the enterprise.</p>
+
+      <p>An agentic system that researches investment opportunities queries your internal databases, synthesizes documents, and produces analysis — all with limited human oversight between steps. If it misinterprets an instruction, it doesn't just produce a wrong paragraph. It executes wrong queries, retrieves wrong data, and builds a coherent but fundamentally flawed analysis on top of it.</p>
+
+      <p>Any agentic AI system with access to production data or systems should be classified at the highest risk tier. The governance requirements include: mandatory human approval of the agent's plan before execution begins, hard limits on what actions the agent can take, automatic shutdown on anomaly detection, and a kill switch accessible to operators. These controls don't exist in a framework designed for models that produce predictions.</p>
+
+      <h2>Governance Is a Competitive Advantage</h2>
+
+      <p>There's a common misconception that governance slows AI adoption. The opposite is true at scale. Organizations without governance adopt AI fast and then stop — at the first audit finding, the first customer incident, the first regulatory question they can't answer. Organizations with governance adopt AI at a pace they can sustain.</p>
+
+      <p>The EU AI Act is now in force. GPAI model obligations took effect in August 2025. Full compliance for high-risk AI systems is required by August 2026. Financial regulators globally are increasing their focus on AI risk management. The organizations that have governance ready — not just for the AI of 2020, but for the AI of 2026 — will move faster, not slower.</p>
+
+      <p>The fix is not to start over. It is to extend what you have. Add generative AI risk dimensions to your existing risk classification. Define hallucination tolerance levels. Update your deployment gates. Build prompt audit trails. Establish a vendor risk process for foundation models. Create governance standards for agentic systems before they reach production.</p>
+
+      <p>The existing framework is the foundation. Generative AI is the extension. But the extension is not optional, and the longer you wait, the wider the gap between what your governance covers and what your organization is actually deploying.</p>
+
+      <hr />
+
+      <p><em>Sunil Prakash is Vice President of Cloud and Platform Architecture at Deutsche Bank, where he leads AI platform strategy, data architecture, and GenAI governance for enterprise-scale systems in regulated financial services.</em></p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
