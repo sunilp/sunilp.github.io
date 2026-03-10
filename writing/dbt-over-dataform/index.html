@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why we chose dbt over BigQuery Dataform for enterprise data transformation — JavaScript supply chain risk, SQL-first philosophy, and what matters in regulated environments." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Why We Chose dbt Over BigQuery Dataform" />
+  <meta property="og:description" content="JavaScript supply chain risk, SQL-first philosophy, multi-warehouse portability, and what actually matters when choosing a transformation framework in a regulated enterprise." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/dbt-over-dataform/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/dbt-over-dataform/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Why We Chose dbt Over BigQuery Dataform — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why We Chose dbt Over BigQuery Dataform",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-10",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article reveal" style="--delay: 0.05s;">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Why We Chose dbt Over BigQuery Dataform</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>When you're building a data platform on Google Cloud, Dataform looks like the obvious choice. It's native to BigQuery. It's managed by Google. It's integrated into the Cloud Console. If you're making decisions based on vendor alignment alone, the conversation ends here.</p>
+
+      <p>We went with dbt. Not because it's trendy. Because when you evaluate transformation frameworks through the lens of security posture, operational governance, team capability, and long-term architectural flexibility, dbt is the stronger choice for enterprise environments — particularly regulated ones.</p>
+
+      <p>This isn't a feature comparison matrix. It's the reasoning behind a decision that affected every downstream workflow in our data platform.</p>
+
+      <h2>The JavaScript Supply Chain Problem</h2>
+
+      <p>This was the argument that ended the debate internally.</p>
+
+      <p>Dataform is built on Node.js. Its transformation runtime executes JavaScript. Its package ecosystem runs through npm. This means every Dataform project inherits the security surface area of the npm dependency tree — and that surface area is enormous.</p>
+
+      <p>The npm ecosystem has a well-documented history of supply chain attacks and vulnerability disclosures:</p>
+
+      <ul>
+        <li><strong>event-stream (2018)</strong> — A widely-used npm package was compromised to inject a cryptocurrency-stealing payload. 8 million weekly downloads at the time.</li>
+        <li><strong>ua-parser-js (2021)</strong> — Hijacked to deliver cryptominers and credential stealers. Used by Facebook, Amazon, Google, and others.</li>
+        <li><strong>colors.js and faker.js (2022)</strong> — The maintainer deliberately sabotaged his own packages, injecting infinite loops that broke builds across the ecosystem.</li>
+        <li><strong>node-ipc (2022)</strong> — Maintainer added code that wiped files on Russian and Belarusian IP addresses. Pulled into thousands of projects through transitive dependencies.</li>
+      </ul>
+
+      <p>These aren't theoretical risks. They're incidents that happened. And in a regulated financial institution, each one of them triggers a response cycle.</p>
+
+      <h3>What a JavaScript Vulnerability Means in a Regulated Environment</h3>
+
+      <p>When a CVE is published against an npm package in your dependency tree, the clock starts. Depending on the severity and your organization's vulnerability management policy, you're typically looking at a 30 to 90-day remediation window — often shorter for critical or high-severity vulnerabilities.</p>
+
+      <p>Here's what that remediation cycle actually looks like:</p>
+
+      <ol>
+        <li><strong>Detection</strong> — Your software composition analysis (SCA) tool flags the vulnerability. Snyk, Dependabot, or whatever you're running surfaces the CVE against a transitive dependency three levels deep.</li>
+        <li><strong>Triage</strong> — Security team evaluates severity, exploitability, and blast radius. Is this dependency actually invoked at runtime, or is it a dev dependency? Is the vulnerable code path reachable? In complex npm trees, answering this question alone can take days.</li>
+        <li><strong>Patch availability</strong> — You check if the vulnerable package has released a fix. Often it hasn't. Or the fix exists but hasn't propagated to the intermediate dependency that pulls it in. You're now waiting on a maintainer you don't know, in a timezone you can't predict, with no SLA.</li>
+        <li><strong>Compatibility testing</strong> — If a patch exists, you update the dependency and run your full test suite. But npm dependency resolution is fragile. Bumping one package can cascade version conflicts across the tree. You've now spent a sprint on a security fix that has nothing to do with your actual data models.</li>
+        <li><strong>Approval and deployment</strong> — In a regulated environment, the patched version goes through change management. CAB review, deployment window, post-deployment validation. For a data transformation tool.</li>
+      </ol>
+
+      <p>Now multiply this by frequency. In 2023 alone, the npm registry disclosed over 7,000 advisories. Not all of them will hit your dependency tree, but a meaningful percentage will. We were looking at 2 to 4 vulnerability remediation cycles per quarter — each one consuming engineering time that should have been spent building data products.</p>
+
+      <h3>Why dbt Avoids This</h3>
+
+      <p>dbt is Python-based. The Python packaging ecosystem has its own issues, but the attack surface is structurally smaller for several reasons:</p>
+
+      <ul>
+        <li><strong>Fewer transitive dependencies.</strong> A typical dbt project has a shallow dependency tree. dbt-core, the adapter (dbt-bigquery), and a handful of packages. Compare this to a Dataform project where <code>node_modules</code> regularly contains 500+ packages for a basic setup.</li>
+        <li><strong>PyPI has lower churn.</strong> The Python package ecosystem moves more slowly. Packages tend to be more stable, with fewer micro-packages. The JavaScript ecosystem's culture of tiny, single-purpose packages (left-pad being the canonical example) creates a web of dependencies that's harder to audit and more fragile to maintain.</li>
+        <li><strong>dbt packages are SQL.</strong> When you install a dbt package like <code>dbt_utils</code> or <code>dbt_expectations</code>, you're pulling in SQL and Jinja templates — not executable code in a general-purpose programming language. You can read every line. You can audit every macro. The attack surface is fundamentally different.</li>
+      </ul>
+
+      <p>For an enterprise security team, this distinction is not academic. It's the difference between a transformation layer that generates constant vulnerability noise and one that sits quietly in the background doing its job.</p>
+
+      <h2>SQL-First vs. JavaScript-Wrapped SQL</h2>
+
+      <p>Dataform uses SQLX — a format that embeds SQL inside JavaScript blocks. You write your transformation logic in SQL, but the orchestration, configuration, and any dynamic logic happens in JavaScript.</p>
+
+      <p>dbt uses SQL with Jinja templating. You write SQL. You use Jinja for control flow, macros, and configuration. The mental model stays in SQL.</p>
+
+      <p>This matters for two reasons:</p>
+
+      <p><strong>Team capability.</strong> Data engineers and analytics engineers think in SQL. Most of them are comfortable with Python. Very few of them are proficient JavaScript developers. Choosing Dataform means either hiring for JavaScript skill in your data team (hard, expensive, and creates the wrong talent profile) or accepting that your data engineers will write JavaScript they're not confident maintaining.</p>
+
+      <p>In practice, we found that Dataform's JavaScript layer created a two-tier system. Senior engineers could use the full power of SQLX — JavaScript functions, custom assertions, dynamic SQL generation using JS. Junior engineers treated the JavaScript layer as boilerplate they copied without understanding. This is exactly the pattern that produces brittle, hard-to-debug pipelines.</p>
+
+      <p><strong>Code review and auditability.</strong> In regulated environments, data transformation code is auditable. When a regulator asks how a number was computed, you trace it from the dashboard back through the transformation layer to the source. That trace needs to be legible to people who aren't software engineers — risk officers, model validators, compliance analysts.</p>
+
+      <p>SQL is legible. A dbt model is a SELECT statement with some Jinja macros. Anyone with basic SQL knowledge can read it, reason about it, and validate that it's doing what the documentation says it's doing. A Dataform model wrapped in JavaScript config blocks, with logic split between .sqlx files and JavaScript includes, is harder to follow for non-developers. The audit trail gets muddier.</p>
+
+      <h2>Vendor Lock-In and Multi-Warehouse Portability</h2>
+
+      <p>Google acquired Dataform in December 2020. Since then, it's been integrated into the BigQuery Console as a first-party service. This integration is convenient — but it's also a lock-in vector.</p>
+
+      <p>Dataform works with BigQuery. That's it. If your data strategy involves any possibility of multi-cloud, hybrid, or migration scenarios, Dataform is a dead end. You'd be rewriting every model.</p>
+
+      <p>dbt supports BigQuery, Snowflake, Redshift, Databricks, Spark, Postgres, and dozens of other warehouses through its adapter system. A dbt model written for BigQuery can be ported to Snowflake with adapter-specific changes to materialization and SQL dialect, but the core logic, the testing framework, the documentation, and the operational patterns transfer directly.</p>
+
+      <p>We're a BigQuery shop today. We may be a BigQuery shop in five years. But our data strategy doesn't assume that. And in an industry where cloud strategy shifts happen at the executive level with limited warning, having a transformation layer that isn't welded to a single warehouse is a hedge worth having.</p>
+
+      <h2>Testing and Data Quality</h2>
+
+      <p>dbt's testing framework is one of its strongest features. Out of the box, you get schema tests — <code>unique</code>, <code>not_null</code>, <code>accepted_values</code>, <code>relationships</code>. These are declared in YAML alongside the model definition. They run as part of every pipeline execution. They're version-controlled with the code.</p>
+
+      <p>Beyond built-in tests, the dbt ecosystem offers <code>dbt_expectations</code> — a port of Great Expectations patterns to dbt. This gives you distributional tests, regex pattern matching, row-count checks, and statistical assertions. All in SQL. All auditable.</p>
+
+      <p>Dataform has assertions, which serve a similar purpose but are less mature. They're defined inline in SQLX files. The pattern coverage is narrower. And because they're JavaScript-configured, extending them requires JavaScript proficiency.</p>
+
+      <p>In a regulated data platform, testing is not optional and not secondary. Every model that feeds a regulatory report, a risk calculation, or a financial disclosure needs tests that prove it's producing correct results. dbt makes this a first-class concern. Dataform treats it as a feature.</p>
+
+      <h2>Community, Ecosystem, and Package Maturity</h2>
+
+      <p>dbt has an ecosystem that Dataform can't match. This isn't opinion — it's numbers:</p>
+
+      <ul>
+        <li><strong>dbt packages hub</strong> — Hundreds of community-maintained packages covering utility functions (<code>dbt_utils</code>), data quality (<code>dbt_expectations</code>), audit logging (<code>dbt_artifacts</code>), SCD Type 2 handling, Data Vault patterns, and source-specific transformations for Salesforce, Stripe, Shopify, and more.</li>
+        <li><strong>Community scale</strong> — dbt Community Slack has over 80,000 members. When you hit a problem, someone has hit it before. Stack Overflow coverage is extensive. Blog posts, conference talks, and training materials are abundant.</li>
+        <li><strong>Analytics engineering as a discipline</strong> — dbt effectively created the "analytics engineering" role. The tooling, the practices, the career path — it's all oriented around dbt. Hiring analytics engineers means hiring people who already know dbt.</li>
+      </ul>
+
+      <p>Dataform's community is smaller by an order of magnitude. It's primarily used within Google Cloud-native organizations. The package ecosystem is limited. When you need help, your options are Google Cloud support (if you're paying for it) and a handful of community forums.</p>
+
+      <p>Ecosystem size isn't vanity. It directly impacts your team's velocity. When a well-maintained package already implements the pattern you need — SCD Type 2 modeling, say, or Salesforce source transformation — your team uses it instead of building from scratch. When a pattern is well-documented across dozens of blog posts and conference talks, your engineers learn it faster. When the community is large enough that your specific problem has been solved before, debugging is faster.</p>
+
+      <h2>Documentation and Lineage</h2>
+
+      <p>dbt generates a documentation site from your model definitions. Every model, every column, every test, every source — documented and linked. The lineage graph shows how data flows from source through staging, intermediate, and mart layers. This is generated from code, not maintained separately.</p>
+
+      <p>For governance and audit purposes, this is transformative. When a regulator asks "where does this number come from?", you open the dbt docs site, click on the model, and trace lineage upstream. Column-level descriptions, test results, and freshness checks are all visible. The documentation is always current because it's generated from the same code that produces the data.</p>
+
+      <p>Dataform provides lineage tracking and a dependency graph. But the documentation capabilities are less developed, and the lineage is confined to BigQuery. In a platform where data flows through Pub/Sub, Dataflow, and BigQuery before reaching dbt, the transformation layer's lineage is one piece of the puzzle — but it's the piece that dbt makes easy to generate and maintain.</p>
+
+      <h2>CI/CD and Development Workflow</h2>
+
+      <p>dbt integrates cleanly into standard software engineering workflows:</p>
+
+      <ul>
+        <li><strong>Git-native.</strong> dbt projects are Git repositories. Branch, merge, review, deploy — standard developer workflow.</li>
+        <li><strong>CI on pull requests.</strong> Run <code>dbt build</code> in a CI environment that targets a development schema. Every PR validates that models compile, pass tests, and produce expected results before merging to main.</li>
+        <li><strong>Slim CI.</strong> dbt's state comparison feature lets you run only modified models and their downstream dependencies. This keeps CI fast as the project grows.</li>
+        <li><strong>Deployment flexibility.</strong> Deploy with dbt Cloud, Airflow, Dagster, Prefect, GitHub Actions, Cloud Composer — whatever fits your orchestration stack. dbt is a CLI tool at its core. It runs anywhere Python runs.</li>
+      </ul>
+
+      <p>Dataform's development workflow is centered on its web IDE and Google Cloud integration. You can use Git, but the workflow is designed around Dataform's own environment. If your team uses VS Code, has established CI/CD pipelines, and wants to treat data transformation code like any other software project, Dataform's opinionated workflow creates friction.</p>
+
+      <h2>The Acquisition Question</h2>
+
+      <p>Google acquired Dataform. This brings benefits — BigQuery integration, Google Cloud Console embedding, managed infrastructure. It also brings risk.</p>
+
+      <p>Google has a well-documented history of deprecating products. When a managed service is also your transformation framework, the switching cost is high and the exit path is narrow. If Google decides to merge Dataform into a broader BigQuery feature, change the API surface, or deprecate it in favor of something else, your transformation layer moves with it — or breaks.</p>
+
+      <p>dbt Labs is an independent company. dbt Core is open source (Apache 2.0). If dbt Labs disappeared tomorrow, the project would continue. Your models are SQL files. Your tests are YAML. Your macros are Jinja. There's no proprietary runtime, no platform dependency, and no single vendor whose strategic decisions can force a rewrite of your transformation layer.</p>
+
+      <p>In enterprise architecture, this kind of optionality isn't a nice-to-have. It's risk management.</p>
+
+      <h2>When Dataform Does Make Sense</h2>
+
+      <p>This isn't a one-sided argument. Dataform has legitimate strengths:</p>
+
+      <ul>
+        <li><strong>Zero setup for BigQuery-only teams.</strong> If you're a small team, all-in on BigQuery, and you want a managed service with no infrastructure to maintain, Dataform gets you started faster.</li>
+        <li><strong>Google Cloud Console integration.</strong> For organizations deep in the Google Cloud ecosystem, having the transformation layer inside the Console alongside BigQuery, Composer, and Dataflow is operationally convenient.</li>
+        <li><strong>Cost.</strong> Dataform is included in BigQuery pricing. dbt Cloud has license costs. (Though dbt Core is free.)</li>
+      </ul>
+
+      <p>For a small team building an analytics stack on BigQuery with limited security review requirements, Dataform is a reasonable choice. For an enterprise data platform in a regulated industry where security posture, auditability, talent portability, and architectural flexibility are non-negotiable — dbt is the stronger foundation.</p>
+
+      <h2>The Decision Framework</h2>
+
+      <p>If you're making this choice today, here's how I'd frame it:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.5rem 0;">
+        <thead>
+          <tr style="border-bottom:2px solid #333;text-align:left;">
+            <th style="padding:0.5rem 1rem 0.5rem 0;">Criterion</th>
+            <th style="padding:0.5rem 1rem 0.5rem 0;">dbt</th>
+            <th style="padding:0.5rem 1rem 0.5rem 0;">Dataform</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Security surface area</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Python + SQL packages</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Node.js + npm ecosystem</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Vulnerability remediation</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Low frequency, manageable</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">High frequency, complex dep trees</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Team skill alignment</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">SQL + Python (data team norm)</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">SQL + JavaScript (less common)</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Warehouse portability</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Multi-warehouse</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">BigQuery only</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Testing maturity</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Extensive, ecosystem-backed</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Assertions (growing)</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Community size</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">80,000+ Slack, packages hub</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Smaller, GCP-focused</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Vendor risk</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Open source, portable</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Google-owned, BigQuery-coupled</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Setup complexity</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Requires deployment infra</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Managed, zero-setup</td>
+          </tr>
+          <tr>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Cost</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Core free, Cloud is licensed</td>
+            <td style="padding:0.5rem 1rem 0.5rem 0;">Included in BigQuery</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Conclusion</h2>
+
+      <p>The choice between dbt and Dataform isn't a tooling decision. It's an architectural decision that affects security posture, team capability, governance readiness, and long-term platform flexibility.</p>
+
+      <p>For us, the JavaScript supply chain risk alone was disqualifying. In an environment where every CVE triggers a remediation cycle, where every dependency needs to be auditable, and where security review isn't optional — choosing a transformation framework built on npm is choosing to accept ongoing operational overhead that has nothing to do with transforming data.</p>
+
+      <p>dbt gave us a SQL-first transformation layer with a shallow dependency tree, a mature testing framework, multi-warehouse portability, and an ecosystem that accelerates rather than constrains our data team. The setup cost is higher than Dataform. The operational cost is lower. For an enterprise data platform, that's the right trade.</p>
+
+      <hr />
+
+      <p>If you're evaluating transformation frameworks for a BigQuery data platform, I'd suggest starting with the security review. Run <code>npm audit</code> on a fresh Dataform project and <code>pip audit</code> on a fresh dbt project. Count the findings. Estimate the remediation effort. That comparison tells you more than any feature matrix.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
