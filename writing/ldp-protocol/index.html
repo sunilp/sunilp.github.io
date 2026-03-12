@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why multi-agent AI systems need more than skill labels — introducing LDP, an identity-aware protocol for delegation between LLMs." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Why Multi-Agent AI Systems Need Identity-Aware Routing" />
+  <meta property="og:description" content="Current agent protocols treat all models as interchangeable. LDP fixes that." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/ldp-protocol/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/ldp-protocol/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Why Multi-Agent AI Systems Need Identity-Aware Routing — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why Multi-Agent AI Systems Need Identity-Aware Routing",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-12",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>Why Multi-Agent AI Systems Need Identity-Aware Routing</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>Multi-agent systems are the next frontier of production AI. The idea is straightforward: instead of one monolithic model doing everything, you have specialized agents that delegate tasks to each other. A coding agent hands off a math problem to a reasoning agent. A triage agent routes customer queries to the right specialist. The promise is efficiency, modularity, and better results.</p>
+
+      <p>The problem is that the protocols these agents use to communicate — Google's A2A, Anthropic's MCP — treat every model as a black box. They expose skill names and descriptions. They don't expose what actually matters for delegation: what kind of model is behind the agent, how fast it is, how much it costs, whether it reasons well or just pattern-matches quickly.</p>
+
+      <p>This is the gap that motivated <a href="https://arxiv.org/abs/2603.08852v1">LDP (LLM Delegate Protocol)</a> — an identity-aware protocol designed for delegation between LLM-based agents. The core thesis: if you're routing tasks between models, you need to know more about those models than their skill labels.</p>
+
+      <h2>The Routing Problem</h2>
+
+      <p>Consider a system with three delegates: an 8B parameter reasoning model, a 7B coding specialist, and a lightweight 3B classifier. A user submits a straightforward sentiment classification task. Under A2A, the router sees three agents advertising overlapping skills. It picks one based on skill-name matching — and might route a trivial classification to the 8B reasoning model. The task completes in 35 seconds instead of 3.</p>
+
+      <p>This isn't hypothetical. In our experiments, identity-aware routing achieved roughly 12x lower latency on easy tasks by sending them to the lightweight model — because the protocol knew it was lightweight, fast, and good enough for classification. A2A's skill-matching couldn't make that distinction.</p>
+
+      <p>The latency difference sounds like an optimization problem, but at scale it becomes an economics problem. Every unnecessary second on a heavy model is wasted compute, wasted tokens, wasted cost. Multiply that across thousands of delegations per hour and the protocol's inability to distinguish models becomes a material expense.</p>
+
+      <h2>What LDP Adds</h2>
+
+      <p>LDP introduces five mechanisms that existing protocols lack. Each addresses a specific limitation we observed in production-style multi-agent setups.</p>
+
+      <h3>1. Delegate Identity Cards</h3>
+
+      <p>A2A's Agent Card has 7 fields: name, description, version, URL, skills, authentication, and capabilities. LDP's Delegate Identity Card has 20+ fields organized into core identity, trust and security, capabilities, and behavioral profiles.</p>
+
+      <p>The critical additions are <strong>quality hints</strong> (a continuous 0–1 score per capability), <strong>reasoning profiles</strong> (qualitative: "deep-analytical" vs. "fast-practical"), <strong>cost profiles</strong>, and <strong>latency hints</strong>. These are the fields that enable a router to make intelligent delegation decisions rather than guessing from skill names.</p>
+
+      <figure style="margin: 40px 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+        <!-- A2A Agent Card -->
+        <svg width="260" height="310" viewBox="0 0 260 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+          <rect x="1" y="1" width="258" height="308" rx="6" stroke="#e8e8e8" fill="#fff"/>
+          <rect x="1" y="1" width="258" height="44" rx="6" fill="#f5f5f3"/>
+          <rect x="1" y="30" width="258" height="15" fill="#f5f5f3"/>
+          <text x="20" y="28" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" fill="#999" letter-spacing="1.5">A2A AGENT CARD</text>
+          <line x1="1" y1="45" x2="259" y2="45" stroke="#e8e8e8"/>
+          <text x="20" y="72" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">name</text>
+          <text x="20" y="96" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">description</text>
+          <text x="20" y="120" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">version</text>
+          <text x="20" y="144" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">url</text>
+          <text x="20" y="168" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">skills</text>
+          <text x="20" y="192" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">auth</text>
+          <text x="20" y="216" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1a1a1a">capabilities</text>
+          <!-- empty space below to show sparseness -->
+          <text x="130" y="274" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#ccc" text-anchor="middle">7 fields</text>
+        </svg>
+        <!-- LDP Identity Card -->
+        <svg width="260" height="310" viewBox="0 0 260 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+          <rect x="1" y="1" width="258" height="308" rx="6" stroke="#1a1a1a" fill="#fff"/>
+          <rect x="1" y="1" width="258" height="44" rx="6" fill="#1a1a1a"/>
+          <rect x="1" y="30" width="258" height="15" fill="#1a1a1a"/>
+          <text x="20" y="28" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" fill="#fff" letter-spacing="1.5">LDP IDENTITY CARD</text>
+          <line x1="1" y1="45" x2="259" y2="45" stroke="#1a1a1a"/>
+          <!-- Core Identity -->
+          <text x="20" y="66" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1">CORE IDENTITY</text>
+          <text x="20" y="82" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">delegate_id  model_family</text>
+          <text x="20" y="96" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">model_name   model_version</text>
+          <!-- Trust -->
+          <text x="20" y="118" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1">TRUST &amp; SECURITY</text>
+          <text x="20" y="134" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">trust_domain  public_key</text>
+          <text x="20" y="148" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">jurisdiction  data_policy</text>
+          <!-- Capabilities -->
+          <text x="20" y="170" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1">CAPABILITIES</text>
+          <text x="20" y="186" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">context_window  modalities</text>
+          <text x="20" y="200" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">quality_hint: 0.85</text>
+          <rect x="148" y="191" width="92" height="6" rx="3" fill="#e8e8e8"/>
+          <rect x="148" y="191" width="78" height="6" rx="3" fill="#1a1a1a"/>
+          <text x="20" y="216" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">latency_p50: 5s</text>
+          <text x="20" y="230" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">cost_hint: medium</text>
+          <!-- Behavioral -->
+          <text x="20" y="252" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1">BEHAVIORAL</text>
+          <text x="20" y="268" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">reasoning: deep-analytical</text>
+          <text x="20" y="282" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#1a1a1a">cost_profile: medium</text>
+          <text x="130" y="304" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#1a1a1a" text-anchor="middle" font-weight="500">20+ fields</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -24px; margin-bottom: 32px;">A2A's Agent Card vs. LDP's Delegate Identity Card</p>
+
+      <h3>2. Progressive Payload Modes</h3>
+
+      <p>Not all communication between agents needs to be verbose natural language. LDP defines six payload modes of increasing efficiency, from plain text (Mode 0) to semantic frames (Mode 1, structured JSON with typed fields) to more compact representations.</p>
+
+      <p>In practice, semantic frames reduced token consumption by 37% compared to plain text — a statistically significant result (p=0.031) — without any quality degradation. The structured format helps models focus. A2A's JSON wrapping, by contrast, saves only about 7% because it wraps verbose text in a JSON envelope rather than restructuring the communication itself.</p>
+
+      <p>Delegates negotiate the richest mutually supported mode during session establishment. If a higher mode fails mid-exchange — schema validation error, codec incompatibility — the protocol falls back automatically: Mode N to N-1 to eventually Mode 0. Every delegate must support plain text, so communication never fails entirely. In our simulated failure tests, LDP achieved 100% task completion across all failure types, compared to 35% for A2A.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 170" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Mode boxes -->
+          <rect x="16" y="40" width="88" height="52" rx="4" stroke="#e8e8e8" fill="#fff"/>
+          <text x="60" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">Mode 5</text>
+          <text x="60" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">Cache Slices</text>
+
+          <rect x="120" y="40" width="88" height="52" rx="4" stroke="#e8e8e8" fill="#fff"/>
+          <text x="164" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">Mode 4</text>
+          <text x="164" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">Latent Capsules</text>
+
+          <rect x="224" y="40" width="88" height="52" rx="4" stroke="#e8e8e8" fill="#fff"/>
+          <text x="268" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">Mode 3</text>
+          <text x="268" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">Semantic Graph</text>
+
+          <rect x="328" y="40" width="88" height="52" rx="4" stroke="#e8e8e8" fill="#fff"/>
+          <text x="372" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="middle">Mode 2</text>
+          <text x="372" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">Embeddings</text>
+
+          <rect x="432" y="40" width="88" height="52" rx="4" stroke="#1a1a1a" fill="#1a1a1a"/>
+          <text x="476" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="middle">Mode 1</text>
+          <text x="476" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">Semantic Frame</text>
+
+          <rect x="536" y="40" width="52" height="52" rx="4" stroke="#1a1a1a" fill="#fff"/>
+          <text x="562" y="60" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" text-anchor="middle">Mode 0</text>
+          <text x="562" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">Text</text>
+
+          <!-- Fallback arrow -->
+          <line x1="60" y1="105" x2="555" y2="105" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="555,101 565,105 555,109" fill="#1a1a1a"/>
+          <text x="300" y="124" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">automatic fallback on failure</text>
+
+          <!-- Labels -->
+          <text x="60" y="20" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">most compact</text>
+          <text x="562" y="20" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#1a1a1a" text-anchor="middle" font-weight="500">universal</text>
+
+          <!-- 37% label -->
+          <text x="476" y="148" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle" font-weight="500">-37% tokens vs Mode 0</text>
+          <line x1="476" y1="136" x2="476" y2="94" stroke="#1a1a1a" stroke-width="0.5" stroke-dasharray="2 2"/>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Six progressive payload modes with automatic fallback. Mode 1 (semantic frames) was empirically validated.</p>
+
+      <h3>3. Governed Sessions</h3>
+
+      <p>A2A is stateless by design. Each request is independent. This means that in a 10-round conversation between agents, the entire context must be re-transmitted with every message. By round 10, 39% of the tokens are pure overhead — context the receiving agent has already seen.</p>
+
+      <p>LDP introduces persistent sessions with server-side context. A five-step handshake (HELLO, CAPABILITY_MANIFEST, SESSION_PROPOSE, SESSION_ACCEPT, then task exchange) establishes the session once. After that, context is maintained server-side, eliminating the re-transmission tax.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Caller -->
+          <rect x="60" y="10" width="120" height="36" rx="4" fill="#1a1a1a"/>
+          <text x="120" y="32" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#fff" text-anchor="middle">Caller Agent</text>
+          <!-- Delegate -->
+          <rect x="400" y="10" width="120" height="36" rx="4" fill="#1a1a1a"/>
+          <text x="460" y="32" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="500" fill="#fff" text-anchor="middle">Delegate Agent</text>
+          <!-- Lifelines -->
+          <line x1="120" y1="46" x2="120" y2="370" stroke="#e8e8e8" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <line x1="460" y1="46" x2="460" y2="370" stroke="#e8e8e8" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <!-- Session setup phase bg -->
+          <rect x="30" y="58" width="540" height="152" rx="4" fill="#fafaf8" stroke="#e8e8e8" stroke-dasharray="3 3"/>
+          <text x="46" y="76" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#999" letter-spacing="1.5">SESSION SETUP (ONCE)</text>
+          <!-- HELLO -->
+          <line x1="125" y1="96" x2="455" y2="96" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arr)"/>
+          <text x="290" y="90" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">HELLO + identity card</text>
+          <!-- CAPABILITY_MANIFEST -->
+          <line x1="455" y1="126" x2="125" y2="126" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arr)"/>
+          <text x="290" y="120" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">CAPABILITY_MANIFEST</text>
+          <!-- SESSION_PROPOSE -->
+          <line x1="125" y1="156" x2="455" y2="156" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arr)"/>
+          <text x="290" y="150" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">SESSION_PROPOSE (mode, budget)</text>
+          <!-- SESSION_ACCEPT -->
+          <line x1="455" y1="186" x2="125" y2="186" stroke="#1a1a1a" stroke-width="1" marker-end="url(#arr)"/>
+          <text x="290" y="180" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle">SESSION_ACCEPT</text>
+          <!-- Task exchange phase bg -->
+          <rect x="30" y="220" width="540" height="136" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="0.5"/>
+          <text x="46" y="238" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="500" fill="#1a1a1a" letter-spacing="1.5">TASK EXCHANGE (NO CONTEXT RE-TRANSMISSION)</text>
+          <!-- TASK_SUBMIT -->
+          <line x1="125" y1="260" x2="455" y2="260" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="290" y="254" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle" font-weight="500">TASK_SUBMIT (semantic frame)</text>
+          <!-- TASK_RESULT -->
+          <line x1="455" y1="294" x2="125" y2="294" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="290" y="288" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1a1a1a" text-anchor="middle" font-weight="500">TASK_RESULT + provenance</text>
+          <!-- Repeat indicator -->
+          <path d="M 510 254 L 530 254 L 530 300 L 510 300" stroke="#999" stroke-width="1" fill="none"/>
+          <text x="538" y="280" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">repeat</text>
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            </marker>
+            <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+            </marker>
+          </defs>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">LDP governed session: setup once, then exchange tasks without re-transmitting context</p>
+
+      <p>The savings are modest at 3 rounds (about 10%) but grow linearly. At 10 rounds, LDP used 12,990 tokens versus A2A's 16,010. For long-running agent collaborations — research tasks, multi-step planning, iterative code review — this overhead compounds fast.</p>
+
+      <h3>4. Structured Provenance</h3>
+
+      <p>When a downstream agent receives results from three upstream delegates and must synthesize a final answer, it helps to know which delegate produced what, with what confidence, and whether that confidence was verified.</p>
+
+      <p>This led to one of the more surprising findings in our research: the provenance paradox. Accurate provenance didn't significantly improve synthesis quality over no provenance at all (p=0.47). But <strong>noisy provenance — unverified self-reported confidence — actively harmed quality</strong>, doubling the variance of output scores. When one delegate's confidence was artificially inflated to 0.99 and marked as verified, the synthesizer over-weighted its output and produced worse decisions.</p>
+
+      <p>The design implication is clear: a protocol that exposes confidence without verification may be worse than one that exposes no confidence at all. This is why LDP's provenance structure includes explicit <code>verification.performed</code> and <code>verification.status</code> fields. A2A provides no provenance beyond task completion status.</p>
+
+      <h3>5. Trust Domains</h3>
+
+      <p>A2A relies on transport-level authentication — bearer tokens. This covers "is this request authenticated?" but cannot answer "is this agent allowed to perform this specific action?" or "has this exact message been seen before?"</p>
+
+      <p>LDP introduces trust domains — security boundaries within which identity, policy, and transport guarantees are enforced at three levels: per-message signatures with replay protection, session-level trust domain compatibility checks, and a policy engine that validates each task against configurable rules.</p>
+
+      <p>In simulated security analysis, LDP detected 96% of attack attempts (untrusted domain joins, capability escalation, replay attacks, cross-domain access) compared to 6% for bearer token authentication. This is a protocol-design evaluation, not an empirical penetration test — the detection rates follow from the presence or absence of the relevant protocol fields. But that's precisely the point: A2A's protocol design doesn't have the fields needed to detect these attack categories.</p>
+
+      <figure style="margin: 48px 0 40px;">
+        <svg width="100%" viewBox="0 0 600 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">KEY RESULTS</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Row 1: Latency -->
+          <text x="40" y="64" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Routing Latency (easy tasks)</text>
+          <rect x="40" y="74" width="500" height="24" rx="3" fill="#f5f5f3"/>
+          <rect x="40" y="74" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="90" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">34.8s A2A</text>
+          <rect x="40" y="74" width="42" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="90" y="90" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">2.9s LDP</text>
+          <text x="560" y="90" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">12x</text>
+
+          <!-- Row 2: Token Reduction -->
+          <text x="40" y="128" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Token Consumption (payload)</text>
+          <rect x="40" y="138" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="154" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">1,215 text</text>
+          <rect x="40" y="138" width="315" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="365" y="154" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">765 semantic</text>
+          <text x="560" y="154" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">-37%</text>
+
+          <!-- Row 3: Session Overhead -->
+          <text x="40" y="192" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Session Overhead (10 rounds)</text>
+          <rect x="40" y="202" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="218" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">16,010 A2A</text>
+          <rect x="40" y="202" width="406" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="456" y="218" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">12,990 LDP</text>
+          <text x="560" y="218" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">-39%</text>
+
+          <!-- Bottom note -->
+          <text x="300" y="252" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">Darker bars = LDP | Lighter bars = baseline | p &lt; 0.05 for payload and session results</text>
+        </svg>
+      </figure>
+
+      <h2>What Didn't Work</h2>
+
+      <p>The honest finding: identity-aware routing did not improve aggregate quality over skill-matching. Across 30 tasks at three difficulty levels, A2A's skill-matching scored 7.43 versus LDP's 6.80. The difference wasn't statistically significant (p=0.56), but the direction was opposite to our hypothesis.</p>
+
+      <p>Why? Partly because our delegate pool was small — three models. With only three options, random selection gives you a 1-in-3 chance of picking the optimal delegate. The routing advantage of knowing model properties is expected to emerge with larger, more heterogeneous pools where the cost of misrouting increases.</p>
+
+      <p>Partly because the quality benefits of identity-enriched prompts — injecting delegate metadata into the system prompt — showed only modest, difficulty-dependent effects. On hard tasks, identity prompts scored 4.81 versus 3.80 for generic prompts, but the difference didn't reach significance at n=10. The sample sizes were too small to detect what may be real but moderate effects.</p>
+
+      <p>We report these null results because they inform where LDP's value actually lies. It's not in making individual responses better. It's in making the system faster, cheaper, and more governable — routing efficiency, token reduction, session management, and security boundaries.</p>
+
+      <h2>Practical Adoption</h2>
+
+      <p>LDP doesn't require an all-or-nothing adoption. We propose three interoperability profiles:</p>
+
+      <p><strong>Profile A (Basic):</strong> Identity cards + text payloads + signed messages. This captures the routing benefit — 12x latency reduction on easy tasks — with minimal integration overhead. Any system that can attach metadata to agent descriptions can implement this.</p>
+
+      <p><strong>Profile B (Enterprise):</strong> Adds provenance tracking with verification fields and policy enforcement. This is for regulated environments where you need to know which model produced which output, and whether those confidence scores were verified.</p>
+
+      <p><strong>Profile C (High-Performance):</strong> Payload mode negotiation and governed sessions. This captures the 37% token reduction and eliminates session overhead. Worth the complexity for high-volume systems where token costs are a line item.</p>
+
+      <p>A natural question is whether A2A could simply be extended with custom metadata fields. In principle, yes — you could add model properties as custom fields. But without negotiation semantics, fallback mechanisms, session lifecycle, or policy enforcement built into the protocol, those extensions remain fragile. A custom field that nobody validates, nobody negotiates, and nobody falls back from is a comment, not a protocol primitive.</p>
+
+      <h2>Where This Goes</h2>
+
+      <p>This is initial evidence from a controlled setting — three local models, 30 tasks per condition, a single LLM judge. The results that reached significance (payload efficiency, session overhead) are robust. The results that didn't (routing quality, provenance value) suggest real effects that need larger-scale validation.</p>
+
+      <p>The open questions are practical: Should identity fields be self-declared by model providers, measured by benchmarks, or certified by external parties? How do the routing benefits scale at 50 or 500 delegates instead of 3? Do the higher payload modes (embedding hints, latent capsules) deliver on their theoretical promise?</p>
+
+      <p>What we can say with confidence is that treating all agents as interchangeable black boxes — the current default — leaves efficiency and governance on the table. The protocol layer is where those properties should live.</p>
+
+      <hr />
+
+      <p>The full paper is available at <a href="https://arxiv.org/abs/2603.08852v1">arXiv:2603.08852</a>. LDP is implemented as a plugin for the <a href="https://github.com/jamjet-labs/jamjet">JamJet</a> agent runtime. The protocol specification, implementation, and experiment code are open-source: <a href="https://github.com/sunilp/ldp-protocol">ldp-protocol</a> and <a href="https://github.com/sunilp/ldp-research">ldp-research</a>.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
