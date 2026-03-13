@@ -401,6 +401,13 @@
 
       <p><strong>Better handling of multi-label cases.</strong> The 10% of descriptions that map to multiple HS codes were treated as single-label (using the first code). A multi-label formulation with binary cross-entropy loss would be more principled and could improve recall for ambiguous descriptions.</p>
 
+      <h2>Related</h2>
+      <ul>
+        <li><a href="/writing/nlp-before-transformers/">Building NLP Pipelines Before Transformers Were Easy</a></li>
+        <li><a href="/writing/attention-is-all-you-need/">Attention Is All You Need — A Practitioner's Guide to the Transformer</a></li>
+        <li><a href="/writing/tensorflow-to-pytorch/">Switching from TensorFlow to PyTorch — A Practical Assessment</a></li>
+      </ul>
+
       <hr />
 
       <p>HS code classification is a deceptively hard problem. The descriptions are short, noisy, domain-specific, and ambiguous. The class space is enormous. The practical requirements — suggest the right code within the top 3 — are achievable with deep learning, but the architecture matters less than the data preparation and the embedding quality.</p>
