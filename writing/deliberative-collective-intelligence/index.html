@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Multi-agent LLM debate is unstructured and lossy. DCI introduces typed reasoning moves, preserved disagreements, and guaranteed convergence — with honest results on when it helps and when it doesn't." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure" />
+  <meta property="og:description" content="Typed epistemic acts, preserved disagreements, and guaranteed convergence — with honest results on cost." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/deliberative-collective-intelligence/" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://sunilprakash.com/writing/deliberative-collective-intelligence/" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-13",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>The dominant approaches to multi-agent LLM reasoning are remarkably crude. You take multiple models, have them debate in free-form text, then vote or let a judge pick the best answer. Sometimes this works. Often it produces verbose agreement, groupthink, or arguments that go in circles without converging on anything actionable.</p>
+
+      <p>The problem is structural. Unstructured debate has no mechanism for preserving disagreements, no way to distinguish a genuine challenge from a polite restatement, and no guarantee that the conversation will terminate with a decision rather than a summary. When four LLMs debate, you get four opinions. What you don't get is a structured decision with residual objections, minority perspectives, and conditions under which the decision should be revisited.</p>
+
+      <p>This is the gap that motivated <a href="https://arxiv.org/abs/2603.11781">Deliberative Collective Intelligence (DCI)</a> — a framework that replaces free-form debate with typed reasoning moves, differentiated roles, and an algorithm that guarantees convergence with structured outputs. The core thesis: consequential decisions benefit from deliberative structure, even when that structure is expensive.</p>
+
+      <h2>What Deliberation Means Here</h2>
+
+      <p>DCI models deliberation as a phased process with three building blocks: reasoning archetypes, typed epistemic acts, and a shared workspace.</p>
+
+      <p><strong>Four archetypes</strong> assign differentiated cognitive roles to delegates. A Framer clarifies problem definitions and identifies hidden dimensions. An Explorer expands the solution space with unconventional paths. A Challenger pressure-tests assumptions and surfaces risks. An Integrator synthesizes positions and manages session coherence. This isn't prompt engineering decoration — each archetype maintains evolving state including current view, confidence level, open questions, and revision history.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">FOUR REASONING ARCHETYPES</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Framer -->
+          <rect x="40" y="52" width="248" height="100" rx="6" stroke="#1a1a1a" fill="#fff"/>
+          <rect x="40" y="52" width="248" height="32" rx="6" fill="#1a1a1a"/>
+          <rect x="40" y="72" width="248" height="12" fill="#1a1a1a"/>
+          <text x="68" y="73" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#fff">Framer</text>
+          <text x="238" y="73" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">&#x03B4;F</text>
+          <text x="56" y="104" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#1a1a1a">Clarifies problem definitions</text>
+          <text x="56" y="119" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Identifies hidden dimensions</text>
+          <text x="56" y="134" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Decomposes mixed issues</text>
+
+          <!-- Explorer -->
+          <rect x="312" y="52" width="248" height="100" rx="6" stroke="#1a1a1a" fill="#fff"/>
+          <rect x="312" y="52" width="248" height="32" rx="6" fill="#1a1a1a"/>
+          <rect x="312" y="72" width="248" height="12" fill="#1a1a1a"/>
+          <text x="340" y="73" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#fff">Explorer</text>
+          <text x="510" y="73" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">&#x03B4;E</text>
+          <text x="328" y="104" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#1a1a1a">Generates novel possibilities</text>
+          <text x="328" y="119" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Proposes unconventional paths</text>
+          <text x="328" y="134" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Expands solution space</text>
+
+          <!-- Challenger -->
+          <rect x="40" y="172" width="248" height="100" rx="6" stroke="#1a1a1a" fill="#fff"/>
+          <rect x="40" y="172" width="248" height="32" rx="6" fill="#1a1a1a"/>
+          <rect x="40" y="192" width="248" height="12" fill="#1a1a1a"/>
+          <text x="68" y="193" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#fff">Challenger</text>
+          <text x="238" y="193" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">&#x03B4;C</text>
+          <text x="56" y="224" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#1a1a1a">Pressure-tests assumptions</text>
+          <text x="56" y="239" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Surfaces risks and blind spots</text>
+          <text x="56" y="254" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Identifies weak logic</text>
+
+          <!-- Integrator -->
+          <rect x="312" y="172" width="248" height="100" rx="6" stroke="#1a1a1a" fill="#fff"/>
+          <rect x="312" y="172" width="248" height="32" rx="6" fill="#1a1a1a"/>
+          <rect x="312" y="192" width="248" height="12" fill="#1a1a1a"/>
+          <text x="340" y="193" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#fff">Integrator</text>
+          <text x="510" y="193" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="end">&#x03B4;I</text>
+          <text x="328" y="224" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#1a1a1a">Synthesizes positions</text>
+          <text x="328" y="239" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Identifies patterns across views</text>
+          <text x="328" y="254" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#999">Manages session coherence</text>
+
+          <!-- Connecting lines to center -->
+          <line x1="288" y1="102" x2="300" y2="162" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="312" y1="102" x2="300" y2="162" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="288" y1="172" x2="300" y2="162" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="312" y1="172" x2="300" y2="162" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="3 3"/>
+
+          <!-- State label -->
+          <text x="300" y="296" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">Each maintains evolving state: current view, confidence, open questions, revision history</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Four differentiated cognitive roles — not prompt decoration, but stateful reasoning agents</p>
+
+      <p><strong>Fourteen typed epistemic acts</strong> provide the interaction grammar. Instead of free-form messages, delegates issue structured moves: <em>propose</em>, <em>challenge</em>, <em>bridge</em>, <em>ground</em>, <em>reframe</em>, <em>synthesize</em>. The grammar distinguishes soft moves (exploratory, used early) from hard moves (committal, used late), creating natural progression toward convergence. This matters because LLMs in unstructured debate tend to produce undifferentiated text — agreement that looks like reasoning but isn't.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">EPISTEMIC ACT FAMILIES</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Row 1: Orienting -->
+          <rect x="40" y="48" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="67" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Orienting</text>
+          <text x="160" y="67" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">frame  clarify  reframe</text>
+
+          <!-- Row 2: Generative -->
+          <rect x="40" y="86" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="105" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Generative</text>
+          <text x="160" y="105" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">propose  extend  spawn</text>
+
+          <!-- Row 3: Critical -->
+          <rect x="40" y="124" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="143" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Critical</text>
+          <text x="160" y="143" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">ask  challenge</text>
+
+          <!-- Row 4: Integrative -->
+          <rect x="40" y="162" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="181" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Integrative</text>
+          <text x="160" y="181" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">bridge  synthesize  recall</text>
+
+          <!-- Row 5: Epistemic -->
+          <rect x="40" y="200" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="219" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Epistemic</text>
+          <text x="160" y="219" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">ground  update</text>
+
+          <!-- Row 6: Decisional -->
+          <rect x="40" y="238" width="100" height="30" rx="4" fill="#1a1a1a"/>
+          <text x="90" y="257" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#fff" text-anchor="middle">Decisional</text>
+          <text x="160" y="257" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">recommend</text>
+
+          <!-- Soft/Hard labels -->
+          <text x="480" y="88" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#ccc" text-anchor="middle">soft moves</text>
+          <text x="480" y="100" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#ccc" text-anchor="middle">(exploratory)</text>
+          <line x1="430" y1="110" x2="530" y2="110" stroke="#e8e8e8"/>
+          <text x="480" y="200" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" text-anchor="middle">hard moves</text>
+          <text x="480" y="212" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">(committal)</text>
+
+          <!-- Arrow -->
+          <line x1="480" y1="116" x2="480" y2="186" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="476,186 480,194 484,186" fill="#1a1a1a"/>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">14 typed epistemic acts organized into 6 families, progressing from exploratory to committal</p>
+
+      <p><strong>A shared workspace</strong> tracks collective thinking across six sections: problem view, key frames, emerging ideas, tensions, synthesis in progress, and next actions. Critically, tensions are preserved as first-class objects rather than flattened into consensus. This prevents the premature agreement that plagues unstructured multi-agent debate.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">SHARED WORKSPACE</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Outer box -->
+          <rect x="40" y="46" width="520" height="172" rx="6" stroke="#1a1a1a" fill="#fff"/>
+
+          <!-- Section 1 -->
+          <rect x="52" y="58" width="160" height="42" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="62" y="74" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" font-weight="500">1. Problem View</text>
+          <text x="62" y="90" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Current group understanding</text>
+
+          <!-- Section 2 -->
+          <rect x="220" y="58" width="160" height="42" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="230" y="74" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" font-weight="500">2. Key Frames</text>
+          <text x="230" y="90" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Different valid perspectives</text>
+
+          <!-- Section 3 -->
+          <rect x="388" y="58" width="160" height="42" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="398" y="74" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" font-weight="500">3. Emerging Ideas</text>
+          <text x="398" y="90" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Candidate hypotheses</text>
+
+          <!-- Section 4 — highlighted -->
+          <rect x="52" y="110" width="160" height="42" rx="4" fill="#1a1a1a" stroke="#1a1a1a"/>
+          <text x="62" y="126" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" font-weight="500">4. Tensions</text>
+          <text x="62" y="142" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Preserved as first-class objects</text>
+
+          <!-- Section 5 -->
+          <rect x="220" y="110" width="160" height="42" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="230" y="126" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" font-weight="500">5. Synthesis</text>
+          <text x="230" y="142" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Converging themes</text>
+
+          <!-- Section 6 -->
+          <rect x="388" y="110" width="160" height="42" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="398" y="126" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" font-weight="500">6. Next Actions</text>
+          <text x="398" y="142" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999">Follow-up tasks &amp; decisions</text>
+
+          <!-- Flow arrows -->
+          <line x1="100" y1="164" x2="180" y2="164" stroke="#e8e8e8" stroke-width="1"/>
+          <line x1="220" y1="164" x2="350" y2="164" stroke="#e8e8e8" stroke-width="1"/>
+          <line x1="388" y1="164" x2="500" y2="164" stroke="#e8e8e8" stroke-width="1"/>
+          <text x="300" y="180" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#999" text-anchor="middle">Prevents repetition, makes progress visible, preserves dissent</text>
+
+          <!-- Key callout -->
+          <line x1="52" y1="156" x2="52" y2="200" stroke="#1a1a1a" stroke-width="0.8" stroke-dasharray="2 2"/>
+          <text x="56" y="210" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a" font-weight="500">Disagreements are preserved, not flattened</text>
+          <text x="56" y="224" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">This is what makes DCI different from debate summaries</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Six-section shared workspace — tensions highlighted as the key structural innovation</p>
+
+      <h2>Guaranteed Convergence</h2>
+
+      <p>The convergent flow algorithm (DCI-CF) is an eight-stage process. Delegates submit independent initial views before seeing each other's positions — preventing social anchoring. They then engage through typed acts across bounded rounds, with convergence tested after each round via score dominance, majority backing, or absence of blocking objections.</p>
+
+      <p>If natural convergence fails — and it fails roughly half the time — a deterministic fallback chain kicks in: outranking, then minimax regret, then robust satisficing, then Integrator selection. Every execution path terminates in bounded time with a structured decision packet.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Stage boxes -->
+          <rect x="16" y="30" width="64" height="44" rx="4" fill="#1a1a1a"/>
+          <text x="48" y="48" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Init</text>
+          <text x="48" y="62" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Stage 0</text>
+
+          <rect x="96" y="30" width="64" height="44" rx="4" fill="#1a1a1a"/>
+          <text x="128" y="48" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Indep.</text>
+          <text x="128" y="62" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Stage 1-2</text>
+
+          <!-- Loop box -->
+          <rect x="176" y="14" width="200" height="76" rx="4" fill="none" stroke="#1a1a1a" stroke-dasharray="3 3"/>
+          <text x="276" y="30" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle" letter-spacing="1">BOUNDED LOOP</text>
+          <rect x="188" y="38" width="52" height="38" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="214" y="54" font-family="IBM Plex Mono, monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">Challenge</text>
+          <text x="214" y="66" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">Stage 3</text>
+
+          <rect x="248" y="38" width="52" height="38" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="274" y="54" font-family="IBM Plex Mono, monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">Revise</text>
+          <text x="274" y="66" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">Stage 4-5</text>
+
+          <rect x="308" y="38" width="52" height="38" rx="3" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="334" y="54" font-family="IBM Plex Mono, monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">Test</text>
+          <text x="334" y="66" font-family="IBM Plex Sans, sans-serif" font-size="7" fill="#999" text-anchor="middle">Stage 6</text>
+
+          <!-- Fallback -->
+          <rect x="392" y="30" width="64" height="44" rx="4" fill="#f5f5f3" stroke="#e8e8e8"/>
+          <text x="424" y="48" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">Fallback</text>
+          <text x="424" y="62" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Stage 7</text>
+
+          <!-- Decision Packet -->
+          <rect x="472" y="30" width="112" height="44" rx="4" fill="#1a1a1a"/>
+          <text x="528" y="48" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">Decision Packet</text>
+          <text x="528" y="62" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">Stage 8</text>
+
+          <!-- Arrows -->
+          <line x1="80" y1="52" x2="94" y2="52" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="92,49 98,52 92,55" fill="#1a1a1a"/>
+          <line x1="160" y1="52" x2="174" y2="52" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="172,49 178,52 172,55" fill="#1a1a1a"/>
+          <line x1="378" y1="52" x2="390" y2="52" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+          <polygon points="388,49 394,52 388,55" fill="#999"/>
+          <line x1="456" y1="52" x2="470" y2="52" stroke="#1a1a1a" stroke-width="1"/>
+          <polygon points="468,49 474,52 468,55" fill="#1a1a1a"/>
+
+          <!-- Loop arrow -->
+          <path d="M 334 78 L 334 100 L 214 100 L 214 78" stroke="#1a1a1a" stroke-width="0.8" fill="none" marker-end="url(#loopArr)"/>
+          <text x="274" y="112" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#999" text-anchor="middle">if not converged (max R rounds)</text>
+          <defs>
+            <marker id="loopArr" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L6,2.5 L0,5" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+            </marker>
+          </defs>
+
+          <!-- Convergence arrow direct to packet -->
+          <line x1="334" y1="38" x2="334" y2="16" stroke="#1a1a1a" stroke-width="0.8"/>
+          <line x1="334" y1="16" x2="528" y2="16" stroke="#1a1a1a" stroke-width="0.8"/>
+          <line x1="528" y1="16" x2="528" y2="28" stroke="#1a1a1a" stroke-width="0.8"/>
+          <polygon points="525,26 528,32 531,26" fill="#1a1a1a"/>
+          <text x="431" y="12" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#1a1a1a" text-anchor="middle">converged</text>
+
+          <!-- Decision packet contents -->
+          <text x="528" y="140" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1a1a" text-anchor="middle">selected option</text>
+          <text x="528" y="152" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">residual objections</text>
+          <text x="528" y="164" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">minority report</text>
+          <text x="528" y="176" font-family="IBM Plex Mono, monospace" font-size="9" fill="#999" text-anchor="middle">reopen conditions</text>
+          <line x1="472" y1="76" x2="472" y2="130" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="584" y1="76" x2="584" y2="130" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="472" y1="130" x2="584" y2="130" stroke="#e8e8e8" stroke-width="0.5"/>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">DCI-CF: eight stages with bounded loop. Every path terminates with a structured decision packet.</p>
+
+      <p>The decision packet is what distinguishes DCI from debate. It's not a summary — it's a structured artifact containing the selected option, residual objections that weren't resolved, a minority report preserving dissenting perspectives, and explicit conditions under which the decision should be reopened. No baseline system produced these artifacts at any meaningful rate.</p>
+
+      <h2>Where It Works</h2>
+
+      <p>We evaluated DCI on 45 tasks across seven domains using Gemini 2.5 Flash, comparing against single-agent, unstructured debate, simple voting, and self-consistency baselines.</p>
+
+      <p>On non-routine tasks (n=40), DCI significantly outperformed unstructured debate by +0.95 points (95% CI [+0.41, +1.54]). The improvement is concentrated in specific task types.</p>
+
+      <p><strong>Hidden-profile tasks</strong> — where the correct answer requires combining partial information distributed across participants — are where DCI dominates. DCI scored 9.56, the highest score any system achieved on any domain in the entire study. This makes intuitive sense: when information is fragmented, structured mechanisms for perspective integration (the Integrator role, bridge and synthesize acts, shared workspace) directly address the bottleneck.</p>
+
+      <p><strong>Architecture and policy tasks</strong> (n=20) showed the clearest separation: DCI outperformed debate by +1.44 points (CI [+0.57, +2.43]). On architecture problems specifically, the gap was +2.36 — unstructured debate scored 5.78 while DCI scored 8.13. Complex multi-stakeholder problems with competing valid perspectives benefit from structured deliberation.</p>
+
+      <figure style="margin: 48px 0 40px;">
+        <svg width="100%" viewBox="0 0 600 250" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">KEY RESULTS BY DOMAIN</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Row 1: Hidden-Profile -->
+          <text x="40" y="62" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Hidden-Profile Tasks</text>
+          <rect x="40" y="72" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="88" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">9.03 debate</text>
+          <rect x="40" y="72" width="478" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="508" y="88" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">9.56 DCI</text>
+          <text x="560" y="88" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">best</text>
+
+          <!-- Row 2: Architecture -->
+          <text x="40" y="120" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Architecture + Policy</text>
+          <rect x="40" y="130" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="146" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">6.91 debate</text>
+          <rect x="40" y="130" width="416" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="466" y="146" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">8.34 DCI</text>
+          <text x="560" y="146" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">+1.44</text>
+
+          <!-- Row 3: Routine -->
+          <text x="40" y="178" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#1a1a1a" font-weight="500">Routine Tasks (negative control)</text>
+          <rect x="40" y="188" width="500" height="24" rx="3" fill="#e8e8e8"/>
+          <text x="530" y="204" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999" text-anchor="end">8.58 debate</text>
+          <rect x="40" y="188" width="270" height="24" rx="3" fill="#1a1a1a"/>
+          <text x="320" y="204" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">5.39 DCI</text>
+          <text x="560" y="204" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#999" font-weight="600">-3.19</text>
+
+          <!-- Bottom note -->
+          <text x="300" y="240" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" text-anchor="middle">Darker bars = DCI | Lighter bars = unstructured debate | 45 tasks across 7 domains</text>
+        </svg>
+      </figure>
+
+      <h2>Where It Fails</h2>
+
+      <p>Routine decisions. DCI scored 5.39 on straightforward tasks — significantly worse than every baseline, including unstructured debate (8.58). The overhead of four archetypes, typed acts, and convergent flow adds nothing when the answer is obvious. It actively harms quality by over-complicating what should be simple.</p>
+
+      <p>This is a feature, not a limitation. It confirms that DCI should be invoked selectively, not as a default reasoning mode. The framework is expensive — approximately 62x the tokens of a single-agent approach — and that cost is only justified when the decision warrants it.</p>
+
+      <p>The other honest finding: single-agent generation outperformed DCI on overall quality (8.84 vs 8.24). A well-prompted single model with careful reasoning instructions beats four-agent deliberation in aggregate. DCI's value isn't that more agents are better — it's that specific task types benefit from deliberative structure when you need process accountability, not just a good answer.</p>
+
+      <h2>Process Artifacts</h2>
+
+      <p>The most distinctive output of DCI isn't quality scores — it's the artifacts that no baseline produces. DCI generated structured decision packets 100% of the time and minority reports 98% of the time. Single-agent produced decision packets 1% of the time. Unstructured debate: 8%.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">PROCESS ARTIFACTS PRODUCED</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Decision Packets -->
+          <text x="40" y="60" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#1a1a1a" font-weight="500">Structured Decision Packets</text>
+
+          <text x="40" y="82" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">DCI</text>
+          <rect x="100" y="72" width="440" height="16" rx="3" fill="#1a1a1a"/>
+          <text x="548" y="84" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="end">100%</text>
+
+          <text x="40" y="104" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Voting</text>
+          <rect x="100" y="94" width="70" height="16" rx="3" fill="#e8e8e8"/>
+          <text x="178" y="106" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">16%</text>
+
+          <text x="40" y="126" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Debate</text>
+          <rect x="100" y="116" width="35" height="16" rx="3" fill="#e8e8e8"/>
+          <text x="143" y="128" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">8%</text>
+
+          <text x="40" y="148" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Single</text>
+          <rect x="100" y="138" width="4" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="114" y="150" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">1%</text>
+
+          <!-- Minority Reports -->
+          <text x="40" y="182" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#1a1a1a" font-weight="500">Minority Reports</text>
+
+          <text x="40" y="204" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">DCI</text>
+          <rect x="100" y="194" width="431" height="16" rx="3" fill="#1a1a1a"/>
+          <text x="539" y="206" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="end">98%</text>
+
+          <text x="40" y="226" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">All others</text>
+          <rect x="100" y="218" width="0" height="16" rx="0" fill="#e8e8e8"/>
+          <text x="108" y="230" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">0%</text>
+
+          <!-- Reopen Conditions -->
+          <text x="40" y="258" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#1a1a1a" font-weight="500">Reopen Conditions</text>
+          <text x="210" y="258" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#1a1a1a">DCI: 100%</text>
+          <text x="330" y="258" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#999">| All others: 0%</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">Only DCI reliably produces the artifacts that consequential decisions require</p>
+
+      <p>This matters for consequential decisions. When a multi-agent system recommends an architecture, a policy change, or a risk mitigation strategy, the consumers of that recommendation need more than the answer. They need to know what alternatives were considered, what objections remain unresolved, what perspectives were overruled and why, and under what conditions the decision should be revisited.</p>
+
+      <p>No amount of prompt engineering on a single agent reliably produces these artifacts. The structure has to be built into the interaction protocol.</p>
+
+      <h2>The Cost Question</h2>
+
+      <p>DCI consumed a mean of 237,565 tokens per task versus 3,809 for single-agent. That's a 62x multiplier for 0.60 points lower quality overall. On quality-per-token, single-agent scores 2.32 versus DCI's 0.035.</p>
+
+      <figure style="margin: 40px 0;">
+        <svg width="100%" viewBox="0 0 600 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px; display: block; margin: 0 auto;">
+          <!-- Header -->
+          <text x="300" y="20" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#999" text-anchor="middle" letter-spacing="1.5">COST vs QUALITY TRADEOFF</text>
+          <line x1="40" y1="34" x2="560" y2="34" stroke="#e8e8e8"/>
+
+          <!-- Token cost bars -->
+          <text x="40" y="56" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" font-weight="500">TOKENS PER TASK</text>
+
+          <text x="40" y="78" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Single Agent</text>
+          <rect x="150" y="68" width="8" height="16" rx="2" fill="#1a1a1a"/>
+          <text x="166" y="80" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">3,809</text>
+
+          <text x="40" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Debate</text>
+          <rect x="150" y="90" width="20" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="178" y="102" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">9,458</text>
+
+          <text x="40" y="122" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999">Voting</text>
+          <rect x="150" y="112" width="67" height="16" rx="2" fill="#e8e8e8"/>
+          <text x="225" y="124" font-family="IBM Plex Mono, monospace" font-size="10" fill="#999">31,987</text>
+
+          <text x="40" y="144" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">DCI</text>
+          <rect x="150" y="134" width="400" height="16" rx="2" fill="#1a1a1a"/>
+          <text x="540" y="146" font-family="IBM Plex Mono, monospace" font-size="10" fill="#fff" text-anchor="end">237,565</text>
+
+          <!-- 62x label -->
+          <line x1="154" y1="86" x2="154" y2="150" stroke="#999" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="550" y1="142" x2="566" y2="142" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="158" y1="76" x2="566" y2="76" stroke="#1a1a1a" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <line x1="566" y1="76" x2="566" y2="142" stroke="#1a1a1a" stroke-width="0.5"/>
+          <text x="578" y="114" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#1a1a1a" font-weight="600">62x</text>
+
+          <!-- Quality per token -->
+          <text x="40" y="180" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#999" font-weight="500">QUALITY PER 1K TOKENS</text>
+
+          <text x="40" y="202" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">Single Agent</text>
+          <rect x="150" y="192" width="232" height="16" rx="2" fill="#1a1a1a"/>
+          <text x="390" y="204" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a" font-weight="500">2.320</text>
+
+          <text x="40" y="224" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#1a1a1a">DCI</text>
+          <rect x="150" y="214" width="4" height="16" rx="2" fill="#1a1a1a"/>
+          <text x="162" y="226" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1a1a">0.035</text>
+        </svg>
+      </figure>
+      <p style="font-size: 13px; color: #999; text-align: center; margin-top: -16px; margin-bottom: 32px;">The cost is real. DCI only makes sense when the decision justifies 62x the compute.</p>
+
+      <p>The math only works in three scenarios:</p>
+
+      <p><strong>Accountable processes.</strong> When regulatory or stakeholder requirements demand documented reasoning — what was considered, what was rejected, who dissented — the decision packet is the deliverable, not an optional extra.</p>
+
+      <p><strong>Perspective integration.</strong> When the correct answer requires combining partial information held by different participants (hidden-profile tasks), no single agent can reconstruct what structured deliberation surfaces.</p>
+
+      <p><strong>Multi-stakeholder reasoning.</strong> Architecture and policy decisions with genuinely competing valid perspectives, where the quality of the process matters as much as the quality of the output.</p>
+
+      <p>For everything else, use a single well-prompted agent.</p>
+
+      <h2>Relation to LDP</h2>
+
+      <p>DCI and <a href="/writing/ldp-protocol/">LDP</a> address different layers of the multi-agent stack. LDP handles the protocol layer: identity-aware routing, payload negotiation, governed sessions, trust domains. DCI handles the reasoning layer: how agents structure their interaction once they're connected.</p>
+
+      <p>They're complementary. LDP routes a complex architecture decision to the right set of delegates based on their reasoning profiles. DCI structures the deliberation between those delegates to produce an accountable output. Neither replaces the other.</p>
+
+      <hr />
+
+      <p>The full paper is available at <a href="https://arxiv.org/abs/2603.11781">arXiv:2603.11781</a>. DCI is evaluated using Gemini 2.5 Flash across 45 tasks in seven domains, with cross-validation by GPT-4o and Claude judges confirming the core findings.</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>
