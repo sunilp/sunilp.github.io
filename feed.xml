@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sunil Prakash — Writing</title>
+    <link>https://sunilprakash.com/writing/</link>
+    <description>On the decisions that shape enterprise AI, data platforms, and technology organizations.</description>
+    <language>en-us</language>
+    <atom:link href="https://sunilprakash.com/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure</title>
+      <link>https://sunilprakash.com/writing/deliberative-collective-intelligence/</link>
+      <guid>https://sunilprakash.com/writing/deliberative-collective-intelligence/</guid>
+      <pubDate>Thu, 13 Mar 2026 10:00:00 +0000</pubDate>
+      <description>Multi-agent debate is unstructured and lossy. DCI introduces typed reasoning moves, preserved disagreements, and guaranteed convergence — with honest results on when the 62x token cost is justified.</description>
+    </item>
+
+    <item>
+      <title>Why Multi-Agent AI Systems Need Identity-Aware Routing</title>
+      <link>https://sunilprakash.com/writing/ldp-protocol/</link>
+      <guid>https://sunilprakash.com/writing/ldp-protocol/</guid>
+      <pubDate>Wed, 12 Mar 2026 10:00:00 +0000</pubDate>
+      <description>Current agent protocols treat all models as interchangeable black boxes. LDP introduces identity-aware delegation — and the results show where it matters and where it doesn't.</description>
+    </item>
+
+    <item>
+      <title>Your ML Risk Framework Wasn't Built for GenAI. Here's What's Missing.</title>
+      <link>https://sunilprakash.com/writing/ai-governance-genai/</link>
+      <guid>https://sunilprakash.com/writing/ai-governance-genai/</guid>
+      <pubDate>Tue, 10 Mar 2026 10:00:00 +0000</pubDate>
+      <description>Why traditional model risk management fails for LLMs — hallucination policy, GenAI risk dimensions, deployment gates, prompt audit trails, and what a complete governance framework looks like.</description>
+    </item>
+
+    <item>
+      <title>Most Companies Are Governing AI with Yesterday's Playbook</title>
+      <link>https://sunilprakash.com/writing/ai-governance-genai-hbr/</link>
+      <guid>https://sunilprakash.com/writing/ai-governance-genai-hbr/</guid>
+      <pubDate>Tue, 10 Mar 2026 08:00:00 +0000</pubDate>
+      <description>Your AI risk framework was designed for models that produce numbers. Generative AI produces language, decisions, and actions. The governance gap is a board-level risk.</description>
+    </item>
+
+    <item>
+      <title>Why We Chose dbt Over BigQuery Dataform</title>
+      <link>https://sunilprakash.com/writing/dbt-over-dataform/</link>
+      <guid>https://sunilprakash.com/writing/dbt-over-dataform/</guid>
+      <pubDate>Tue, 10 Mar 2026 06:00:00 +0000</pubDate>
+      <description>JavaScript supply chain risk, SQL-first philosophy, multi-warehouse portability, and what actually matters when choosing a transformation framework in a regulated enterprise.</description>
+    </item>
+
+    <item>
+      <title>Why Most Enterprise AI Programs Fail Before They Start</title>
+      <link>https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/</link>
+      <guid>https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/</guid>
+      <pubDate>Sun, 01 Mar 2026 10:00:00 +0000</pubDate>
+      <description>The failure mode isn't technical. It's organizational. Most enterprises skip the operating model and jump straight to tooling — then wonder why nothing scales past the pilot.</description>
+    </item>
+
+    <item>
+      <title>Data Vault 2.0 in Banking: Architecture for the Audit That Hasn't Happened Yet</title>
+      <link>https://sunilprakash.com/writing/data-vault-in-banking/</link>
+      <guid>https://sunilprakash.com/writing/data-vault-in-banking/</guid>
+      <pubDate>Wed, 15 Jan 2026 10:00:00 +0000</pubDate>
+      <description>Why insert-only modeling, hash keys, and full lineage aren't academic exercises — they're survival patterns in regulated environments where every record must be defensible.</description>
+    </item>
+
+    <item>
+      <title>The AI Center of Excellence Is Dead. Long Live the AI Operating Model.</title>
+      <link>https://sunilprakash.com/writing/ai-operating-model/</link>
+      <guid>https://sunilprakash.com/writing/ai-operating-model/</guid>
+      <pubDate>Mon, 10 Nov 2025 10:00:00 +0000</pubDate>
+      <description>Centers of Excellence centralize capability. Operating models distribute it. The difference determines whether AI scales or stalls at the enterprise level.</description>
+    </item>
+
+    <item>
+      <title>From NER Pipelines to LLM Agents: How Production NLP Changed in Seven Years</title>
+      <link>https://sunilprakash.com/writing/ner-to-agents/</link>
+      <guid>https://sunilprakash.com/writing/ner-to-agents/</guid>
+      <pubDate>Sat, 15 Mar 2025 10:00:00 +0000</pubDate>
+      <description>Seven years from BiLSTM-CRF at a startup to multi-agent protocols — what changed in production NLP, what stayed the same, and what the arc tells us about where we are going.</description>
+    </item>
+
+    <item>
+      <title>We Switched to PyTorch in 2020. Was It the Right Call?</title>
+      <link>https://sunilprakash.com/writing/pytorch-four-years-later/</link>
+      <guid>https://sunilprakash.com/writing/pytorch-four-years-later/</guid>
+      <pubDate>Tue, 15 Oct 2024 10:00:00 +0000</pubDate>
+      <description>Four years after switching from TensorFlow to PyTorch during the pandemic — what happened to TF, why PyTorch won, and why inference engines like vLLM matter more than training frameworks now.</description>
+    </item>
+
+    <item>
+      <title>RAG in Production: What Breaks When You Move Past the Tutorial</title>
+      <link>https://sunilprakash.com/writing/rag-in-production/</link>
+      <guid>https://sunilprakash.com/writing/rag-in-production/</guid>
+      <pubDate>Sat, 15 Jun 2024 10:00:00 +0000</pubDate>
+      <description>Every RAG tutorial works. Then you move to production and discover that chunking strategy matters more than embedding models, retrieval quality matters more than generation, and evaluation is the hardest problem.</description>
+    </item>
+
+    <item>
+      <title>The Year LLMs Met Compliance — And Compliance Wasn't Ready</title>
+      <link>https://sunilprakash.com/writing/llms-meet-compliance/</link>
+      <guid>https://sunilprakash.com/writing/llms-meet-compliance/</guid>
+      <pubDate>Sun, 15 Oct 2023 10:00:00 +0000</pubDate>
+      <description>GPT-4 is genuinely capable. Enterprise wants to use it. But the governance frameworks built for classical ML were not designed for non-deterministic models with emergent capabilities.</description>
+    </item>
+
+    <item>
+      <title>Building Data Foundations While Everyone Chased Models</title>
+      <link>https://sunilprakash.com/writing/data-foundations-before-ai/</link>
+      <guid>https://sunilprakash.com/writing/data-foundations-before-ai/</guid>
+      <pubDate>Tue, 15 Mar 2022 10:00:00 +0000</pubDate>
+      <description>The industry is obsessed with models. Meanwhile, the actual bottleneck for enterprise AI is data infrastructure — Data Vault 2.0, BCBS 239, lineage, and the unsexy work that makes everything else possible.</description>
+    </item>
+
+    <item>
+      <title>Why I Chose Regulated AI Over Startup Speed</title>
+      <link>https://sunilprakash.com/writing/regulated-ai-over-speed/</link>
+      <guid>https://sunilprakash.com/writing/regulated-ai-over-speed/</guid>
+      <pubDate>Sun, 15 Aug 2021 10:00:00 +0000</pubDate>
+      <description>After three years building AI at a startup, I moved to a global bank. Not despite the constraints — because of them. Regulated environments are where AI gets hardest and most valuable.</description>
+    </item>
+
+    <item>
+      <title>GPT-3 Changed the Game — Is Enterprise Ready?</title>
+      <link>https://sunilprakash.com/writing/gpt3-enterprise-not-ready/</link>
+      <guid>https://sunilprakash.com/writing/gpt3-enterprise-not-ready/</guid>
+      <pubDate>Sun, 15 Nov 2020 10:00:00 +0000</pubDate>
+      <description>175 billion parameters, few-shot learning, and an API. GPT-3 shows where language models are going. But cost, latency, data privacy, and governance stand between the demo and production.</description>
+    </item>
+
+    <item>
+      <title>Switching from TensorFlow to PyTorch — A Practical Assessment</title>
+      <link>https://sunilprakash.com/writing/tensorflow-to-pytorch/</link>
+      <guid>https://sunilprakash.com/writing/tensorflow-to-pytorch/</guid>
+      <pubDate>Mon, 15 Jun 2020 10:00:00 +0000</pubDate>
+      <description>We switched our NLP projects from TensorFlow 1.x to PyTorch mid-pandemic. Eager execution, HuggingFace, debugging, and what we gave up. A practical framework comparison for a small team.</description>
+    </item>
+
+    <item>
+      <title>Building NLP Pipelines Before Transformers Were Easy</title>
+      <link>https://sunilprakash.com/writing/nlp-before-transformers/</link>
+      <guid>https://sunilprakash.com/writing/nlp-before-transformers/</guid>
+      <pubDate>Sat, 15 Jun 2019 10:00:00 +0000</pubDate>
+      <description>What production NER actually looks like: BiLSTM-CRF, character embeddings, gazetteers, and the pipeline engineering that matters more than the model.</description>
+    </item>
+
+    <item>
+      <title>Attention Is All You Need — A Practitioner's Guide to the Transformer</title>
+      <link>https://sunilprakash.com/writing/attention-is-all-you-need/</link>
+      <guid>https://sunilprakash.com/writing/attention-is-all-you-need/</guid>
+      <pubDate>Sat, 15 Sep 2018 10:00:00 +0000</pubDate>
+      <description>Breaking down the paper that replaced RNNs, LSTMs, and sequence-to-sequence models with a single mechanism: attention. What the Transformer does, why it works, and why it matters.</description>
+    </item>
+
+    <item>
+      <title>Classifying 7,000 Product Codes from Four Words of Text</title>
+      <link>https://sunilprakash.com/writing/hs-code-classification/</link>
+      <guid>https://sunilprakash.com/writing/hs-code-classification/</guid>
+      <pubDate>Wed, 15 Aug 2018 10:00:00 +0000</pubDate>
+      <description>Comparing LSTM, BiLSTM, GRU, CNN, and hybrid architectures for HS code classification from short product descriptions. What worked, what didn't, and why CNNs beat RNNs on short text.</description>
+    </item>
+
+  </channel>
+</rss>
