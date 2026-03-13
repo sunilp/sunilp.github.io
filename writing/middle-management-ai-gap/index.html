@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Boards are excited about AI. Engineers are building it. But middle management is where most enterprise AI programs quietly die — and nobody talks about it." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="The Middle Management AI Gap" />
+  <meta property="og:description" content="Boards are excited about AI. Engineers are building it. But middle management is where enterprise AI quietly dies." />
+  <meta property="og:url" content="https://sunilprakash.com/writing/middle-management-ai-gap/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://sunilprakash.com/img/portrait.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Middle Management AI Gap" />
+  <meta name="twitter:description" content="Boards are excited about AI. Engineers are building it. But middle management is where enterprise AI quietly dies." />
+  <link rel="canonical" href="https://sunilprakash.com/writing/middle-management-ai-gap/" />
+  <link rel="alternate" type="application/rss+xml" title="Sunil Prakash — Writing" href="/feed.xml" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>The Middle Management AI Gap — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Middle Management AI Gap",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "datePublished": "2026-03-13",
+    "publisher": { "@type": "Person", "name": "Sunil Prakash" }
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/" class="active">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap--narrow">
+    <article class="article">
+      <a class="back-link" href="/writing/">&larr; Writing</a>
+      <h1>The Middle Management AI Gap</h1>
+      <div class="article-meta">March 2026</div>
+
+      <p>Here is a pattern I have seen play out at multiple organizations. The board approves an AI strategy. The CTO hires a platform team. The engineers build infrastructure, deploy models, stand up evaluation pipelines. Executive dashboards turn green. And then — nothing scales.</p>
+
+      <p>Not because the technology failed. Not because the budget ran out. Because the layer between the executive vision and the engineering execution — middle management — was never brought along.</p>
+
+      <p>This is the gap nobody talks about in AI transformation. Every conference panel discusses model architecture, data quality, governance frameworks, and responsible AI. Almost none discuss the director-level manager who quietly shelved the AI pilot because they didn't understand it, felt threatened by it, or simply didn't know how to manage a team that included data scientists alongside domain experts.</p>
+
+      <!-- Diagram 1: The AI Transformation Gap -->
+      <svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;margin:40px auto;display:block;" role="img" aria-label="The AI Transformation Gap — showing the disconnect between executive vision and engineering execution">
+        <style>
+          .gap-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #1a1a1a; font-weight: 500; }
+          .gap-sub { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6b6b; }
+          .gap-title { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #999; text-transform: uppercase; letter-spacing: 2px; }
+          .gap-highlight { font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; fill: #1a1a1a; font-weight: 600; }
+        </style>
+        <text x="340" y="20" text-anchor="middle" class="gap-title">THE AI TRANSFORMATION GAP</text>
+        <!-- Executive layer -->
+        <rect x="140" y="44" width="400" height="56" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="340" y="70" text-anchor="middle" class="gap-label">Board &amp; Executive Leadership</text>
+        <text x="340" y="88" text-anchor="middle" class="gap-sub">"AI-first strategy approved. Budget allocated. Let's transform."</text>
+        <!-- Arrow down -->
+        <line x1="340" y1="100" x2="340" y2="130" stroke="#e8e8e8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <polygon points="334,128 340,138 346,128" fill="#e8e8e8"/>
+        <!-- Gap zone -->
+        <rect x="90" y="140" width="500" height="60" rx="4" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <rect x="92" y="142" width="496" height="56" rx="3" fill="#fafaf8" opacity="0.7"/>
+        <text x="340" y="167" text-anchor="middle" class="gap-highlight">Middle Management</text>
+        <text x="340" y="186" text-anchor="middle" class="gap-sub">Slow-rolls · Checkboxes · Translation failures</text>
+        <!-- Arrow down -->
+        <line x1="340" y1="200" x2="340" y2="230" stroke="#e8e8e8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <polygon points="334,228 340,238 346,228" fill="#e8e8e8"/>
+        <!-- Engineering layer -->
+        <rect x="140" y="240" width="400" height="56" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="340" y="266" text-anchor="middle" class="gap-label">Engineering &amp; Data Science</text>
+        <text x="340" y="284" text-anchor="middle" class="gap-sub">"Platform built. Models deployed. Pipelines running. Why isn't anyone using this?"</text>
+        <!-- Side annotations -->
+        <text x="72" y="78" text-anchor="end" class="gap-sub">Vision</text>
+        <line x1="78" y1="72" x2="136" y2="72" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="72" y="174" text-anchor="end" class="gap-sub">The Gap</text>
+        <line x1="78" y1="168" x2="86" y2="168" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="72" y="272" text-anchor="end" class="gap-sub">Execution</text>
+        <line x1="78" y1="266" x2="136" y2="266" stroke="#e8e8e8" stroke-width="1"/>
+      </svg>
+
+      <h2>Three Ways the Gap Shows Up</h2>
+
+      <p>I have watched enterprise AI programs stall for the same reasons across different organizations, industries, and geographies. The failure modes are remarkably consistent.</p>
+
+      <h3>The Slow-Roll</h3>
+
+      <p>A department head agrees to an AI pilot in a quarterly review. Enthusiastic nods. Action items assigned. Then: the data access request takes eight weeks. The subject matter experts are "unavailable" for requirements gathering. The pilot scope quietly expands until it's too complex to deliver in the agreed timeline. The initiative is shelved as "premature" and everyone moves on.</p>
+
+      <p>This isn't sabotage in the conventional sense. It's institutional antibodies doing what they've always done — protecting the status quo against perceived threats. The manager isn't opposed to AI. They're opposed to the uncertainty it introduces into a function they've spent years optimizing for predictability.</p>
+
+      <h3>The Checkbox</h3>
+
+      <p>A division deploys an AI tool — say, an LLM-based document summarizer. Adoption metrics look healthy: 200 users onboarded, 3,000 documents processed in Q1. The initiative is declared a success in the leadership review.</p>
+
+      <p>Except nobody checks whether the summaries are actually used. Whether they changed any decisions. Whether the team trusts the output or just generates it to tick a box. The manager reports AI adoption because that's what their objectives say. They never asked whether AI adoption produced value, because that question is harder to answer and riskier to ask.</p>
+
+      <p>Checkbox AI can be more costly than no AI at all. It creates the illusion of progress while consuming budget, engineering time, and organizational attention that could have gone toward use cases that actually move the needle.</p>
+
+      <h3>The Translation Failure</h3>
+
+      <p>The executive says: "We need AI to transform our client onboarding process." The engineering team hears: build an intelligent document extraction pipeline. The operations manager hears: more work for my team during the transition. The compliance officer hears: new risk surface.</p>
+
+      <p>Nobody in the middle translates. The executive vision gets interpreted differently by every function it passes through. The engineering team builds something technically sound that doesn't fit the operational workflow. The operations team resists because they weren't consulted on the design. Compliance raises objections late in the process. The project is either killed or deployed to a fraction of its intended scope.</p>
+
+      <p>The missing translator isn't a project manager. It's a leader who understands both the technology and the business well enough to hold the whole picture — and who has the organizational authority to make trade-offs across functions.</p>
+
+      <!-- Diagram 2: Three Failure Modes -->
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;margin:40px auto;display:block;" role="img" aria-label="Three failure modes: Slow-Roll, Checkbox, Translation Failure">
+        <style>
+          .fm-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #1a1a1a; font-weight: 500; }
+          .fm-desc { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6b6b; }
+          .fm-icon { font-family: 'IBM Plex Mono', monospace; font-size: 22px; fill: #1a1a1a; }
+          .fm-title { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #999; text-transform: uppercase; letter-spacing: 2px; }
+        </style>
+        <text x="340" y="20" text-anchor="middle" class="fm-title">THREE FAILURE MODES</text>
+        <!-- Slow-Roll -->
+        <rect x="20" y="40" width="200" height="148" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <circle cx="120" cy="78" r="18" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+        <path d="M120 64 L120 78 L130 84" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+        <text x="120" y="116" text-anchor="middle" class="fm-label">The Slow-Roll</text>
+        <text x="120" y="134" text-anchor="middle" class="fm-desc">Passive resistance through</text>
+        <text x="120" y="148" text-anchor="middle" class="fm-desc">delays and scope creep</text>
+        <text x="120" y="174" text-anchor="middle" class="fm-desc" style="font-style:italic">"Premature. Revisit in Q3."</text>
+        <!-- Checkbox -->
+        <rect x="240" y="40" width="200" height="148" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <rect x="330" y="60" width="20" height="20" rx="2" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+        <path d="M334 70 L338 75 L347 63" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="340" y="116" text-anchor="middle" class="fm-label">The Checkbox</text>
+        <text x="340" y="134" text-anchor="middle" class="fm-desc">Adoption metrics without</text>
+        <text x="340" y="148" text-anchor="middle" class="fm-desc">value measurement</text>
+        <text x="340" y="174" text-anchor="middle" class="fm-desc" style="font-style:italic">"200 users onboarded."</text>
+        <!-- Translation Failure -->
+        <rect x="460" y="40" width="200" height="148" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <path d="M545 62 L560 78 M560 62 L545 78" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="535" y1="70" x2="570" y2="70" stroke="none"/>
+        <text x="560" y="116" text-anchor="middle" class="fm-label">The Translation Failure</text>
+        <text x="560" y="134" text-anchor="middle" class="fm-desc">Vision interpreted differently</text>
+        <text x="560" y="148" text-anchor="middle" class="fm-desc">by every function</text>
+        <text x="560" y="174" text-anchor="middle" class="fm-desc" style="font-style:italic">"That's not what we meant."</text>
+      </svg>
+
+      <h2>Why This Happens</h2>
+
+      <p>Middle managers in large enterprises were promoted for a specific set of skills: operational excellence, risk management, stakeholder navigation, team leadership within well-defined boundaries. These are valuable skills. They are not the skills that AI transformation demands.</p>
+
+      <p>AI introduces three things that most middle management structures aren't designed to handle:</p>
+
+      <!-- Diagram 3: What AI Demands -->
+      <svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;margin:32px auto;display:block;" role="img" aria-label="Three demands AI places on middle management: Uncertainty, Cross-functional Authority, Technical Judgment">
+        <style>
+          .dem-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; fill: #1a1a1a; font-weight: 500; }
+          .dem-sub { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6b6b; }
+          .dem-title { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #999; text-transform: uppercase; letter-spacing: 2px; }
+          .dem-old { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #999; }
+          .dem-new { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #1a1a1a; font-weight: 500; }
+          .dem-arrow { fill: #999; }
+        </style>
+        <text x="340" y="20" text-anchor="middle" class="dem-title">WHAT MANAGERS WERE TRAINED FOR vs WHAT AI DEMANDS</text>
+        <!-- Row 1 -->
+        <rect x="20" y="42" width="280" height="48" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="160" y="62" text-anchor="middle" class="dem-old">Requirements, timelines, predictable outputs</text>
+        <text x="160" y="78" text-anchor="middle" class="dem-sub">Waterfall &amp; agile delivery</text>
+        <polygon points="316,66 326,60 326,72" class="dem-arrow"/>
+        <rect x="340" y="42" width="320" height="48" rx="4" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="500" y="62" text-anchor="middle" class="dem-new">Hypotheses, experiments, probabilistic outcomes</text>
+        <text x="500" y="78" text-anchor="middle" class="dem-label">Permanent uncertainty</text>
+        <!-- Row 2 -->
+        <rect x="20" y="106" width="280" height="48" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="160" y="126" text-anchor="middle" class="dem-old">Single-function authority</text>
+        <text x="160" y="142" text-anchor="middle" class="dem-sub">Clear org boundaries</text>
+        <polygon points="316,130 326,124 326,136" class="dem-arrow"/>
+        <rect x="340" y="106" width="320" height="48" rx="4" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="500" y="126" text-anchor="middle" class="dem-new">Data, Eng, Ops, Compliance all required</text>
+        <text x="500" y="142" text-anchor="middle" class="dem-label">Cross-functional influence</text>
+        <!-- Row 3 -->
+        <rect x="20" y="170" width="280" height="48" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="160" y="190" text-anchor="middle" class="dem-old">Domain expertise drives decisions</text>
+        <text x="160" y="206" text-anchor="middle" class="dem-sub">Business context is enough</text>
+        <polygon points="316,194 326,188 326,200" class="dem-arrow"/>
+        <rect x="340" y="170" width="320" height="48" rx="4" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="500" y="190" text-anchor="middle" class="dem-new">Right questions, not right code</text>
+        <text x="500" y="206" text-anchor="middle" class="dem-label">Technical judgment</text>
+      </svg>
+
+      <p><strong>Uncertainty as a permanent condition.</strong> Traditional projects have requirements, timelines, and predictable outputs. AI projects have hypotheses, experiments, and probabilistic outcomes. A manager trained in waterfall delivery — even agile delivery — doesn't have a mental model for "we'll know if this works after we try three approaches and evaluate them against a benchmark that we also have to build."</p>
+
+      <p><strong>Cross-functional authority requirements.</strong> AI use cases rarely sit neatly within one department. A fraud detection model needs transaction data from operations, labels from investigations, infrastructure from platform engineering, and sign-off from compliance. The middle manager who owns the fraud function doesn't have authority over any of those dependencies. They need to influence without authority — a skill most were never explicitly developed for.</p>
+
+      <p><strong>Technical judgment without technical depth.</strong> You don't need middle managers who can write Python. You need middle managers who can ask the right questions: Is this the right metric? What happens when the model is wrong? How do we know the training data represents reality? What's the failure mode? Without this judgment, managers either defer entirely to engineers (losing business context) or override engineers based on intuition (losing technical rigor). Both outcomes are bad.</p>
+
+      <h2>What Actually Works</h2>
+
+      <p>I want to be specific here, because the typical advice — "upskill your managers," "create an AI literacy program" — is both obvious and insufficient. Literacy programs teach terminology. They don't change behavior, incentives, or organizational structure.</p>
+
+      <h3>Make AI outcomes a first-class management objective</h3>
+
+      <p>If a director's performance objectives don't include AI adoption or AI-driven efficiency, they have no rational incentive to prioritize it. Worse, they have a rational incentive to avoid it — AI pilots are risky, uncertain, and consume time that could be spent on predictable deliverables with known outcomes.</p>
+
+      <p>The fix isn't adding "explore AI opportunities" as a vague objective. It's tying specific, measurable AI outcomes to the same evaluation framework that governs everything else. "Reduce manual review time by 30% through automated document classification" is an AI objective that a middle manager can own, resource, and be held accountable for.</p>
+
+      <h3>Pair, don't train</h3>
+
+      <p>The most effective AI capability building I've seen doesn't happen in classrooms. It happens when you embed a senior data scientist or ML engineer directly into a business function for 3-6 months — not as a contractor, but as a peer to the function's leadership.</p>
+
+      <p>The data scientist learns the domain constraints that no requirements document captures. The business leader learns what AI can and can't do by watching it fail and succeed on their actual problems. Both develop the shared language that no training program produces.</p>
+
+      <p>This is expensive. It pulls your best technical people out of the platform team. It's also the only approach I've seen that reliably converts skeptical middle managers into effective AI leaders.</p>
+
+      <h3>Give middle managers permission to fail</h3>
+
+      <p>This sounds like a motivational poster, but in large enterprises, it's a structural problem. Most middle management incentive structures penalize failure and reward predictability. AI is inherently unpredictable. If a manager's rational move is to avoid AI because a failed pilot hurts more than a successful one helps, your incentive structure is your bottleneck.</p>
+
+      <p>The organizations that move fastest on AI explicitly protect middle managers from downside risk on AI initiatives. Failed pilot? That's expected — what did we learn? No penalty. Successful pilot? Visible recognition and career advancement. This asymmetry has to be deliberate, communicated, and consistently enforced. One punished failure undoes a year of "we encourage experimentation" messaging.</p>
+
+      <h3>Restructure around AI workflows, not AI teams</h3>
+
+      <p>The instinct is to create a central AI team that services the business. This fails for the same reason shared services always fail at innovation — the team optimizes for throughput, not impact. The queue gets long. Priorities conflict. Business functions feel unserved and hire shadow AI teams or buy point solutions.</p>
+
+      <p>A better model: embed AI capability into existing business functions while maintaining a thin central platform that provides infrastructure, governance, and standards. The middle manager owns the AI outcome within their function. The platform team owns the tools and guardrails. This mirrors how the best organizations adopted cloud — not by centralizing all cloud work, but by giving functions the capability to use cloud within governance boundaries.</p>
+
+      <!-- Diagram 4: Centralized vs Embedded Model -->
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;margin:40px auto;display:block;" role="img" aria-label="Comparison of centralized AI team vs embedded AI with thin platform model">
+        <style>
+          .org-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; fill: #1a1a1a; font-weight: 500; }
+          .org-sub { font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; fill: #6b6b6b; }
+          .org-title { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #999; text-transform: uppercase; letter-spacing: 2px; }
+          .org-bad { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #999; }
+          .org-good { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #1a1a1a; }
+        </style>
+        <!-- Left: Centralized (what fails) -->
+        <text x="160" y="20" text-anchor="middle" class="org-title">CENTRALIZED AI TEAM</text>
+        <text x="160" y="36" text-anchor="middle" class="org-bad">Optimizes for throughput</text>
+        <!-- Central AI box -->
+        <rect x="85" y="50" width="150" height="40" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="160" y="74" text-anchor="middle" class="org-label">Central AI Team</text>
+        <!-- Request queue lines -->
+        <line x1="110" y1="90" x2="60" y2="130" stroke="#e8e8e8" stroke-width="1"/>
+        <line x1="160" y1="90" x2="160" y2="130" stroke="#e8e8e8" stroke-width="1"/>
+        <line x1="210" y1="90" x2="260" y2="130" stroke="#e8e8e8" stroke-width="1"/>
+        <!-- Business functions -->
+        <rect x="20" y="130" width="80" height="36" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="60" y="152" text-anchor="middle" class="org-sub">Finance</text>
+        <rect x="120" y="130" width="80" height="36" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="160" y="152" text-anchor="middle" class="org-sub">Operations</text>
+        <rect x="220" y="130" width="80" height="36" rx="4" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="260" y="152" text-anchor="middle" class="org-sub">Risk</text>
+        <!-- Problem indicators -->
+        <text x="60" y="184" text-anchor="middle" class="org-bad">Queue: 8 weeks</text>
+        <text x="160" y="184" text-anchor="middle" class="org-bad">Wrong priorities</text>
+        <text x="260" y="184" text-anchor="middle" class="org-bad">Shadow AI</text>
+        <!-- X mark -->
+        <line x1="140" y1="200" x2="180" y2="220" stroke="#999" stroke-width="1.5"/>
+        <line x1="180" y1="200" x2="140" y2="220" stroke="#999" stroke-width="1.5"/>
+
+        <!-- Divider -->
+        <line x1="340" y1="10" x2="340" y2="230" stroke="#e8e8e8" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- Right: Embedded (what works) -->
+        <text x="510" y="20" text-anchor="middle" class="org-title">EMBEDDED AI + THIN PLATFORM</text>
+        <text x="510" y="36" text-anchor="middle" class="org-good">Optimizes for impact</text>
+        <!-- Thin platform bar -->
+        <rect x="380" y="50" width="260" height="28" rx="4" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="510" y="68" text-anchor="middle" class="org-sub" style="fill:#1a1a1a">Platform: Infrastructure · Governance · Standards</text>
+        <!-- Business functions with embedded AI -->
+        <rect x="370" y="100" width="90" height="76" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="415" y="120" text-anchor="middle" class="org-label">Finance</text>
+        <rect x="382" y="132" width="66" height="20" rx="2" fill="#fafaf8" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="415" y="146" text-anchor="middle" class="org-sub">AI engineer</text>
+        <text x="415" y="164" text-anchor="middle" class="org-good">Owns outcome</text>
+        <line x1="415" y1="78" x2="415" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+
+        <rect x="475" y="100" width="90" height="76" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="520" y="120" text-anchor="middle" class="org-label">Operations</text>
+        <rect x="487" y="132" width="66" height="20" rx="2" fill="#fafaf8" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="520" y="146" text-anchor="middle" class="org-sub">AI engineer</text>
+        <text x="520" y="164" text-anchor="middle" class="org-good">Owns outcome</text>
+        <line x1="520" y1="78" x2="520" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+
+        <rect x="580" y="100" width="90" height="76" rx="4" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
+        <text x="625" y="120" text-anchor="middle" class="org-label">Risk</text>
+        <rect x="592" y="132" width="66" height="20" rx="2" fill="#fafaf8" stroke="#e8e8e8" stroke-width="1"/>
+        <text x="625" y="146" text-anchor="middle" class="org-sub">AI engineer</text>
+        <text x="625" y="164" text-anchor="middle" class="org-good">Owns outcome</text>
+        <line x1="625" y1="78" x2="625" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+
+        <!-- Check mark -->
+        <path d="M500 200 L510 212 L525 192" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <h2>The Role Is Being Redefined</h2>
+
+      <p>Here is the part that most AI strategy documents avoid: the middle management role itself is changing. Not because the people in it are inadequate — many are the strongest operators in the building — but because the definition of the role is shifting beneath them.</p>
+
+      <p>The middle manager of the next decade needs to be comfortable with ambiguity, capable of evaluating probabilistic outcomes, able to lead cross-functional initiatives without direct authority, and willing to make decisions with incomplete information. These are learnable skills, but they require deliberate investment — from the organization, not just the individual.</p>
+
+      <p>The organizations that acknowledge this shift and invest in it — through structured development, mentorship, and role evolution — will close the gap. The ones that expect middle managers to figure it out on their own, while changing nothing about incentives or support structures, will keep wondering why their AI programs stall.</p>
+
+      <p>This isn't about replacing managers. It's about recognizing that the role is being redefined by the same forces reshaping every other function in the enterprise — and that the people in these roles deserve the investment and honesty to navigate that transition successfully.</p>
+
+      <h2>The Real AI Strategy</h2>
+
+      <p>Every enterprise AI strategy I've reviewed focuses on the same things: model selection, data infrastructure, governance frameworks, use case prioritization. These are necessary. They are not sufficient.</p>
+
+      <p>The sufficient condition — the thing that separates organizations that scale AI from those that run perpetual pilots — is whether the layer of leadership between the boardroom and the engineering floor is equipped, incentivized, and empowered to make AI work within their domains.</p>
+
+      <p>That's not a technology problem. It's not a data problem. It's a leadership development problem dressed in technical clothing. And until organizations treat it as such, the gap will persist — boards will approve strategies, engineers will build platforms, and the middle will quietly ensure that nothing changes.</p>
+
+      <hr />
+
+      <p><em>I'm building production AI systems in regulated financial services at Deutsche Bank. Previously Chief Scientist at Halialabs. I write about what actually works — and what doesn't — when AI meets enterprise reality.</em></p>
+
+      <p><em>More at <a href="/writing/">sunilprakash.com/writing</a> · <a href="https://www.linkedin.com/in/sunilprakash" target="_blank" rel="noopener">LinkedIn</a></em></p>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

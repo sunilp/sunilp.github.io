@@ -8,6 +8,14 @@
     <atom:link href="https://sunilprakash.com/feed.xml" rel="self" type="application/rss+xml" />
 
     <item>
+      <title>The Middle Management AI Gap</title>
+      <link>https://sunilprakash.com/writing/middle-management-ai-gap/</link>
+      <guid>https://sunilprakash.com/writing/middle-management-ai-gap/</guid>
+      <pubDate>Thu, 13 Mar 2026 12:00:00 +0000</pubDate>
+      <description>Boards are excited about AI. Engineers are building it. But the layer between the boardroom and the engineering floor is where most enterprise AI programs quietly die — and nobody talks about it.</description>
+    </item>
+
+    <item>
       <title>From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure</title>
       <link>https://sunilprakash.com/writing/deliberative-collective-intelligence/</link>
       <guid>https://sunilprakash.com/writing/deliberative-collective-intelligence/</guid>
