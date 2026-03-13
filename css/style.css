@@ -190,8 +190,21 @@ nav .wrap {
   border-bottom: 1px solid var(--border);
 }
 
-.entry:first-child { padding-top: 0; }
 .entry:last-child { border-bottom: none; }
+
+/* Topic group headings on writing index */
+.topic-heading {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--light);
+  margin: 48px 0 0;
+  font-weight: 500;
+}
+
+.wrap > .topic-heading:first-child {
+  margin-top: 0;
+}
 
 .entry h3 {
   font-size: 16px;
