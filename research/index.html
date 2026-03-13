@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KDCBS18GZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4KDCBS18GZ');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Research by Sunil Prakash — multi-agent AI systems, identity-aware protocols, and structured collective reasoning." />
+  <meta name="author" content="Sunil Prakash" />
+  <meta name="theme-color" content="#fafaf8" />
+  <meta property="og:title" content="Research — Sunil Prakash" />
+  <meta property="og:description" content="Published research on multi-agent AI systems, identity-aware protocols, and structured collective reasoning." />
+  <meta property="og:url" content="https://sunilprakash.com/research/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://sunilprakash.com/img/portrait.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Research — Sunil Prakash" />
+  <meta name="twitter:description" content="Published research on multi-agent AI systems, identity-aware protocols, and structured collective reasoning." />
+  <link rel="canonical" href="https://sunilprakash.com/research/" />
+  <link rel="alternate" type="application/rss+xml" title="Sunil Prakash — Writing" href="/feed.xml" />
+  <link rel="icon" type="image/png" href="/img/icon.png" />
+  <title>Research — Sunil Prakash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Research — Sunil Prakash",
+    "author": { "@type": "Person", "name": "Sunil Prakash", "url": "https://sunilprakash.com/" },
+    "description": "Published research on multi-agent AI systems"
+  }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-brand" href="/">Sunil Prakash</a>
+      <div class="nav-links">
+        <a href="/writing/">Writing</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+        <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="wrap reveal" style="--delay: 0.05s;">
+        <h1>Research</h1>
+        <p class="hero-sub">Published work on multi-agent AI systems — identity-aware protocols, structured collective reasoning, and the infrastructure that makes delegation work.</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <div class="wrap">
+        <p class="section-label reveal">Papers</p>
+
+        <div class="entry reveal">
+          <h3>DCI: From Debate to Deliberation — Structured Collective Reasoning with Typed Epistemic Acts</h3>
+          <p class="meta">Sunil Prakash, Indian School of Business &middot; arXiv:2603.11781 &middot; 2026</p>
+          <p>Multi-agent debate is the dominant approach for collective LLM reasoning, but it discards disagreements, lacks convergence guarantees, and scales poorly. Deliberative Collective Intelligence (DCI) introduces typed reasoning moves (assert, challenge, refine, synthesize), preserved disagreements as first-class objects, and a convergence algorithm that guarantees termination.</p>
+          <p><strong>Key results.</strong> +0.95 quality gain over debate on non-routine tasks. 9.56 hidden-profile score (best in study). Guaranteed convergence in bounded rounds. Honest null results: debate wins on routine tasks where the 62x token cost isn't justified.</p>
+          <div class="hero-links" style="margin-top: 12px;">
+            <a href="https://arxiv.org/abs/2603.11781" target="_blank" rel="noopener">Paper</a>
+            <a href="/writing/deliberative-collective-intelligence/">Blog post</a>
+          </div>
+        </div>
+
+        <div class="entry reveal">
+          <h3>LDP: An Identity-Aware Protocol for Multi-Agent LLM Systems</h3>
+          <p class="meta">Sunil Prakash, Indian School of Business &middot; arXiv:2603.08852 &middot; 2026</p>
+          <p>Current agent protocols (A2A, MCP) treat AI agents as opaque services — exposing only a name and skill list. LDP extends service-oriented protocols with rich delegate identity cards, progressive payload modes, governed sessions, structured provenance, and trust domains. This enables metadata-aware routing: send easy tasks to fast models, hard tasks to capable ones.</p>
+          <p><strong>Key results.</strong> ~12x lower latency on easy tasks through delegate specialization. 37% token reduction via semantic frames (p=0.031). 96% vs 6% attack detection with trust domains. Noisy provenance degrades quality below no-provenance baseline — verification matters.</p>
+          <div class="hero-links" style="margin-top: 12px;">
+            <a href="https://arxiv.org/abs/2603.08852" target="_blank" rel="noopener">Paper</a>
+            <a href="/writing/ldp-protocol/">Blog post</a>
+            <a href="https://github.com/sunilp/ldp-protocol" target="_blank" rel="noopener">Protocol code</a>
+            <a href="https://github.com/sunilp/ldp-research" target="_blank" rel="noopener">Experiment code</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap">
+        <p class="section-label reveal">Open Source</p>
+        <p class="section-desc reveal">Research-adjacent code — protocol implementations, experiment harnesses, and reference architectures.</p>
+
+        <div class="repo reveal">
+          <div>
+            <h3>ldp-protocol</h3>
+            <p>Rust reference implementation of the LLM Delegate Protocol. JamJet adapter, session management, identity cards, trust domains.</p>
+          </div>
+          <a class="link" href="https://github.com/sunilp/ldp-protocol" target="_blank" rel="noopener">View</a>
+        </div>
+
+        <div class="repo reveal">
+          <div>
+            <h3>ldp-research</h3>
+            <p>Experiment code and data for the LDP paper. Six research questions, A2A baselines, ablation conditions, LLM-as-judge evaluation.</p>
+          </div>
+          <a class="link" href="https://github.com/sunilp/ldp-research" target="_blank" rel="noopener">View</a>
+        </div>
+
+        <div class="repo reveal">
+          <div>
+            <h3>enterprise-rag-bench</h3>
+            <p>RAG patterns benchmarked for enterprise. Five chunking strategies, five retrieval patterns, evaluation harness, guardrails.</p>
+          </div>
+          <a class="link" href="https://github.com/sunilp/enterprise-rag-bench" target="_blank" rel="noopener">View</a>
+        </div>
+
+        <div class="repo reveal">
+          <div>
+            <h3>applied-nlp-research</h3>
+            <p>Production NLP from pre-LLM to post-LLM era. Capsule networks, BiLSTM-CRF for NER, transformer fine-tuning, PyTorch.</p>
+          </div>
+          <a class="link" href="https://github.com/sunilp/applied-nlp-research" target="_blank" rel="noopener">View</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="wrap reveal">
+        <p class="section-label">Profiles</p>
+        <p class="section-desc">Find me on academic platforms.</p>
+        <div class="contact-grid">
+          <a href="https://arxiv.org/search/?searchtype=author&query=Sunil+Prakash" target="_blank" rel="noopener">arXiv</a>
+          <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/sunilprakash" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="copy"></span>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/research/">Research</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/speaking/">Speaking</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy").textContent = "\u00a9 " + new Date().getFullYear() + " Sunil Prakash";
+    document.querySelectorAll(".section .reveal").forEach(function(el, i) {
+      el.style.setProperty("--delay", (0.08 + i * 0.03) + "s");
+    });
+    if ("IntersectionObserver" in window) {
+      var o = new IntersectionObserver(function(e) {
+        e.forEach(function(entry) {
+          if (entry.isIntersecting) { entry.target.classList.add("visible"); o.unobserve(entry.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach(function(el) { o.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function(el) { el.classList.add("visible"); });
+    }
+  </script>
+</body>
+</html>

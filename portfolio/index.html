@@ -27,6 +27,7 @@
       <a class="nav-brand" href="/">Sunil Prakash</a>
       <div class="nav-links">
         <a href="/writing/">Writing</a>
+        <a href="/research/">Research</a>
         <a href="/portfolio/" class="active">Portfolio</a>
         <a href="/speaking/">Speaking</a>
         <a href="https://github.com/sunilp" target="_blank" rel="noopener">GitHub</a>
@@ -54,6 +55,7 @@
           <p><strong>Approach.</strong> Designed a three-layer architecture: ingestion (Dataflow + Pub/Sub), orchestration (Cloud Composer), and modeling (dbt with Data Vault 2.0 on BigQuery). Data Vault was chosen for its insert-only pattern and mandatory metadata — enabling point-in-time reconstruction and full source traceability required by BCBS 239 and DORA.</p>
           <p><strong>Key decisions.</strong> CMEK encryption for all data at rest. Private IP networking with no public endpoints. Column-level security via BigQuery policy tags. Terraform modules for reproducible infrastructure. Incremental loading with merge strategy for idempotent operations.</p>
           <p><strong>Outcome.</strong> Unified data platform serving multiple business domains. Full lineage from source to report. Regulatory examination readiness built into the architecture rather than bolted on after the fact.</p>
+          <p class="meta">Related: <a href="/writing/data-vault-in-banking/">Data Vault 2.0 in Banking</a> · <a href="/writing/data-foundations-before-ai/">Building Data Foundations</a> · <a href="/writing/dbt-over-dataform/">Why We Chose dbt Over Dataform</a></p>
         </div>
 
         <div class="entry reveal" style="--delay: 0.12s;">
@@ -64,6 +66,7 @@
           <p><strong>Approach.</strong> Designed a tiered governance framework that scales requirements with risk. Four tiers (Critical, High, Medium, Low) with distinct requirements for validation rigor, monitoring depth, and review cadence. The framework covers the full model lifecycle: development standards, independent validation, deployment gates, production monitoring, and decommissioning.</p>
           <p><strong>Key decisions.</strong> Governance as enablement, not gatekeeping — the framework reduces ambiguity rather than adding bureaucracy. Compliance mapping to EU AI Act (Articles 9-15) and SR 11-7 built into the framework structure. Worked examples (credit scoring, fraud detection) to make the framework concrete rather than theoretical.</p>
           <p><strong>Outcome.</strong> Consistent governance across AI use cases with clear accountabilities. Faster time-to-production for lower-risk models. Regulatory examination readiness for higher-risk models. A shared language between data science, risk, and compliance teams.</p>
+          <p class="meta">Related: <a href="/writing/ai-governance-genai/">ML Risk Frameworks for GenAI</a> · <a href="/writing/llms-meet-compliance/">LLMs Meet Compliance</a></p>
         </div>
 
         <div class="entry reveal" style="--delay: 0.16s;">
@@ -74,6 +77,7 @@
           <p><strong>Approach.</strong> Rather than a wholesale migration, adopted a phased modernization strategy. Defined target architecture patterns per application tier. Established delivery governance with clear accountability across architecture, engineering, and operations. Built shared platform capabilities (CI/CD, observability, security baseline) that application teams could adopt incrementally.</p>
           <p><strong>Key decisions.</strong> Strangler fig pattern over big-bang rewrite. Shared platform services over per-team duplication. Architecture decision records for every significant technical choice. Production readiness reviews as deployment gates rather than post-incident artifacts.</p>
           <p><strong>Outcome.</strong> Reduced deployment friction and improved production resilience. Shared architectural patterns across teams. Engineering capabilities that compound over time rather than reset with each project.</p>
+          <p class="meta">Related: <a href="/writing/ai-operating-model/">The AI Operating Model</a> · <a href="/writing/why-enterprise-ai-programs-fail/">Why Enterprise AI Programs Fail</a></p>
         </div>
 
         <div class="entry reveal" style="--delay: 0.2s;">
@@ -84,6 +88,7 @@
           <p><strong>Approach.</strong> Built a shared ML platform with standardized components: data ingestion pipelines, experiment tracking, model registry, deployment automation, and production monitoring. Event-driven architecture for real-time inference. Batch pipelines for training and retraining.</p>
           <p><strong>Key decisions.</strong> Standardized model packaging format to decouple development from deployment. Event-driven serving for latency-sensitive use cases. Automated retraining pipelines triggered by data drift detection. Centralized experiment tracking to make model development reproducible.</p>
           <p><strong>Outcome.</strong> Reduced time from experiment to production. Consistent monitoring and alerting across all deployed models. Reusable platform components that accelerated each subsequent project.</p>
+          <p class="meta">Related: <a href="/writing/ner-to-agents/">NER Pipelines to LLM Agents</a> · <a href="/writing/nlp-before-transformers/">NLP Before Transformers</a> · <a href="/writing/rag-in-production/">RAG in Production</a></p>
         </div>
       </div>
     </div>
@@ -94,6 +99,7 @@
       <span id="copy"></span>
       <div class="footer-links">
         <a href="/writing/">Writing</a>
+        <a href="/research/">Research</a>
         <a href="/portfolio/">Portfolio</a>
         <a href="/speaking/">Speaking</a>
       </div>
