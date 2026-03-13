@@ -1,23 +1,38 @@
 # Sunil Prakash
 
 ## Profile
-Enterprise AI and platform architecture leader. Building durable technology capability in regulated environments.
+Enterprise AI and platform architecture leader. Building production AI/ML and GenAI systems in regulated financial services. Published researcher in multi-agent AI systems.
 
 ## Current Role
 Vice President, Cloud & Platform Architecture, Deutsche Bank (2021–present)
 
 ## Focus Areas
+- Multi-agent AI systems (research + production)
 - Enterprise AI strategy and operating models
+- GenAI platforms: LLM orchestration, guardrails, evaluation pipelines
+- RAG systems at enterprise scale
 - Data platform architecture (Data Vault 2.0, dbt, BigQuery)
 - AI governance and regulatory compliance (EU AI Act, SR 11-7, BCBS 239)
 - Cloud platform modernization in banking
-- Cross-functional execution across engineering, product, and risk
+- NLP and deep learning pipelines
+
+## Research
+
+DCI: From Debate to Deliberation — Structured Collective Reasoning with Typed Epistemic Acts
+- arXiv: https://arxiv.org/abs/2603.11781
+- 4 reasoning archetypes, 14 typed epistemic acts, convergent flow algorithm
+- +0.95 over debate on non-routine tasks, 9.56 on hidden-profile (best in study)
+
+LDP: An Identity-Aware Protocol for Multi-Agent LLM Systems
+- arXiv: https://arxiv.org/abs/2603.08852
+- Rich delegate identity cards, progressive payload modes, governed sessions
+- 12x latency gains, 37% token reduction
 
 ## Career
-- Deutsche Bank: Cloud & platform architecture, enterprise data foundations, regulatory-grade data platforms
-- Halialabs: AI/ML platform architecture, NLP and deep learning productionization
-- Cognizant: Enterprise architecture and delivery governance
-- Syntel: Software engineering and project leadership
+- Deutsche Bank: VP, Cloud & Platform Architecture — enterprise AI, data platforms, GenAI governance (2021–present)
+- Halialabs: Chief Scientist — AI/ML platform architecture, NLP productionization (2018–2021)
+- Cognizant: Technology Specialist / Software Architect (2012–2017)
+- Syntel: Software Engineer / Project Lead (2007–2012)
 
 ## Education
 - PGPMAX (Executive MBA), Indian School of Business
@@ -26,20 +41,41 @@ Vice President, Cloud & Platform Architecture, Deutsche Bank (2021–present)
 - Google Cloud Professional Cloud Architect
 
 ## Writing
+- The Middle Management AI Gap — https://sunilprakash.com/writing/middle-management-ai-gap/
+- From Debate to Deliberation: When Multi-Agent Reasoning Needs Structure — https://sunilprakash.com/writing/deliberative-collective-intelligence/
+- Why Multi-Agent AI Systems Need Identity-Aware Routing — https://sunilprakash.com/writing/ldp-protocol/
+- Your ML Risk Framework Wasn't Built for GenAI — https://sunilprakash.com/writing/ai-governance-genai/
+- Why We Chose dbt Over BigQuery Dataform — https://sunilprakash.com/writing/dbt-over-dataform/
 - Why Most Enterprise AI Programs Fail Before They Start — https://sunilprakash.com/writing/why-enterprise-ai-programs-fail/
 - Data Vault 2.0 in Banking — https://sunilprakash.com/writing/data-vault-in-banking/
 - The AI Center of Excellence Is Dead — https://sunilprakash.com/writing/ai-operating-model/
+- From NER Pipelines to LLM Agents — https://sunilprakash.com/writing/ner-to-agents/
+- We Switched to PyTorch in 2020. Was It the Right Call? — https://sunilprakash.com/writing/pytorch-four-years-later/
+- RAG in Production: What Breaks When You Move Past the Tutorial — https://sunilprakash.com/writing/rag-in-production/
+- The Year LLMs Met Compliance — https://sunilprakash.com/writing/llms-meet-compliance/
+- Building Data Foundations While Everyone Chased Models — https://sunilprakash.com/writing/data-foundations-before-ai/
+- Why I Chose Regulated AI Over Startup Speed — https://sunilprakash.com/writing/regulated-ai-over-speed/
+- GPT-3 Changed the Game — Is Enterprise Ready? — https://sunilprakash.com/writing/gpt3-enterprise-not-ready/
+- Switching from TensorFlow to PyTorch — https://sunilprakash.com/writing/tensorflow-to-pytorch/
+- Building NLP Pipelines Before Transformers Were Easy — https://sunilprakash.com/writing/nlp-before-transformers/
+- Attention Is All You Need — A Practitioner's Guide — https://sunilprakash.com/writing/attention-is-all-you-need/
+- Classifying 7,000 Product Codes from Four Words of Text — https://sunilprakash.com/writing/hs-code-classification/
 
 ## Open Source
-- reference-data-platform-gcp — https://github.com/sunilp/reference-data-platform-gcp
-- ai-governance-framework — https://github.com/sunilp/ai-governance-framework
-- dbt-data-vault-starter — https://github.com/sunilp/dbt-data-vault-starter
+- ldp-protocol — LLM Delegate Protocol, Rust reference implementation — https://github.com/sunilp/ldp-protocol
+- ldp-research — LDP experiment code and data — https://github.com/sunilp/ldp-research
+- enterprise-rag-bench — RAG patterns benchmarked for enterprise — https://github.com/sunilp/enterprise-rag-bench
+- enterprise-genai-platform — Reference architecture for LLM applications in banking — https://github.com/sunilp/enterprise-genai-platform
+- applied-nlp-research — Production NLP from pre-LLM to post-LLM — https://github.com/sunilp/applied-nlp-research
+- ai-governance-framework — AI governance for regulated industries — https://github.com/sunilp/ai-governance-framework
+- reference-data-platform-gcp — GCP data platform reference architecture — https://github.com/sunilp/reference-data-platform-gcp
 
 ## Pages
 - https://sunilprakash.com/
 - https://sunilprakash.com/writing/
 - https://sunilprakash.com/portfolio/
 - https://sunilprakash.com/speaking/
+- https://sunilprakash.com/feed.xml
 
 ## Contact
 - LinkedIn: https://www.linkedin.com/in/sunilprakash
