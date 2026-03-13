@@ -31,13 +31,6 @@
       <description>Why traditional model risk management fails for LLMs — hallucination policy, GenAI risk dimensions, deployment gates, prompt audit trails, and what a complete governance framework looks like.</description>
     </item>
 
-    <item>
-      <title>Most Companies Are Governing AI with Yesterday's Playbook</title>
-      <link>https://sunilprakash.com/writing/ai-governance-genai-hbr/</link>
-      <guid>https://sunilprakash.com/writing/ai-governance-genai-hbr/</guid>
-      <pubDate>Tue, 10 Mar 2026 08:00:00 +0000</pubDate>
-      <description>Your AI risk framework was designed for models that produce numbers. Generative AI produces language, decisions, and actions. The governance gap is a board-level risk.</description>
-    </item>
 
     <item>
       <title>Why We Chose dbt Over BigQuery Dataform</title>
