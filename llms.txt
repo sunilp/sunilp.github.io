@@ -24,9 +24,11 @@ DCI: From Debate to Deliberation — Structured Collective Reasoning with Typed 
 - +0.95 over debate on non-routine tasks, 9.56 on hidden-profile (best in study)
 
 LDP: An Identity-Aware Protocol for Multi-Agent LLM Systems
+- Project page: https://ldp.sunilprakash.com
 - arXiv: https://arxiv.org/abs/2603.08852
+- Python SDK: pip install ldp-protocol (https://pypi.org/project/ldp-protocol/)
 - Rich delegate identity cards, progressive payload modes, governed sessions
-- 12x latency gains, 37% token reduction
+- 12x latency gains, 37% token reduction, 55% cost savings with identity-aware routing
 
 ## Career
 - Deutsche Bank: VP, Cloud & Platform Architecture — enterprise AI, data platforms, GenAI governance (2021–present)
@@ -62,7 +64,7 @@ LDP: An Identity-Aware Protocol for Multi-Agent LLM Systems
 - Classifying 7,000 Product Codes from Four Words of Text — https://sunilprakash.com/writing/hs-code-classification/
 
 ## Open Source
-- ldp-protocol — LLM Delegate Protocol, Rust reference implementation — https://github.com/sunilp/ldp-protocol
+- ldp-protocol — LLM Delegate Protocol, Python SDK + Rust reference — https://github.com/sunilp/ldp-protocol — https://ldp.sunilprakash.com
 - ldp-research — LDP experiment code and data — https://github.com/sunilp/ldp-research
 - enterprise-rag-bench — RAG patterns benchmarked for enterprise — https://github.com/sunilp/enterprise-rag-bench
 - enterprise-genai-platform — Reference architecture for LLM applications in banking — https://github.com/sunilp/enterprise-genai-platform
